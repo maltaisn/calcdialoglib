@@ -1,0 +1,28 @@
+/**
+ * Bintray release configuration
+ * */
+ext {
+    bintrayRepo = 'calc-dialog'
+    bintrayName = 'calc-dialog'
+
+    publishedGroupId = 'com.maltaisn'
+    libraryName = 'calc-dialog'
+    artifact = 'calcdialog'
+    packagingType = 'jar'
+
+    libraryDescription = 'Calculator dialog for Android'
+
+    siteUrl = 'https://github.com/maltaisn/calcdialoglib'
+    gitUrl = 'https://github.com/maltaisn/calcdialoglib.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'maltaisn'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: rootProject.file('jcenter/maven-install.gradle')
+apply from: rootProject.file('jcenter/bintray.gradle')

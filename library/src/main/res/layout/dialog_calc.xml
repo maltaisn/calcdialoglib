@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/calcBackgroundColor"
+    tools:theme="@style/CalcDialogStyle">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/calcBackgroundColor"
+        android:elevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_value"
+            style="?attr/calcValueStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/calcHeaderHeight"
+            android:layout_weight="1"
+            tools:text="-1,211.52"/>
+
+        <com.nmaltais.calcdialog.EraseButton
+            android:id="@+id/button_calc_erase"
+            style="?attr/calcEraseBtnStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            tools:ignore="ContentDescription"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/button_calc_0"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_decimal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/button_calc_decimal"
+        tools:text="0"/>
+
+    <TextView
+        android:id="@+id/button_calc_1"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_decimal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_start"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_4"
+        tools:text="1"/>
+
+    <TextView
+        android:id="@+id/button_calc_2"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_decimal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_4"
+        tools:text="2"/>
+
+    <TextView
+        android:id="@+id/button_calc_3"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_decimal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_4"
+        tools:text="3"/>
+
+    <TextView
+        android:id="@+id/button_calc_4"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_1"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_start"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_7"
+        tools:text="4"/>
+
+    <TextView
+        android:id="@+id/button_calc_5"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_7"
+        tools:text="5"/>
+
+    <TextView
+        android:id="@+id/button_calc_6"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_7"
+        tools:text="6"/>
+
+    <TextView
+        android:id="@+id/button_calc_7"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_start"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        tools:text="7"/>
+
+    <TextView
+        android:id="@+id/button_calc_8"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_7"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/button_calc_7"
+        tools:text="8"/>
+
+    <TextView
+        android:id="@+id/button_calc_9"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_7"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
+        app:layout_constraintTop_toTopOf="@+id/button_calc_7"
+        tools:text="9"/>
+
+    <TextView
+        android:id="@+id/button_calc_decimal"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/view_sep_bottom"
+        app:layout_constraintEnd_toStartOf="@+id/button_calc_0"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_1"
+        tools:text="."/>
+
+    <TextView
+        android:id="@+id/button_calc_sign"
+        style="?attr/calcNumberBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_decimal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_middle"
+        app:layout_constraintTop_toTopOf="@+id/button_calc_decimal"
+        tools:text="±"/>
+
+    <TextView
+        android:id="@+id/button_calc_div"
+        style="?attr/calcOperationBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_mult"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toTopOf="@+id/button_calc_7"
+        tools:text="÷"/>
+
+    <TextView
+        android:id="@+id/button_calc_mult"
+        style="?attr/calcOperationBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_sub"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_div"
+        tools:text="×"/>
+
+    <TextView
+        android:id="@+id/button_calc_sub"
+        style="?attr/calcOperationBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_mult"
+        tools:text="-"/>
+
+    <TextView
+        android:id="@+id/button_calc_add"
+        style="?attr/calcOperationBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_equal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_sub"
+        tools:text="+"/>
+
+    <TextView
+        android:id="@+id/button_calc_equal"
+        style="?attr/calcOperationBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/view_sep_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_add"
+        tools:text="="/>
+
+    <View
+        android:id="@+id/view_sep_bottom"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:background="?attr/calcDialogSepColor"
+        app:layout_constraintBottom_toTopOf="@+id/button_dialog_clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_decimal"/>
+
+    <Button
+        android:id="@+id/button_dialog_clear"
+        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="?attr/calcButtonTextClear"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_sep_bottom"/>
+
+    <Button
+        android:id="@+id/button_dialog_cancel"
+        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="5dp"
+        android:text="?attr/calcButtonTextCancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_dialog_ok"
+        app:layout_constraintTop_toBottomOf="@+id/view_sep_bottom"
+        app:layout_constraintVertical_bias="1.0"/>
+
+    <Button
+        android:id="@+id/button_dialog_ok"
+        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="5dp"
+        android:text="?attr/calcButtonTextOk"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_sep_bottom"
+        app:layout_constraintVertical_bias="0.0"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.27"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.54"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8"/>
+
+</android.support.constraint.ConstraintLayout>

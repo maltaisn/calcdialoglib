@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="calc_dialog_clear">Effacer</string>
+    <string name="calc_dialog_cancel">Annuler</string>
+    <string name="calc_dialog_ok">OK</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>Division par zéro</item>
+        <item>Résultat hors limite</item>
+        <item>Le résultat doit être positif</item>
+        <item>Le résultat doit être négatif</item>
+    </string-array>
+
+</resources>

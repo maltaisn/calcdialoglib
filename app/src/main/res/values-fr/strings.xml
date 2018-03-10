@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Dialogue de calculatrice</string>
+
+    <string name="open_dialog">Ouvrir le dialogue</string>
+    <string name="result_value">Résultat</string>
+    <string name="result_value_none">Aucun</string>
+    <string name="calc_settings">Options de la calculatrice</string>
+
+    <string name="option_sign">Le signe peut être changé</string>
+    <string name="option_clear_operation">Effacer l\'affichage au clic d\'un bouton d\'opération</string>
+    <string name="option_show_zero">Afficher zéro quand il n\'y a pas de valeur</string>
+    <string name="option_strip_zeroes">Enlever les zéros en trop</string>
+    <string name="option_max_value">Valeur maximale:</string>
+    <string name="option_max_int">Maximum de chiffres entiers:</string>
+    <string name="option_max_frac">Maximum de chiffres fractionnaires:</string>
+
+</resources>
