@@ -1,3 +1,9 @@
+### v1.0.2
+- Fixed wrong design: result can't be edited now
+- If maximum fraction digits is 0, decimal point button will be disabled
+- Fixed bug where wrong sign error were inversed
+- Changed `setFormatChars` to `setFormatSymbols`
+
 ### v1.0.1
 - Fixed issues with custom format characters
 - Added documentation, optimized imports, added licenses on files, etc

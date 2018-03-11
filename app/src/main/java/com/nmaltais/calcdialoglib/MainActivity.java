@@ -104,15 +104,26 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
             public void onClick(View v) {
                 boolean signCanBeChanged = !signCheck.isEnabled() || signCheck.isChecked();
 
+                String maxValueStr = maxValEditt.getText().toString();
+                BigDecimal maxValue = maxValCheck.isChecked() && !maxValueStr.isEmpty() ?
+                        new BigDecimal(maxValueStr) : null;
+
+                String maxIntStr = maxIntEditt.getText().toString();
+                int maxInt = maxIntCheck.isChecked() && !maxIntStr.isEmpty() ?
+                        Integer.valueOf(maxIntStr) : CalcDialog.MAX_DIGITS_UNLIMITED;
+
+                String maxFracStr = maxFracEditt.getText().toString();
+                int maxFrac = maxFracCheck.isChecked() && !maxFracStr.isEmpty() ?
+                        Integer.valueOf(maxFracStr) : CalcDialog.MAX_DIGITS_UNLIMITED;
+
                 // Set settings and value
                 calcDialog.setValue(value)
                         .setSignCanBeChanged(signCanBeChanged, signCanBeChanged ? 0 : value.signum())
                         .setClearDisplayOnOperation(clearOnOpCheck.isChecked())
                         .setShowZeroWhenNoValue(showZeroCheck.isChecked())
                         .setStripTrailingZeroes(stripZeroCheck.isChecked())
-                        .setMaxValue(maxValCheck.isChecked() ? new BigDecimal(maxValEditt.getText().toString()) : null)
-                        .setMaxDigits(maxIntCheck.isChecked() ? Integer.valueOf(maxIntEditt.getText().toString()) : CalcDialog.MAX_DIGITS_UNLIMITED,
-                                maxFracCheck.isChecked() ? Integer.valueOf(maxFracEditt.getText().toString()) : CalcDialog.MAX_DIGITS_UNLIMITED);
+                        .setMaxValue(maxValue)
+                        .setMaxDigits(maxInt, maxFrac);
 
                 calcDialog.show(getFragmentManager(), "calc_dialog");
             }

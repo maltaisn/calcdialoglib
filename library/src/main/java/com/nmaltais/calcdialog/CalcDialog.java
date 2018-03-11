@@ -76,8 +76,8 @@ public class CalcDialog extends DialogFragment {
     public static final int MAX_DIGITS_UNLIMITED = -1;
 
     /**
-     * Parameter to set for {@link #setFormatChars(char, char)}
-     * to use default locale's format character.
+     * Parameter to set for {@link #setFormatSymbols(char, char)}
+     * to use default locale's format symbol.
      * This is the default value for both decimal and group separators
      */
     public static final char FORMAT_CHAR_DEFAULT = 0;
@@ -100,13 +100,14 @@ public class CalcDialog extends DialogFragment {
 
     private int groupSize;
 
-    private StringBuilder result;
-    private StringBuilder display;
-    private @Nullable BigDecimal resultValue;
     private int operation;
+    private int error;
+    private StringBuilder valueStr;
+    private @Nullable BigDecimal resultValue;
+    private boolean resultIsDisplayed;
+    private boolean overwriteValue;
 
-    private TextView textvValue;
-    private Button okBtn;
+    private TextView textvDisplay;
 
     private CharSequence[] btnTexts;
     private CharSequence[] errorMessages;
@@ -132,7 +133,9 @@ public class CalcDialog extends DialogFragment {
         clearOnOperation = false;
         showZeroWhenNoValue = true;
 
-        reset();
+        operation = OPERATION_NONE;
+        error = ERROR_NONE;
+        resultValue = null;
     }
 
     @Override
@@ -146,19 +149,9 @@ public class CalcDialog extends DialogFragment {
         if (decimalSep == FORMAT_CHAR_DEFAULT) decimalSep = dfs.getDecimalSeparator();
         if (groupSep == FORMAT_CHAR_DEFAULT) groupSep = dfs.getGroupingSeparator();
 
-        // Init value
-        if (resultValue != null) {
-            resultValue = resultValue.setScale(maxFracDigits, roundingMode);
-            if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
-            result = new StringBuilder(resultValue.toPlainString());
-            display = result;
-            formatDisplay();
-        }
-
         // Get string to display for zero
         BigDecimal zero = BigDecimal.ZERO;
         if (!stripTrailingZeroes) zero = zero.setScale(maxFracDigits, roundingMode);
-
         zeroString = zero.toPlainString();
         int pointPos = zeroString.indexOf('.');
         if (pointPos != -1 && decimalSep != '.') {
@@ -167,6 +160,16 @@ public class CalcDialog extends DialogFragment {
             sb.setCharAt(pointPos, decimalSep);
             zeroString = sb.toString();
         }
+
+        // Init values
+        if (resultValue != null) {
+            resultValue = resultValue.setScale(maxFracDigits, roundingMode);
+            if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
+            valueStr = new StringBuilder(resultValue.toPlainString());
+        } else {
+            valueStr = new StringBuilder();
+        }
+        formatValue();
 
         // Get strings
         TypedArray ta = context.obtainStyledAttributes(R.styleable.CalcDialog);
@@ -185,33 +188,40 @@ public class CalcDialog extends DialogFragment {
         final View view = inflater.inflate(R.layout.dialog_calc, null);
 
         // Value display
-        textvValue = view.findViewById(R.id.text_value);
-        updateDisplay();
+        textvDisplay = view.findViewById(R.id.text_value);
+        textvDisplay.setText(valueStr.toString());
+        resultIsDisplayed = true;
 
         // Erase button
         EraseButton eraseBtn = view.findViewById(R.id.button_calc_erase);
         eraseBtn.setOnEraseListener(new EraseButton.EraseListener() {
             @Override
             public void onErase() {
-                okBtn.setEnabled(true);
+                if (dismissError()) return;
 
-                if (display.length() > 0) {
-                    removeGroupSeparators();
+                if (valueStr.length() > 0) {
+                    if (resultIsDisplayed || overwriteValue) {
+                        valueStr.setLength(0);
+                        overwriteValue = false;
 
-                    // Erase last digit
-                    display.deleteCharAt(display.length() - 1);
-                    if (display.length() > 0) {
-                        // Don't leave useless negative sign or decimal separator
-                        char last = display.charAt(display.length() - 1);
-                        if (last == decimalSep || last == '-') {
-                            display.deleteCharAt(display.length() - 1);
+                    } else {
+                        removeGroupSeparators();
+
+                        // Erase last digit
+                        valueStr.deleteCharAt(valueStr.length() - 1);
+                        if (valueStr.length() > 0) {
+                            // Don't leave useless negative sign or decimal separator
+                            char last = valueStr.charAt(valueStr.length() - 1);
+                            if (last == decimalSep || last == '-') {
+                                valueStr.deleteCharAt(valueStr.length() - 1);
+                            }
                         }
                     }
 
-                    formatDisplay();
+                    formatValue();
+                    textvDisplay.setText(valueStr.toString());
+                    resultIsDisplayed = false;
                 }
-
-                updateDisplay();
             }
         });
 
@@ -236,26 +246,27 @@ public class CalcDialog extends DialogFragment {
             numberBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    okBtn.setEnabled(true);
+                    dismissError();
 
-                    // Remove trailing zero if needed
-                    if (display.length() == 1 && display.charAt(0) == '0') {
-                        display.deleteCharAt(0);
+                    if (resultIsDisplayed || overwriteValue) {
+                        valueStr.setLength(0);
+                        overwriteValue = false;
                     }
 
                     removeGroupSeparators();
 
                     // Check if max digits has been exceeded
-                    int pointPos = display.indexOf(String.valueOf(decimalSep));
-                    if ((pointPos != -1 || maxIntDigits == MAX_DIGITS_UNLIMITED || display.length() < maxIntDigits) &&
-                            (pointPos == -1 || maxFracDigits == MAX_DIGITS_UNLIMITED || display.length() - pointPos - 1 < maxFracDigits)) {
+                    int pointPos = valueStr.indexOf(String.valueOf(decimalSep));
+                    if ((pointPos != -1 || maxIntDigits == MAX_DIGITS_UNLIMITED || valueStr.length() < maxIntDigits) &&
+                            (pointPos == -1 || maxFracDigits == MAX_DIGITS_UNLIMITED || valueStr.length() - pointPos - 1 < maxFracDigits)) {
                         // If max int or max frac digits have not already been reached
                         // Concatenate current value with new digit
-                        display.append(nb);
+                        valueStr.append(nb);
                     }
 
-                    formatDisplay();
-                    updateDisplay();
+                    formatValue();
+                    textvDisplay.setText(valueStr.toString());
+                    resultIsDisplayed = false;
                 }
             });
         }
@@ -274,20 +285,28 @@ public class CalcDialog extends DialogFragment {
             operatorBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    okBtn.setEnabled(true);
+                    if (dismissError()) return;
 
-                    if (display.length() != 0) {
+                    if (valueStr.length() != 0) {
                         if (operation != OPERATION_NONE) {
-                            equal();
+                            calculate();
                         } else {
-                            removeGroupSeparators();
-                            resultValue = getDisplayValue();
+                            resultValue = getCurrentValue();
+                            if (!clearOnOperation) {
+                                valueStr = new StringBuilder();
+                                formatValue();
+                                resultIsDisplayed = false;
+                            }
                         }
                     }
-                    operation = op;
 
-                    display = new StringBuilder();
-                    if (clearOnOperation) updateDisplay();
+                    operation = op;
+                    if (clearOnOperation) {
+                        valueStr = new StringBuilder();
+                        formatValue();
+                        textvDisplay.setText(valueStr.toString());
+                        resultIsDisplayed = false;
+                    }
                 }
             });
         }
@@ -295,21 +314,27 @@ public class CalcDialog extends DialogFragment {
         // Decimal separator button
         final TextView decimalBtn = view.findViewById(R.id.button_calc_decimal);
         decimalBtn.setText(btnTexts[15]);
+        decimalBtn.setEnabled(maxFracDigits > 0);
         decimalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (display.indexOf(String.valueOf(decimalSep)) == -1) {
-                    okBtn.setEnabled(true);
+                dismissError();
 
+                if (resultIsDisplayed) {
+                    valueStr.setLength(0);
+                }
+
+                if (valueStr.indexOf(String.valueOf(decimalSep)) == -1) {
                     // Only insert a decimal point if there isn't one yet
-                    if (display.length() == 0) {
+                    if (valueStr.length() == 0) {
                         // Add 0 before decimal point .1 --> 0.1
-                        display.append("0");
+                        valueStr.append("0");
                     }
 
-                    display.append(decimalSep);
+                    valueStr.append(decimalSep);
 
-                    updateDisplay();
+                    textvDisplay.setText(valueStr.toString());
+                    resultIsDisplayed = false;
                 }
             }
         });
@@ -320,18 +345,25 @@ public class CalcDialog extends DialogFragment {
         signBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                okBtn.setEnabled(true);
+                if (dismissError()) return;
 
-                // Add or remove the negative sign depending or whether there is already one or not
-                String str = display.toString();
+                // Negate value
+                String str = valueStr.toString();
                 if (!str.isEmpty() && !str.equals("0") && !str.equals("0" + decimalSep)) {
-                    // Can't negate "0"
-                    if (display.charAt(0) != '-') {
-                        display.insert(0, '-');
+                    // If value is not equal to zero or empty
+                    if (valueStr.charAt(0) != '-') {
+                        valueStr.insert(0, '-');
                     } else {
-                        display.deleteCharAt(0);
+                        valueStr.deleteCharAt(0);
                     }
-                    updateDisplay();
+
+                    if (resultIsDisplayed) {
+                        //noinspection ConstantConditions
+                        resultValue = resultValue.negate();
+                    }
+
+                    textvDisplay.setText(valueStr.toString());
+                    resultIsDisplayed = false;
                 }
             }
         });
@@ -342,8 +374,8 @@ public class CalcDialog extends DialogFragment {
         equalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                okBtn.setEnabled(true);
-                equal();
+                if (dismissError()) return;
+                calculate();
             }
         });
 
@@ -352,8 +384,10 @@ public class CalcDialog extends DialogFragment {
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (dismissError()) return;
                 reset();
-                updateDisplay();
+                textvDisplay.setText(valueStr.toString());
+                resultIsDisplayed = false;
             }
         });
 
@@ -365,17 +399,24 @@ public class CalcDialog extends DialogFragment {
             }
         });
 
-        okBtn = view.findViewById(R.id.button_dialog_ok);
+        Button okBtn = view.findViewById(R.id.button_dialog_ok);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int error = (operation == OPERATION_NONE ? equal() : ERROR_NONE);
+                if (dismissError()) return;
+
+                calculate();
+
+                // If operation was not done, make OK button act as an equal btn
+                if (operation != OPERATION_NONE) return;
+
                 if (error == ERROR_NONE) {
-                    // If sign can't be change, check if sign is right
+                    // If sign can't be changed, check if sign is right
                     if (!signCanBeChanged && resultValue != null) {
                         int sign = resultValue.signum();
                         if (sign != 0 && sign != initialSign) {
-                            setError(sign == 1 ? ERROR_WRONG_SIGN_POS : ERROR_WRONG_SIGN_NEG);
+                            // Wrong sign
+                            setError(sign == 1 ? ERROR_WRONG_SIGN_NEG : ERROR_WRONG_SIGN_POS);
                             return;
                         }
                     }
@@ -436,31 +477,34 @@ public class CalcDialog extends DialogFragment {
     }
 
     /**
-     * Reset value and operation to none, erase display
+     * Reset value and operation to none
+     * Doesn't dismiss error and doesn't update display
      */
     private void reset() {
         operation = OPERATION_NONE;
-        result = new StringBuilder();
         resultValue = null;
-        display = result;
+        overwriteValue = true;
+
+        valueStr = new StringBuilder();
+        formatValue();
+
+        resultIsDisplayed = true;
     }
 
     /**
      * Calculate result of operation between current result and operand
-     * @return error that occurred or {@link #ERROR_NONE} if none
      */
-    private int calculate() {
-        if (operation == OPERATION_NONE || display.length() == 0) {
-            display = result;
-            if (display.length() == 0) {
-                resultValue = BigDecimal.ZERO;
-            } else {
-                resultValue = getDisplayValue();
-            }
+    private void calculate() {
+        if (resultIsDisplayed) {
+            return;
+        }
+
+        if (operation == OPERATION_NONE || valueStr.length() == 0) {
+            resultValue = getCurrentValue();
 
         } else {
             if (resultValue == null) resultValue = BigDecimal.ZERO;
-            BigDecimal operand = getDisplayValue();
+            BigDecimal operand = getCurrentValue();
 
             if (operation == OPERATION_ADD) {
                 //noinspection ConstantConditions
@@ -470,8 +514,9 @@ public class CalcDialog extends DialogFragment {
             } else if (operation == OPERATION_MULT) {
                 resultValue = resultValue.multiply(operand);
             } else if (operation == OPERATION_DIV) {
-                if (operand.equals(BigDecimal.ZERO)) {
-                    return ERROR_DIV_ZERO;
+                if (operand.compareTo(BigDecimal.ZERO) == 0) {
+                    setError(ERROR_DIV_ZERO);
+                    return;
                 } else {
                     resultValue = resultValue.divide(operand, maxFracDigits, roundingMode);
                 }
@@ -479,44 +524,45 @@ public class CalcDialog extends DialogFragment {
         }
 
         if (isValueOutOfBounds(resultValue)) {
-            return ERROR_OUT_OF_BOUNDS;
+            setError(ERROR_OUT_OF_BOUNDS);
+            return;
         }
 
         resultValue = resultValue.setScale(maxFracDigits, roundingMode);
         if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
 
-        // Format result to string
-        result = new StringBuilder(resultValue.toPlainString());
-        display = result;
-        formatDisplay();
+        // Display formatted result
+        valueStr = new StringBuilder(resultValue.toPlainString());
+        formatValue();
+        textvDisplay.setText(valueStr.toString());
+        resultIsDisplayed = true;
 
         operation = OPERATION_NONE;
-        return ERROR_NONE;
     }
 
     /**
-     * Calculate result of operation and display error if there is one
-     * @return error ID or ERROR_NONE if there is no error
-     */
-    private int equal() {
-        int error = calculate();
-        if (error == ERROR_NONE) {
-            updateDisplay();
-        } else {
-            setError(error);
-        }
-        return error;
-    }
-
-    /**
-     * Display error message and disable dialog's OK button, because there is technically no value
+     * Display error message and disable dialog's OK button, because there is no value
      * @param error ID of the error to show
      */
     private void setError(int error) {
-        textvValue.setText(errorMessages[error]);
-        okBtn.setEnabled(false);
+        this.error = error;
+        textvDisplay.setText(errorMessages[error]);
 
         reset();
+    }
+
+    /**
+     * Dismiss error from display
+     * @return true if an error was dismissed
+     */
+    private boolean dismissError() {
+        if (error != ERROR_NONE) {
+            error = ERROR_NONE;
+            textvDisplay.setText(valueStr.toString());
+            resultIsDisplayed = false;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -524,11 +570,15 @@ public class CalcDialog extends DialogFragment {
      * Note that separators will be removed from display
      * @return BigDecimal value of display
      */
-    private BigDecimal getDisplayValue() {
-        removeGroupSeparators();
-        int pointPos = display.indexOf(String.valueOf(decimalSep));
-        if (pointPos != -1) display.replace(pointPos, pointPos + 1, ".");
-        return new BigDecimal(display.toString());
+    private BigDecimal getCurrentValue() {
+        if (valueStr.length() == 0) {
+            return BigDecimal.ZERO;
+        } else {
+            removeGroupSeparators();
+            int pointPos = valueStr.indexOf(String.valueOf(decimalSep));
+            if (pointPos != -1) valueStr.replace(pointPos, pointPos + 1, ".");
+            return new BigDecimal(valueStr.toString());
+        }
     }
 
     /**
@@ -544,24 +594,30 @@ public class CalcDialog extends DialogFragment {
 
     /**
      * Add grouping separators and change decimal separator to custom one
-     * from the value returned by {@link BigDecimal#toPlainString()}.
+     * If value is empty, set it to 0 if necessary
      */
-    private void formatDisplay() {
+    private void formatValue() {
+        if (valueStr.length() == 0 && showZeroWhenNoValue) {
+            valueStr.append(zeroString);
+            overwriteValue = true;
+            return;
+        }
+
         // Replace "." by correct decimal separator
-        int pointPos = display.indexOf(".");
+        int pointPos = valueStr.indexOf(".");
         if (pointPos != -1) {
-            display.setCharAt(pointPos, decimalSep);
+            valueStr.setCharAt(pointPos, decimalSep);
         } else {
-            pointPos = display.indexOf(String.valueOf(decimalSep));
+            pointPos = valueStr.indexOf(String.valueOf(decimalSep));
         }
 
         // Add group separators if needed
         if (groupSize > 0) {
-            int start = (pointPos == -1 ? display.length() : pointPos) - groupSize;
+            int start = (pointPos == -1 ? valueStr.length() : pointPos) - groupSize;
             for (int i = start; i > 0; i--) {
                 if ((start - i) % groupSize == 0
-                        && (i != 1 || display.charAt(0) != '-')) {
-                    display.insert(i, groupSep);
+                        && (i != 1 || valueStr.charAt(0) != '-')) {
+                    valueStr.insert(i, groupSep);
                 }
             }
         }
@@ -574,19 +630,12 @@ public class CalcDialog extends DialogFragment {
      */
     private void removeGroupSeparators() {
         if (groupSize > 0) {
-            for (int i = display.length() - 1; i >= 0; i--) {
-                if (display.charAt(i) == groupSep) {
-                    display.deleteCharAt(i);
+            for (int i = valueStr.length() - 1; i >= 0; i--) {
+                if (valueStr.charAt(i) == groupSep) {
+                    valueStr.deleteCharAt(i);
                 }
             }
         }
-    }
-
-    /**
-     * Updates display TextView to show current value.
-     */
-    private void updateDisplay() {
-        textvValue.setText(display.length() == 0 && showZeroWhenNoValue ? zeroString : display.toString());
     }
 
     /**
@@ -649,7 +698,7 @@ public class CalcDialog extends DialogFragment {
 
     /**
      * Set calculator's rounding mode
-     * Default rounding mode is BigDecimal.ROUND_HALF_UP
+     * Default rounding mode is RoundingMode.HALF_UP
      * Ex: 5.5 = 6, 5.49 = 5, -5.5 = -6, 2.5 = 3
      * @param roundingMode one of {@link RoundingMode}, except {@link RoundingMode#UNNECESSARY}
      * @return the dialog
@@ -701,14 +750,14 @@ public class CalcDialog extends DialogFragment {
     }
 
     /**
-     * Set character for formatting number
-     * Use {@link #FORMAT_CHAR_DEFAULT} to use device locale's default character
-     * By default, formatting will use locale's characters
+     * Set symbols for formatting number
+     * Use {@link #FORMAT_CHAR_DEFAULT} to use device locale's default symbol
+     * By default, formatting will use locale's symbols
      * @param decimalSep decimal separator
      * @param groupSep grouping separator
      * @return the dialog
      */
-    public CalcDialog setFormatChars(char decimalSep, char groupSep) {
+    public CalcDialog setFormatSymbols(char decimalSep, char groupSep) {
         if (decimalSep != FORMAT_CHAR_DEFAULT && decimalSep == groupSep) {
             throw new IllegalArgumentException("Decimal separator cannot be the same as grouping separator.");
         }
@@ -739,11 +788,6 @@ public class CalcDialog extends DialogFragment {
      */
     public CalcDialog setShowZeroWhenNoValue(boolean show) {
         showZeroWhenNoValue = show;
-
-        if (!showZeroWhenNoValue) {
-            result = new StringBuilder();
-            display = result;
-        }
 
         return this;
     }
