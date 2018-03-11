@@ -1,3 +1,7 @@
+### v1.0.1
+- Fixed issues with custom format characters
+- Added documentation, optimized imports, added licenses on files, etc
+
 ## v1.0
 - Initial release
 - Customizable styles for nearly all views
