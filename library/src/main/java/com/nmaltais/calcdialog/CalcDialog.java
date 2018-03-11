@@ -1,7 +1,29 @@
+/*
+ * Copyright (c) 2018 Nicolas Maltais
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package com.nmaltais.calcdialog;
 
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
@@ -10,7 +32,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.app.DialogFragment;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -20,6 +41,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
@@ -47,11 +69,23 @@ public class CalcDialog extends DialogFragment {
 
     private @Nullable BigDecimal maxValue;
 
+    /**
+     * Parameter value to set for {@link #setMaxDigits(int, int)}
+     * to have to limit on the number of digits for a part of the number (int or frac).
+     */
     public static final int MAX_DIGITS_UNLIMITED = -1;
+
+    /**
+     * Parameter to set for {@link #setFormatChars(char, char)}
+     * to use default locale's format character.
+     * This is the default value for both decimal and group separators
+     */
+    public static final char FORMAT_CHAR_DEFAULT = 0;
+
     private int maxIntDigits;
     private int maxFracDigits;
 
-    private int roundingMode;
+    private RoundingMode roundingMode;
 
     private boolean stripTrailingZeroes;
 
@@ -61,12 +95,10 @@ public class CalcDialog extends DialogFragment {
     private boolean clearOnOperation;
     private boolean showZeroWhenNoValue;
 
-    public static final char FORMAT_CHAR_DEFAULT = 0;
-    public static final char FORMAT_CHAR_NONE = 1;
     private char decimalSep;
     private char groupSep;
 
-    private int groupingSize;
+    private int groupSize;
 
     private StringBuilder result;
     private StringBuilder display;
@@ -82,17 +114,20 @@ public class CalcDialog extends DialogFragment {
 
     private String zeroString;
 
+    /**
+     * Create a new calculator dialog with default settings
+     */
     public CalcDialog() {
         // Set default settings
         maxValue = new BigDecimal("1E10");
         maxIntDigits = 10;
         maxFracDigits = 8;
-        roundingMode = BigDecimal.ROUND_HALF_UP;
+        roundingMode = RoundingMode.HALF_UP;
         stripTrailingZeroes = true;
 
         decimalSep = FORMAT_CHAR_DEFAULT;
         groupSep = FORMAT_CHAR_DEFAULT;
-        groupingSize = 3;
+        groupSize = 3;
 
         clearOnOperation = false;
         showZeroWhenNoValue = true;
@@ -117,12 +152,21 @@ public class CalcDialog extends DialogFragment {
             if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
             result = new StringBuilder(resultValue.toPlainString());
             display = result;
-            addGroupSeparators();
+            formatDisplay();
         }
 
+        // Get string to display for zero
         BigDecimal zero = BigDecimal.ZERO;
         if (!stripTrailingZeroes) zero = zero.setScale(maxFracDigits, roundingMode);
+
         zeroString = zero.toPlainString();
+        int pointPos = zeroString.indexOf('.');
+        if (pointPos != -1 && decimalSep != '.') {
+            // Replace "." with correct decimal separator
+            StringBuilder sb = new StringBuilder(zeroString);
+            sb.setCharAt(pointPos, decimalSep);
+            zeroString = sb.toString();
+        }
 
         // Get strings
         TypedArray ta = context.obtainStyledAttributes(R.styleable.CalcDialog);
@@ -135,23 +179,8 @@ public class CalcDialog extends DialogFragment {
         ta.recycle();
     }
 
-    /**
-     * Get device's default locale
-     * @param context any context
-     * @return the default locale
-     */
-    public static Locale getDefaultLocale(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-            return context.getResources().getConfiguration().getLocales().get(0);
-        } else{
-            //noinspection deprecation
-            return context.getResources().getConfiguration().locale;
-        }
-    }
-
-    @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle state) {
+    public @NonNull Dialog onCreateDialog(Bundle state) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View view = inflater.inflate(R.layout.dialog_calc, null);
 
@@ -179,7 +208,7 @@ public class CalcDialog extends DialogFragment {
                         }
                     }
 
-                    addGroupSeparators();
+                    formatDisplay();
                 }
 
                 updateDisplay();
@@ -218,17 +247,14 @@ public class CalcDialog extends DialogFragment {
 
                     // Check if max digits has been exceeded
                     int pointPos = display.indexOf(String.valueOf(decimalSep));
-                    if (pointPos == -1 && maxIntDigits != MAX_DIGITS_UNLIMITED && display.length() >= maxIntDigits ||
-                            pointPos != -1 && maxFracDigits != MAX_DIGITS_UNLIMITED && display.length() - pointPos - 1 >= maxFracDigits) {
-                        addGroupSeparators();
-                        return;
+                    if ((pointPos != -1 || maxIntDigits == MAX_DIGITS_UNLIMITED || display.length() < maxIntDigits) &&
+                            (pointPos == -1 || maxFracDigits == MAX_DIGITS_UNLIMITED || display.length() - pointPos - 1 < maxFracDigits)) {
+                        // If max int or max frac digits have not already been reached
+                        // Concatenate current value with new digit
+                        display.append(nb);
                     }
 
-                    // Concatenate current value with new digit
-                    display.append(nb);
-
-                    addGroupSeparators();
-
+                    formatDisplay();
                     updateDisplay();
                 }
             });
@@ -255,7 +281,7 @@ public class CalcDialog extends DialogFragment {
                             equal();
                         } else {
                             removeGroupSeparators();
-                            resultValue = new BigDecimal(display.toString());
+                            resultValue = getDisplayValue();
                         }
                     }
                     operation = op;
@@ -378,6 +404,7 @@ public class CalcDialog extends DialogFragment {
         // Set up dialog
         final Dialog dialog = new Dialog(context);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @SuppressWarnings("ConstantConditions")
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 // Get maximum dialog dimensions
@@ -408,6 +435,9 @@ public class CalcDialog extends DialogFragment {
         reset();
     }
 
+    /**
+     * Reset value and operation to none, erase display
+     */
     private void reset() {
         operation = OPERATION_NONE;
         result = new StringBuilder();
@@ -417,24 +447,23 @@ public class CalcDialog extends DialogFragment {
 
     /**
      * Calculate result of operation between current result and operand
-     * @return error that occurred or ERROR_NONE if none
+     * @return error that occurred or {@link #ERROR_NONE} if none
      */
     private int calculate() {
-        removeGroupSeparators();
-
         if (operation == OPERATION_NONE || display.length() == 0) {
             display = result;
             if (display.length() == 0) {
                 resultValue = BigDecimal.ZERO;
             } else {
-                resultValue = new BigDecimal(display.toString());
+                resultValue = getDisplayValue();
             }
 
         } else {
             if (resultValue == null) resultValue = BigDecimal.ZERO;
-            BigDecimal operand = new BigDecimal(display.toString());
+            BigDecimal operand = getDisplayValue();
 
             if (operation == OPERATION_ADD) {
+                //noinspection ConstantConditions
                 resultValue = resultValue.add(operand);
             } else if (operation == OPERATION_SUB) {
                 resultValue = resultValue.subtract(operand);
@@ -455,10 +484,11 @@ public class CalcDialog extends DialogFragment {
 
         resultValue = resultValue.setScale(maxFracDigits, roundingMode);
         if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
+
+        // Format result to string
         result = new StringBuilder(resultValue.toPlainString());
         display = result;
-
-        addGroupSeparators();
+        formatDisplay();
 
         operation = OPERATION_NONE;
         return ERROR_NONE;
@@ -478,6 +508,10 @@ public class CalcDialog extends DialogFragment {
         return error;
     }
 
+    /**
+     * Display error message and disable dialog's OK button, because there is technically no value
+     * @param error ID of the error to show
+     */
     private void setError(int error) {
         textvValue.setText(errorMessages[error]);
         okBtn.setEnabled(false);
@@ -485,17 +519,47 @@ public class CalcDialog extends DialogFragment {
         reset();
     }
 
+    /**
+     * Get a BigDecimal corresponding to the displayed value
+     * Note that separators will be removed from display
+     * @return BigDecimal value of display
+     */
+    private BigDecimal getDisplayValue() {
+        removeGroupSeparators();
+        int pointPos = display.indexOf(String.valueOf(decimalSep));
+        if (pointPos != -1) display.replace(pointPos, pointPos + 1, ".");
+        return new BigDecimal(display.toString());
+    }
+
+    /**
+     * Checks if a BigDecimal exceeds maximum value
+     * @param value value to check for
+     * @return true if value is greater than maximum value
+     *         maximum value is applied equally for positive and negative value
+     */
     private boolean isValueOutOfBounds(@NonNull BigDecimal value) {
         return maxValue != null && (value.compareTo(maxValue) == 1 ||
                 value.compareTo(maxValue.negate()) == -1);
     }
 
-    private void addGroupSeparators() {
-        if (groupingSize > 0 && groupSep != FORMAT_CHAR_NONE) {
-            int pointPos = display.indexOf(String.valueOf(decimalSep));
-            int start = (pointPos == -1 ? display.length() : pointPos) - groupingSize;
+    /**
+     * Add grouping separators and change decimal separator to custom one
+     * from the value returned by {@link BigDecimal#toPlainString()}.
+     */
+    private void formatDisplay() {
+        // Replace "." by correct decimal separator
+        int pointPos = display.indexOf(".");
+        if (pointPos != -1) {
+            display.setCharAt(pointPos, decimalSep);
+        } else {
+            pointPos = display.indexOf(String.valueOf(decimalSep));
+        }
+
+        // Add group separators if needed
+        if (groupSize > 0) {
+            int start = (pointPos == -1 ? display.length() : pointPos) - groupSize;
             for (int i = start; i > 0; i--) {
-                if ((start - i) % groupingSize == 0
+                if ((start - i) % groupSize == 0
                         && (i != 1 || display.charAt(0) != '-')) {
                     display.insert(i, groupSep);
                 }
@@ -503,8 +567,13 @@ public class CalcDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Remove all grouping separators from display
+     * 10,000,000 becomes 10000000
+     * Used to format display to BigDecimal
+     */
     private void removeGroupSeparators() {
-        if (groupSep != FORMAT_CHAR_NONE) {
+        if (groupSize > 0) {
             for (int i = display.length() - 1; i >= 0; i--) {
                 if (display.charAt(i) == groupSep) {
                     display.deleteCharAt(i);
@@ -513,16 +582,9 @@ public class CalcDialog extends DialogFragment {
         }
     }
 
-    private static BigDecimal stripTrailingZeroes(@NonNull BigDecimal from) {
-        // Fixes bug: http://hg.openjdk.java.net/jdk8/jdk8/jdk/rev/2ee772cda1d6
-        // BigDecimal.stripTrailingZeroes() doesn't work for zero.
-        if (from.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO;
-        } else {
-            return from.stripTrailingZeros();
-        }
-    }
-
+    /**
+     * Updates display TextView to show current value.
+     */
     private void updateDisplay() {
         textvValue.setText(display.length() == 0 && showZeroWhenNoValue ? zeroString : display.toString());
     }
@@ -532,6 +594,7 @@ public class CalcDialog extends DialogFragment {
      * By default, initial value is null. That means value is 0 but if
      * {@link #setShowZeroWhenNoValue(boolean)} is set to true, no value will be shown.
      * @param value Initial value to display. Setting null will result in 0
+     * @return the dialog
      */
     public CalcDialog setValue(@Nullable BigDecimal value) {
         if (value != null && maxValue != null && isValueOutOfBounds(value)) {
@@ -547,6 +610,7 @@ public class CalcDialog extends DialogFragment {
      * Maximum value is effective both for positive and negative values.
      * Default maximum is 10,000,000,000 (1e+10)
      * @param maxValue Maximum value, use null for no maximum
+     * @return the dialog
      */
     public CalcDialog setMaxValue(@Nullable BigDecimal maxValue) {
         if (maxValue != null && maxValue.compareTo(BigDecimal.ZERO) == -1) {
@@ -569,6 +633,7 @@ public class CalcDialog extends DialogFragment {
      * @param intPart Max digits for the integer part
      * @param fracPart Max digits for the fractional part.
      *                 A value of 0 means the value can't have a fractional part
+     * @return the dialog
      */
     public CalcDialog setMaxDigits(int intPart, int fracPart) {
         if (intPart != MAX_DIGITS_UNLIMITED && intPart < 1 ||
@@ -586,9 +651,14 @@ public class CalcDialog extends DialogFragment {
      * Set calculator's rounding mode
      * Default rounding mode is BigDecimal.ROUND_HALF_UP
      * Ex: 5.5 = 6, 5.49 = 5, -5.5 = -6, 2.5 = 3
-     * @param roundingMode one of BigDecimal.ROUND_*
+     * @param roundingMode one of {@link RoundingMode}, except {@link RoundingMode#UNNECESSARY}
+     * @return the dialog
      */
-    public CalcDialog setRoundingMode(int roundingMode) {
+    public CalcDialog setRoundingMode(RoundingMode roundingMode) {
+        if (roundingMode.equals(RoundingMode.UNNECESSARY)) {
+            throw new IllegalArgumentException("Cannot use RoundingMode.UNNECESSARY as a rounding mode.");
+        }
+
         this.roundingMode = roundingMode;
 
         return this;
@@ -600,6 +670,7 @@ public class CalcDialog extends DialogFragment {
      * Strip,  12.340000 = 12.34
      * No strip, 12.340000 = 12.340000
      * @param strip whether to strip them or not
+     * @return the dialog
      */
     public CalcDialog setStripTrailingZeroes(boolean strip) {
         stripTrailingZeroes = strip;
@@ -615,6 +686,7 @@ public class CalcDialog extends DialogFragment {
      *                     and an error will be shown
      * @param sign if canBeChanged is true, sign to force, -1 or 1
      *             otherwise use any value
+     * @return the dialog
      */
     public CalcDialog setSignCanBeChanged(boolean canBeChanged, int sign) {
         signCanBeChanged = canBeChanged;
@@ -633,12 +705,11 @@ public class CalcDialog extends DialogFragment {
      * Use {@link #FORMAT_CHAR_DEFAULT} to use device locale's default character
      * By default, formatting will use locale's characters
      * @param decimalSep decimal separator
-     * @param groupSep grouping separator, use {@link #FORMAT_CHAR_NONE} for no grouping
+     * @param groupSep grouping separator
+     * @return the dialog
      */
     public CalcDialog setFormatChars(char decimalSep, char groupSep) {
-        if (decimalSep == FORMAT_CHAR_NONE) {
-            throw new IllegalArgumentException("There cannot be no decimal separator character.");
-        } else if (decimalSep != FORMAT_CHAR_DEFAULT && decimalSep == groupSep) {
+        if (decimalSep != FORMAT_CHAR_DEFAULT && decimalSep == groupSep) {
             throw new IllegalArgumentException("Decimal separator cannot be the same as grouping separator.");
         }
 
@@ -653,6 +724,7 @@ public class CalcDialog extends DialogFragment {
      * If not, display will be cleared on next button press
      * Default is not clearing
      * @param clear whether to clear it or not
+     * @return the dialog
      */
     public CalcDialog setClearDisplayOnOperation(boolean clear) {
         clearOnOperation = clear;
@@ -663,6 +735,7 @@ public class CalcDialog extends DialogFragment {
     /**
      * Set whether zero should be displayed when no value has been entered or just display nothing
      * @param show whether to show it or not
+     * @return the dialog
      */
     public CalcDialog setShowZeroWhenNoValue(boolean show) {
         showZeroWhenNoValue = show;
@@ -680,13 +753,14 @@ public class CalcDialog extends DialogFragment {
      * 3 does 000,000,000
      * 4 does 0,0000,0000
      * Default size is 3
-     * @param groupingSize grouping size, use 0 for no grouping
+     * @param size grouping size, use 0 for no grouping
+     * @return the dialog
      */
-    public CalcDialog setGroupingSize(int groupingSize) {
-        if (groupingSize < 0) {
-            throw new IllegalArgumentException("Grouping size must be positive");
+    public CalcDialog setGroupSize(int size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("Group size must be positive");
         }
-        this.groupingSize = groupingSize;
+        groupSize = size;
 
         return this;
     }
@@ -705,6 +779,7 @@ public class CalcDialog extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        // Wrap calculator dialog's theme to context
         TypedArray ta = context.obtainStyledAttributes(new int[]{R.attr.calcDialogStyle});
         int style = ta.getResourceId(0, R.style.CalcDialogStyle);
         ta.recycle();
@@ -720,10 +795,45 @@ public class CalcDialog extends DialogFragment {
 
     public interface CalcDialogCallback {
         /**
-         * Called when the dialog's positive button is clicked
-         * @param value value entered
+         * Called when the dialog's OK button is clicked
+         * @param value value entered. If calculator didn't strip trailing zeroes, you can call
+         *              {@link #stripTrailingZeroes(BigDecimal)} to strip them. To format the value
+         *              to a String, use {@link BigDecimal#toPlainString()}.
+         *              To format the value to a currency String you could do:
+         *              {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}
          */
         void onValueEntered(BigDecimal value);
+    }
+
+
+    //// UTILITY METHODS ////
+    /**
+     * Get device's default locale
+     * @param context any context
+     * @return the default locale
+     */
+    public static Locale getDefaultLocale(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else{
+            //noinspection deprecation
+            return context.getResources().getConfiguration().locale;
+        }
+    }
+
+    /**
+     * Strip trailing zeroes from a BigDecimal. Essentially calls {@link BigDecimal#stripTrailingZeros()}
+     * but fixes bug (http://hg.openjdk.java.net/jdk8/jdk8/jdk/rev/2ee772cda1d6) where zeroes
+     * aren't stripped if value is zero.
+     * @param from BigDecimal to strip trailing zeroes from
+     * @return BigDecimal with stripped trailing zeroes
+     */
+    public static BigDecimal stripTrailingZeroes(@NonNull BigDecimal from) {
+        if (from.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        } else {
+            return from.stripTrailingZeros();
+        }
     }
 
 }
