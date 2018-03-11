@@ -1,7 +1,7 @@
 A fully customizable calculator dialog for Android. Can be used to replace the numeric keyboard and useful to enter monetary amounts.
 
 ### Gradle dependency
-`compile 'com.maltaisn:calcdialog:1.0.0'`
+`compile 'com.maltaisn:calcdialog:1.0.1'`
 
 ## Usage
 Coming soon
