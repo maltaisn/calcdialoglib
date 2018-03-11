@@ -1,3 +1,4 @@
+# Calculator dialog
 A fully customizable calculator dialog for Android. Can be used to replace the numeric keyboard and useful to enter monetary amounts.
 
 ### Gradle dependency
