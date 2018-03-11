@@ -3,8 +3,10 @@ A fully customizable calculator dialog for Android. Can be used to replace the n
 ### Gradle dependency
 `compile 'com.maltaisn:calcdialog:1.0.1'`
 
-## Usage
-Coming soon
+## Tutorial
+- **Get started on the wiki page [Using the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Using-the-dialog).**
+- Customize the dialog's behavior by [changing its settings](https://github.com/maltaisn/calcdialoglib/wiki/Calculator-settings).
+- Learn how to [style the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Styling-the-calculator) with the attributes
 
 ## Screenshots
 Coming soon
