@@ -47,7 +47,7 @@
             android:layout_weight="1"
             tools:text="-1,211.52"/>
 
-        <com.nmaltais.calcdialog.EraseButton
+        <com.nmaltais.calcdialog.CalcEraseButton
             android:id="@+id/button_calc_erase"
             style="?attr/calcEraseBtnStyle"
             android:layout_width="wrap_content"
@@ -259,6 +259,18 @@
         app:layout_constraintStart_toStartOf="@+id/guideline_end"
         app:layout_constraintTop_toBottomOf="@+id/button_calc_add"
         tools:text="="/>
+
+    <TextView
+        android:id="@+id/button_calc_answer"
+        style="?attr/calcAnswerBtnStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/calc_answer"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_equal"
+        app:layout_constraintEnd_toEndOf="@+id/button_calc_equal"
+        app:layout_constraintStart_toStartOf="@+id/button_calc_equal"
+        app:layout_constraintTop_toTopOf="@+id/button_calc_equal"/>
 
     <View
         android:id="@+id/view_sep_bottom"

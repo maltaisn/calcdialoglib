@@ -4,6 +4,8 @@
     <string name="calc_dialog_cancel">Cancel</string>
     <string name="calc_dialog_ok">OK</string>
 
+    <string name="calc_answer">Ans</string>
+
     <string-array name="calc_dialog_errors">
         <item>Division by zero</item>
         <item>Out of bounds</item>

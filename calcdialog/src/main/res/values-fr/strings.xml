@@ -5,6 +5,8 @@
     <string name="calc_dialog_cancel">Annuler</string>
     <string name="calc_dialog_ok">OK</string>
 
+    <string name="calc_answer">Rép</string>
+
     <string-array name="calc_dialog_errors">
         <item>Division par zéro</item>
         <item>Résultat hors limite</item>

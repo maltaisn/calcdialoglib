@@ -76,15 +76,25 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_open"/>
 
     <CheckBox
-        android:id="@+id/check_sign"
+        android:id="@+id/check_answer_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:checked="false"
+        android:text="@string/option_answer_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textv_calc_settings"/>
+
+    <CheckBox
+        android:id="@+id/check_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:checked="true"
         android:text="@string/option_sign"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textv_calc_settings"/>
+        app:layout_constraintTop_toBottomOf="@+id/check_answer_btn"/>
 
     <CheckBox
         android:id="@+id/check_clear_operation"

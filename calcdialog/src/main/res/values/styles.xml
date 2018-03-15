@@ -14,6 +14,7 @@
         <item name="calcValueStyle">@style/CalcValueStyle</item>
         <item name="calcNumberBtnStyle">@style/CalcNumberBtnStyle</item>
         <item name="calcOperationBtnStyle">@style/CalcOperationBtnStyle</item>
+        <item name="calcAnswerBtnStyle">@style/CalcAnswerBtnStyle</item>
         <item name="calcEraseBtnStyle">@style/CalcEraseBtnStyle</item>
         <item name="calcDialogSepColor">@color/grey_500</item>
         <item name="calcDialogButtonStyle">@style/CalcDialogButtonStyle</item>
@@ -48,6 +49,15 @@
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
+    </style>
+
+    <public name="CalcAnswerBtnStyle" type="style"/>
+    <style name="CalcAnswerBtnStyle">
+        <item name="android:background">@color/grey_100</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <public name="CalcEraseBtnStyle" type="style"/>

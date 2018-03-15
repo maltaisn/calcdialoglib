@@ -15,15 +15,17 @@
         <attr name="calcValueStyle" format="reference"/>
         <attr name="calcNumberBtnStyle" format="reference"/>
         <attr name="calcOperationBtnStyle" format="reference"/>
+        <attr name="calcAnswerBtnStyle" format="reference"/>
         <attr name="calcEraseBtnStyle" format="reference"/>
         <attr name="calcDialogSepColor" format="color|reference"/>
         <attr name="calcDialogButtonStyle" format="reference"/>
         <attr name="calcErrors" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="EraseButton">
-        <attr name="eraseBtnHoldDelay" format="integer"/>
-        <attr name="eraseBtnHoldSpeed" format="integer"/>
+    <declare-styleable name="CalcEraseButton">
+        <attr name="calcEraseBtnHoldDelay" format="integer"/>
+        <attr name="calcEraseBtnHoldSpeed" format="integer"/>
+        <attr name="calcEraseAllOnHold" format="boolean"/>
     </declare-styleable>
 
 </resources>

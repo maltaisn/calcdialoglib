@@ -2,7 +2,7 @@
 A fully customizable calculator dialog for Android. Can be used to replace the numeric keyboard and useful to enter monetary amounts.
 
 ### Gradle dependency
-`compile 'com.maltaisn:calcdialog:1.0.2'`
+`compile 'com.maltaisn:calcdialog:1.1'`
 
 ## Tutorial
 - **Get started on the wiki page [Using the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Using-the-dialog).**
@@ -11,6 +11,7 @@ A fully customizable calculator dialog for Android. Can be used to replace the n
 
 ## Screenshots
 <img src="screenshots/demo.gif" alt="Demo" width="400px"/> <img src="screenshots/errors.gif" alt="Errors" width="400px"/>
+(Screenshots date back to version 1.0)
 
 ## Changelog
 View [changelog](https://github.com/maltaisn/calcdialoglib/blob/master/CHANGELOG.md)

@@ -1,3 +1,12 @@
+## v1.1
+- Added option to show ANS button to reuse past answer
+- Improved erase button view
+    - New attribute to erase all when held
+    - Prefixed attributes with "calc" to prevent mixing them
+    - Added haptic feedback when held
+
+- Fixed minor bug with decimal point button
+
 ### v1.0.2
 - Fixed wrong design: result can't be edited now
 - If maximum fraction digits is 0, decimal point button will be disabled

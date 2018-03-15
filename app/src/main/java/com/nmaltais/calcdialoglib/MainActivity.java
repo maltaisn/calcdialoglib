@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         signCheck = findViewById(R.id.check_sign);
         if (value == null) signCheck.setEnabled(false);
 
+        final CheckBox showAnswerCheck = findViewById(R.id.check_answer_btn);
         final CheckBox clearOnOpCheck = findViewById(R.id.check_clear_operation);
         final CheckBox showZeroCheck = findViewById(R.id.check_show_zero);
         final CheckBox stripZeroCheck = findViewById(R.id.check_strip_zeroes);
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
                 // Set settings and value
                 calcDialog.setValue(value)
+                        .setShowAnswerButton(showAnswerCheck.isChecked())
                         .setSignCanBeChanged(signCanBeChanged, signCanBeChanged ? 0 : value.signum())
                         .setClearDisplayOnOperation(clearOnOpCheck.isChecked())
                         .setShowZeroWhenNoValue(showZeroCheck.isChecked())

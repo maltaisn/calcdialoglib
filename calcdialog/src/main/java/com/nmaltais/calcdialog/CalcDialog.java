@@ -22,6 +22,7 @@
 package com.nmaltais.calcdialog;
 
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -49,6 +50,7 @@ import java.util.Locale;
 /**
  * Dialog with calculator for entering and calculating a number
  */
+@SuppressWarnings("unused")
 public class CalcDialog extends DialogFragment {
 
     private static final String TAG = CalcDialog.class.getSimpleName();
@@ -75,13 +77,6 @@ public class CalcDialog extends DialogFragment {
      */
     public static final int MAX_DIGITS_UNLIMITED = -1;
 
-    /**
-     * Parameter to set for {@link #setFormatSymbols(char, char)}
-     * to use default locale's format symbol.
-     * This is the default value for both decimal and group separators
-     */
-    public static final char FORMAT_CHAR_DEFAULT = 0;
-
     private int maxIntDigits;
     private int maxFracDigits;
 
@@ -95,6 +90,15 @@ public class CalcDialog extends DialogFragment {
     private boolean clearOnOperation;
     private boolean showZeroWhenNoValue;
 
+    private boolean showAnswerBtn;
+
+    /**
+     * Parameter to set for {@link #setFormatSymbols(char, char)}
+     * to use default locale's format symbol.
+     * This is the default value for both decimal and group separators
+     */
+    public static final char FORMAT_CHAR_DEFAULT = 0;
+
     private char decimalSep;
     private char groupSep;
 
@@ -107,7 +111,11 @@ public class CalcDialog extends DialogFragment {
     private boolean resultIsDisplayed;
     private boolean overwriteValue;
 
+    private @Nullable BigDecimal answerValue;
+    private boolean currentIsAnswer;
+
     private TextView textvDisplay;
+    private TextView btnAnswer;
 
     private CharSequence[] btnTexts;
     private CharSequence[] errorMessages;
@@ -132,6 +140,10 @@ public class CalcDialog extends DialogFragment {
 
         clearOnOperation = false;
         showZeroWhenNoValue = true;
+
+        showAnswerBtn = false;
+        answerValue = null;
+        currentIsAnswer = false;
 
         operation = OPERATION_NONE;
         error = ERROR_NONE;
@@ -165,7 +177,10 @@ public class CalcDialog extends DialogFragment {
         if (resultValue != null) {
             resultValue = resultValue.setScale(maxFracDigits, roundingMode);
             if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
+            answerValue = resultValue;
+
             valueStr = new StringBuilder(resultValue.toPlainString());
+
         } else {
             valueStr = new StringBuilder();
         }
@@ -185,6 +200,7 @@ public class CalcDialog extends DialogFragment {
     @Override
     public @NonNull Dialog onCreateDialog(Bundle state) {
         LayoutInflater inflater = LayoutInflater.from(context);
+        @SuppressLint("InflateParams")
         final View view = inflater.inflate(R.layout.dialog_calc, null);
 
         // Value display
@@ -193,11 +209,13 @@ public class CalcDialog extends DialogFragment {
         resultIsDisplayed = true;
 
         // Erase button
-        EraseButton eraseBtn = view.findViewById(R.id.button_calc_erase);
-        eraseBtn.setOnEraseListener(new EraseButton.EraseListener() {
+        CalcEraseButton eraseBtn = view.findViewById(R.id.button_calc_erase);
+        eraseBtn.setOnEraseListener(new CalcEraseButton.EraseListener() {
             @Override
             public void onErase() {
                 if (dismissError()) return;
+
+                hideAnswerBtn();
 
                 if (valueStr.length() > 0) {
                     if (resultIsDisplayed || overwriteValue) {
@@ -223,6 +241,11 @@ public class CalcDialog extends DialogFragment {
                     resultIsDisplayed = false;
                 }
             }
+
+            @Override
+            public void onEraseAll() {
+                clear();
+            }
         });
 
         // Digits button: 0-9
@@ -247,6 +270,8 @@ public class CalcDialog extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     dismissError();
+
+                    hideAnswerBtn();
 
                     if (resultIsDisplayed || overwriteValue) {
                         valueStr.setLength(0);
@@ -287,7 +312,7 @@ public class CalcDialog extends DialogFragment {
                 public void onClick(View v) {
                     if (dismissError()) return;
 
-                    if (valueStr.length() != 0) {
+                    if (valueStr.length() != 0 || currentIsAnswer) {
                         if (operation != OPERATION_NONE) {
                             calculate();
                         } else {
@@ -307,6 +332,13 @@ public class CalcDialog extends DialogFragment {
                         textvDisplay.setText(valueStr.toString());
                         resultIsDisplayed = false;
                     }
+
+                    // Show answer button if needed
+                    if (showAnswerBtn && answerValue != null) {
+                        btnAnswer.setVisibility(View.VISIBLE);
+                    } else {
+                        hideAnswerBtn();
+                    }
                 }
             });
         }
@@ -320,8 +352,11 @@ public class CalcDialog extends DialogFragment {
             public void onClick(View v) {
                 dismissError();
 
-                if (resultIsDisplayed) {
+                hideAnswerBtn();
+
+                if (resultIsDisplayed || overwriteValue) {
                     valueStr.setLength(0);
+                    overwriteValue = false;
                 }
 
                 if (valueStr.indexOf(String.valueOf(decimalSep)) == -1) {
@@ -360,6 +395,8 @@ public class CalcDialog extends DialogFragment {
                     if (resultIsDisplayed) {
                         //noinspection ConstantConditions
                         resultValue = resultValue.negate();
+                        //noinspection ConstantConditions
+                        answerValue = answerValue.negate();
                     }
 
                     textvDisplay.setText(valueStr.toString());
@@ -376,6 +413,22 @@ public class CalcDialog extends DialogFragment {
             public void onClick(View v) {
                 if (dismissError()) return;
                 calculate();
+
+                answerValue = resultValue;
+            }
+        });
+
+        // Answer button
+        btnAnswer = view.findViewById(R.id.button_calc_answer);
+        btnAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnAnswer.setVisibility(View.GONE);
+
+                textvDisplay.setText(R.string.calc_answer);
+
+                currentIsAnswer = true;
+                resultIsDisplayed = false;
             }
         });
 
@@ -384,10 +437,7 @@ public class CalcDialog extends DialogFragment {
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dismissError()) return;
-                reset();
-                textvDisplay.setText(valueStr.toString());
-                resultIsDisplayed = false;
+                clear();
             }
         });
 
@@ -485,6 +535,9 @@ public class CalcDialog extends DialogFragment {
         resultValue = null;
         overwriteValue = true;
 
+        answerValue = null;
+        hideAnswerBtn();
+
         valueStr = new StringBuilder();
         formatValue();
 
@@ -566,13 +619,31 @@ public class CalcDialog extends DialogFragment {
     }
 
     /**
+     * Reset, dismiss error, clear the display
+     */
+    private void clear() {
+        if (dismissError()) return;
+
+        hideAnswerBtn();
+
+        reset();
+
+        textvDisplay.setText(valueStr.toString());
+        resultIsDisplayed = false;
+    }
+
+    /**
      * Get a BigDecimal corresponding to the displayed value
      * Note that separators will be removed from display
      * @return BigDecimal value of display
      */
     private BigDecimal getCurrentValue() {
-        if (valueStr.length() == 0) {
+        if (currentIsAnswer) {
+            return answerValue;
+
+        } else if (valueStr.length() == 0) {
             return BigDecimal.ZERO;
+
         } else {
             removeGroupSeparators();
             int pointPos = valueStr.indexOf(String.valueOf(decimalSep));
@@ -635,6 +706,13 @@ public class CalcDialog extends DialogFragment {
                     valueStr.deleteCharAt(i);
                 }
             }
+        }
+    }
+
+    private void hideAnswerBtn() {
+        if (showAnswerBtn) {
+            btnAnswer.setVisibility(View.GONE);
+            currentIsAnswer = false;
         }
     }
 
@@ -805,6 +883,19 @@ public class CalcDialog extends DialogFragment {
             throw new IllegalArgumentException("Group size must be positive");
         }
         groupSize = size;
+
+        return this;
+    }
+
+    /**
+     * Set whether to show the answer button when an operation button is clicked or not
+     * This button allows the user to reuse previous answer.
+     * By default, the answer button is not shown.
+     * @param show whether to show it or not
+     * @return the dialog
+     */
+    public CalcDialog setShowAnswerButton(boolean show) {
+        showAnswerBtn = show;
 
         return this;
     }
