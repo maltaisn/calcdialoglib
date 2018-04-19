@@ -1,3 +1,7 @@
+## v1.1.1
+- Forced LTR layout on the dialog
+
+
 ## v1.1
 - Added option to show ANS button to reuse past answer
 - Improved erase button view

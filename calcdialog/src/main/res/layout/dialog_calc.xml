@@ -27,6 +27,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/calcBackgroundColor"
+    android:layoutDirection="ltr"
     tools:theme="@style/CalcDialogStyle">
 
     <LinearLayout
@@ -285,7 +286,7 @@
 
     <Button
         android:id="@+id/button_dialog_clear"
-        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        style="@style/CalcDialogButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -298,7 +299,7 @@
 
     <Button
         android:id="@+id/button_dialog_cancel"
-        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        style="@style/CalcDialogButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -312,7 +313,7 @@
 
     <Button
         android:id="@+id/button_dialog_ok"
-        style="@style/Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        style="@style/CalcDialogButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
