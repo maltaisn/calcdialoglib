@@ -1,8 +1,11 @@
+## v1.1.2
+- Fixed sign can be changed not being the default behavior
+- Fixed display not being saved on configuration change
+
 ## v1.1.1
 - Forced LTR layout on the dialog
 
-
-## v1.1
+## v1.1.0
 - Added option to show ANS button to reuse past answer
 - Improved erase button view
     - New attribute to erase all when held
@@ -21,7 +24,7 @@
 - Fixed issues with custom format characters
 - Added documentation, optimized imports, added licenses on files, etc
 
-## v1.0
+## v1.0.0
 - Initial release
 - Customizable styles for nearly all views
 - Arbitrary precision calculations using BigDecimal

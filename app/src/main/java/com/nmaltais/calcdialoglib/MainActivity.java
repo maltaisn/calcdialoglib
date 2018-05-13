@@ -22,6 +22,7 @@
 package com.nmaltais.calcdialoglib;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -39,14 +40,19 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
     private TextView valueTextv;
     private CheckBox signCheck;
 
-    private BigDecimal value;
+    private @Nullable BigDecimal value;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
         setContentView(R.layout.activity_main);
 
-        value = null;
+        if (state != null) {
+            String valueStr = state.getString("value");
+            if (valueStr != null) {
+                value = new BigDecimal(valueStr);
+            }
+        }
 
         final CalcDialog calcDialog = new CalcDialog();
 
@@ -127,9 +133,18 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                         .setMaxValue(maxValue)
                         .setMaxDigits(maxInt, maxFrac);
 
-                calcDialog.show(getFragmentManager(), "calc_dialog");
+                calcDialog.show(getSupportFragmentManager(), "calc_dialog");
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        if (value != null) {
+            state.putString("value", value.toString());
+        }
     }
 
     @Override

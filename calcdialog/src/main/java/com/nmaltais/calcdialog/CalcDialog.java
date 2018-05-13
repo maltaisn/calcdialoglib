@@ -24,7 +24,6 @@ package com.nmaltais.calcdialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
@@ -33,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -138,6 +138,8 @@ public class CalcDialog extends DialogFragment {
         groupSep = FORMAT_CHAR_DEFAULT;
         groupSize = 3;
 
+        signCanBeChanged = true;
+
         clearOnOperation = false;
         showZeroWhenNoValue = true;
 
@@ -195,6 +197,8 @@ public class CalcDialog extends DialogFragment {
                 ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxHeight, -1)
         };
         ta.recycle();
+
+        resultIsDisplayed = true;
     }
 
     @Override
@@ -206,7 +210,6 @@ public class CalcDialog extends DialogFragment {
         // Value display
         textvDisplay = view.findViewById(R.id.text_value);
         textvDisplay.setText(valueStr.toString());
-        resultIsDisplayed = true;
 
         // Erase button
         CalcEraseButton eraseBtn = view.findViewById(R.id.button_calc_erase);
@@ -482,6 +485,7 @@ public class CalcDialog extends DialogFragment {
                     } else {
                         // Caller was an activity
                         try {
+                            //noinspection ConstantConditions
                             ((CalcDialogCallback) getActivity()).onValueEntered(resultValue);
                         } catch (Exception e) {
                             // Interface callback is not implemented in activity
@@ -659,8 +663,8 @@ public class CalcDialog extends DialogFragment {
      *         maximum value is applied equally for positive and negative value
      */
     private boolean isValueOutOfBounds(@NonNull BigDecimal value) {
-        return maxValue != null && (value.compareTo(maxValue) == 1 ||
-                value.compareTo(maxValue.negate()) == -1);
+        return maxValue != null && (value.compareTo(maxValue) > 0 ||
+                value.compareTo(maxValue.negate()) < 0);
     }
 
     /**
@@ -725,7 +729,7 @@ public class CalcDialog extends DialogFragment {
      */
     public CalcDialog setValue(@Nullable BigDecimal value) {
         if (value != null && maxValue != null && isValueOutOfBounds(value)) {
-            value = (value.compareTo(BigDecimal.ZERO) == 1 ? maxValue : maxValue.negate());
+            value = (value.compareTo(BigDecimal.ZERO) > 0 ? maxValue : maxValue.negate());
         }
         resultValue = value;
         return this;
@@ -740,7 +744,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setMaxValue(@Nullable BigDecimal maxValue) {
-        if (maxValue != null && maxValue.compareTo(BigDecimal.ZERO) == -1) {
+        if (maxValue != null && maxValue.compareTo(BigDecimal.ZERO) < 0) {
             // Must be positive
             maxValue = maxValue.negate();
         }
