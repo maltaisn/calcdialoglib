@@ -22,7 +22,6 @@
 package com.nmaltais.calcdialog;
 
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,7 +34,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,10 +48,31 @@ import java.util.Locale;
 /**
  * Dialog with calculator for entering and calculating a number
  */
-@SuppressWarnings("unused")
 public class CalcDialog extends DialogFragment {
 
     private static final String TAG = CalcDialog.class.getSimpleName();
+
+    // Digits button: 0-9
+    private final static int[] NUMBER_BTN_IDS = {
+            R.id.button_calc_0,
+            R.id.button_calc_1,
+            R.id.button_calc_2,
+            R.id.button_calc_3,
+            R.id.button_calc_4,
+            R.id.button_calc_5,
+            R.id.button_calc_6,
+            R.id.button_calc_7,
+            R.id.button_calc_8,
+            R.id.button_calc_9,
+    };
+
+    // Operator button: +, -, *, /
+    private final static int[] OPERATOR_BTN_IDS = {
+            R.id.button_calc_add,
+            R.id.button_calc_sub,
+            R.id.button_calc_mult,
+            R.id.button_calc_div,
+    };
 
     private static final int OPERATION_NONE = -1;
     private static final int OPERATION_ADD = 0;
@@ -85,6 +104,7 @@ public class CalcDialog extends DialogFragment {
     private boolean stripTrailingZeroes;
 
     private boolean signCanBeChanged;
+    private boolean hideSignButton;
     private int initialSign;
 
     private boolean clearOnOperation;
@@ -203,9 +223,7 @@ public class CalcDialog extends DialogFragment {
 
     @Override
     public @NonNull Dialog onCreateDialog(Bundle state) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        final View view = inflater.inflate(R.layout.dialog_calc, null);
+        final View view = View.inflate(context, R.layout.dialog_calc, null);
 
         // Value display
         textvDisplay = view.findViewById(R.id.text_value);
@@ -251,21 +269,8 @@ public class CalcDialog extends DialogFragment {
             }
         });
 
-        // Digits button: 0-9
-        int[] numberBtnIds = {
-                R.id.button_calc_0,
-                R.id.button_calc_1,
-                R.id.button_calc_2,
-                R.id.button_calc_3,
-                R.id.button_calc_4,
-                R.id.button_calc_5,
-                R.id.button_calc_6,
-                R.id.button_calc_7,
-                R.id.button_calc_8,
-                R.id.button_calc_9,
-        };
-        for (int i = 0; i < 10; i++) {
-            TextView numberBtn = view.findViewById(numberBtnIds[i]);
+        for (int i = 0; i < NUMBER_BTN_IDS.length; i++) {
+            TextView numberBtn = view.findViewById(NUMBER_BTN_IDS[i]);
             numberBtn.setText(btnTexts[i]);
 
             final int nb = i;
@@ -299,17 +304,10 @@ public class CalcDialog extends DialogFragment {
             });
         }
 
-        // Operator button: +, -, *, /
-        int[] operatorBtnIds = {
-                R.id.button_calc_add,
-                R.id.button_calc_sub,
-                R.id.button_calc_mult,
-                R.id.button_calc_div,
-        };
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < OPERATOR_BTN_IDS.length; i++) {
             final int op = i;
-            TextView operatorBtn = view.findViewById(operatorBtnIds[i]);
-            operatorBtn.setText(btnTexts[i + 10]);
+            TextView operatorBtn = view.findViewById(OPERATOR_BTN_IDS[i]);
+            operatorBtn.setText(btnTexts[i + NUMBER_BTN_IDS.length]);
             operatorBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -379,34 +377,38 @@ public class CalcDialog extends DialogFragment {
 
         // Sign button: +/-
         TextView signBtn = view.findViewById(R.id.button_calc_sign);
-        signBtn.setText(btnTexts[14]);
-        signBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dismissError()) return;
+        if (hideSignButton) {
+            signBtn.setVisibility(View.GONE);
+        } else {
+            signBtn.setText(btnTexts[14]);
+            signBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dismissError()) return;
 
-                // Negate value
-                String str = valueStr.toString();
-                if (!str.isEmpty() && !str.equals("0") && !str.equals("0" + decimalSep)) {
-                    // If value is not equal to zero or empty
-                    if (valueStr.charAt(0) != '-') {
-                        valueStr.insert(0, '-');
-                    } else {
-                        valueStr.deleteCharAt(0);
+                    // Negate value
+                    String str = valueStr.toString();
+                    if (!str.isEmpty() && !str.equals("0") && !str.equals("0" + decimalSep)) {
+                        // If value is not equal to zero or empty
+                        if (valueStr.charAt(0) != '-') {
+                            valueStr.insert(0, '-');
+                        } else {
+                            valueStr.deleteCharAt(0);
+                        }
+
+                        if (resultIsDisplayed) {
+                            //noinspection ConstantConditions
+                            resultValue = resultValue.negate();
+                            //noinspection ConstantConditions
+                            answerValue = answerValue.negate();
+                        }
+
+                        textvDisplay.setText(valueStr.toString());
+                        resultIsDisplayed = false;
                     }
-
-                    if (resultIsDisplayed) {
-                        //noinspection ConstantConditions
-                        resultValue = resultValue.negate();
-                        //noinspection ConstantConditions
-                        answerValue = answerValue.negate();
-                    }
-
-                    textvDisplay.setText(valueStr.toString());
-                    resultIsDisplayed = false;
                 }
-            }
-        });
+            });
+        }
 
         // Equal button
         TextView equalBtn = view.findViewById(R.id.button_calc_equal);
@@ -871,6 +873,16 @@ public class CalcDialog extends DialogFragment {
     public CalcDialog setShowZeroWhenNoValue(boolean show) {
         showZeroWhenNoValue = show;
 
+        return this;
+    }
+
+    /**
+     * Set if the sign button should be hidden
+     * @param hideSignButton true to hide the sign button, false otherwise (default)
+     * @return the dialog
+     */
+    public CalcDialog setHideSignButton(boolean hideSignButton) {
+        this.hideSignButton = hideSignButton;
         return this;
     }
 

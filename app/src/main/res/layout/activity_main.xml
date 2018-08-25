@@ -97,6 +97,16 @@
         app:layout_constraintTop_toBottomOf="@+id/check_answer_btn"/>
 
     <CheckBox
+        android:id="@+id/check_sign_hide_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:checked="false"
+        android:text="@string/option_sign_hide_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/check_sign"/>
+
+    <CheckBox
         android:id="@+id/check_clear_operation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -104,7 +114,7 @@
         android:checked="false"
         android:text="@string/option_clear_operation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_sign"/>
+        app:layout_constraintTop_toBottomOf="@+id/check_sign_hide_btn"/>
 
     <CheckBox
         android:id="@+id/check_show_zero"

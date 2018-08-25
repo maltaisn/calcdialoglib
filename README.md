@@ -6,8 +6,6 @@ A fully customizable calculator dialog for Android. Can be used to replace the n
 
 Replace `X.Y.Z` with lastest version number: [ ![Download](https://api.bintray.com/packages/maltaisn/calc-dialog/calc-dialog/images/download.svg) ](https://bintray.com/maltaisn/calc-dialog/calc-dialog/_latestVersion)
 
-Minimum API is [21](https://twitter.com/minSdkVersion/status/988538738639765505), and older APIs will never be supported.
-
 ## Tutorial
 - **Get started on the wiki page [Using the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Using-the-dialog).**
 - Customize the dialog's behavior by [changing its settings](https://github.com/maltaisn/calcdialoglib/wiki/Calculator-settings).
