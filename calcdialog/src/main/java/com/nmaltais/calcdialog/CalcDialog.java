@@ -36,7 +36,9 @@ import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -224,6 +226,11 @@ public class CalcDialog extends DialogFragment {
     @Override
     public @NonNull Dialog onCreateDialog(Bundle state) {
         final View view = View.inflate(context, R.layout.dialog_calc, null);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            LinearLayout header = view.findViewById(R.id.header);
+            header.setBackgroundResource(R.drawable.elevation);
+        }
 
         // Value display
         textvDisplay = view.findViewById(R.id.text_value);
@@ -500,6 +507,7 @@ public class CalcDialog extends DialogFragment {
 
         // Set up dialog
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @SuppressWarnings("ConstantConditions")
             @Override
