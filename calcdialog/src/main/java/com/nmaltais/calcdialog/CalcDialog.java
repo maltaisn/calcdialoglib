@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -39,7 +40,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -136,8 +136,8 @@ public class CalcDialog extends DialogFragment {
     private @Nullable BigDecimal answerValue;
     private boolean currentIsAnswer;
 
-    private TextView textvDisplay;
-    private TextView btnAnswer;
+    private AppCompatTextView textvDisplay;
+    private AppCompatTextView btnAnswer;
 
     private CharSequence[] btnTexts;
     private CharSequence[] errorMessages;
@@ -277,7 +277,7 @@ public class CalcDialog extends DialogFragment {
         });
 
         for (int i = 0; i < NUMBER_BTN_IDS.length; i++) {
-            TextView numberBtn = view.findViewById(NUMBER_BTN_IDS[i]);
+            AppCompatTextView numberBtn = view.findViewById(NUMBER_BTN_IDS[i]);
             numberBtn.setText(btnTexts[i]);
 
             final int nb = i;
@@ -313,7 +313,7 @@ public class CalcDialog extends DialogFragment {
 
         for (int i = 0; i < OPERATOR_BTN_IDS.length; i++) {
             final int op = i;
-            TextView operatorBtn = view.findViewById(OPERATOR_BTN_IDS[i]);
+            AppCompatTextView operatorBtn = view.findViewById(OPERATOR_BTN_IDS[i]);
             operatorBtn.setText(btnTexts[i + NUMBER_BTN_IDS.length]);
             operatorBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -352,7 +352,7 @@ public class CalcDialog extends DialogFragment {
         }
 
         // Decimal separator button
-        final TextView decimalBtn = view.findViewById(R.id.button_calc_decimal);
+        final AppCompatTextView decimalBtn = view.findViewById(R.id.button_calc_decimal);
         decimalBtn.setText(btnTexts[15]);
         decimalBtn.setEnabled(maxFracDigits > 0);
         decimalBtn.setOnClickListener(new View.OnClickListener() {
@@ -383,7 +383,7 @@ public class CalcDialog extends DialogFragment {
         });
 
         // Sign button: +/-
-        TextView signBtn = view.findViewById(R.id.button_calc_sign);
+        AppCompatTextView signBtn = view.findViewById(R.id.button_calc_sign);
         if (hideSignButton) {
             signBtn.setVisibility(View.GONE);
         } else {
@@ -418,7 +418,7 @@ public class CalcDialog extends DialogFragment {
         }
 
         // Equal button
-        TextView equalBtn = view.findViewById(R.id.button_calc_equal);
+        AppCompatTextView equalBtn = view.findViewById(R.id.button_calc_equal);
         equalBtn.setText(btnTexts[16]);
         equalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
