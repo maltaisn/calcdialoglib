@@ -23,6 +23,7 @@ package com.nmaltais.calcdialoglib;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -136,7 +137,10 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                         .setMaxValue(maxValue)
                         .setMaxDigits(maxInt, maxFrac);
 
-                calcDialog.show(getSupportFragmentManager(), "calc_dialog");
+                FragmentManager fm = getSupportFragmentManager();
+                if (fm.findFragmentByTag("calc_dialog") == null) {
+                    calcDialog.show(fm, "calc_dialog");
+                }
             }
         });
     }

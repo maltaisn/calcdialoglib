@@ -457,7 +457,7 @@ public class CalcDialog extends DialogFragment {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                dismissAllowingStateLoss();
             }
         });
 
@@ -500,7 +500,7 @@ public class CalcDialog extends DialogFragment {
                             // Interface callback is not implemented in activity
                         }
                     }
-                    dismiss();
+                    dismissAllowingStateLoss();
                 }
             }
         });
