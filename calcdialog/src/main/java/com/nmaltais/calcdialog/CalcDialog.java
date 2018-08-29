@@ -101,6 +101,8 @@ public class CalcDialog extends DialogFragment {
     private int maxIntDigits;
     private int maxFracDigits;
 
+    private int reference;
+
     private RoundingMode roundingMode;
 
     private boolean stripTrailingZeroes;
@@ -501,7 +503,7 @@ public class CalcDialog extends DialogFragment {
                     if (getTargetFragment() != null) {
                         // Caller was a fragment
                         try {
-                            ((CalcDialogCallback) getTargetFragment()).onValueEntered(resultValue);
+                            ((CalcDialogCallback) getTargetFragment()).onValueEntered(reference, resultValue);
                         } catch (Exception e) {
                             // Interface callback is not implemented in fragment
                         }
@@ -509,7 +511,7 @@ public class CalcDialog extends DialogFragment {
                         // Caller was an activity
                         try {
                             //noinspection ConstantConditions
-                            ((CalcDialogCallback) getActivity()).onValueEntered(resultValue);
+                            ((CalcDialogCallback) getActivity()).onValueEntered(reference, resultValue);
                         } catch (Exception e) {
                             // Interface callback is not implemented in activity
                         }
@@ -907,6 +909,16 @@ public class CalcDialog extends DialogFragment {
     }
 
     /**
+     * Set the reference id of the dialog
+     * @param reference define a dialog id
+     * @return the dialog
+     */
+    public CalcDialog setReference(int reference) {
+        this.reference = reference;
+        return this;
+    }
+
+    /**
      * Set if the sign button should be hidden
      * @param hideSignButton true to hide the sign button, false otherwise (default)
      * @return the dialog
@@ -942,7 +954,6 @@ public class CalcDialog extends DialogFragment {
      */
     public CalcDialog setShowAnswerButton(boolean show) {
         showAnswerBtn = show;
-
         return this;
     }
 
@@ -982,8 +993,10 @@ public class CalcDialog extends DialogFragment {
          *              to a String, use {@link BigDecimal#toPlainString()}.
          *              To format the value to a currency String you could do:
          *              {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}
+         * @param reference dialog reference. used to identify a dialog in the callback.
+         *              {@link #setReference(int)} to define it
          */
-        void onValueEntered(BigDecimal value);
+        void onValueEntered(int reference, BigDecimal value);
     }
 
 

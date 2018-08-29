@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
     }
 
     @Override
-    public void onValueEntered(BigDecimal value) {
+    public void onValueEntered(int reference, BigDecimal value) {
         this.value = value;
 
         valueTextv.setText(value.toPlainString());
