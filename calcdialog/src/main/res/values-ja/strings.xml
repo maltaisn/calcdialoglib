@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">消します</string>
+    <string name="calc_dialog_cancel">キャンセル</string>
+    <string name="calc_dialog_ok">OK</string>
+
+    <string name="calc_answer">回答</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>ゼロ除算</item>
+        <item>立入禁止で</item>
+        <item>結果は正でなければならない</item>
+        <item>結果は負でなければならない</item>
+    </string-array>
+
+</resources>

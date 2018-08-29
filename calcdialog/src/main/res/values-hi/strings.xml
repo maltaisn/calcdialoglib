@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">मिटाना</string>
+    <string name="calc_dialog_cancel">रद्द करना</string>
+    <string name="calc_dialog_ok">ठीक</string>
+
+    <string name="calc_answer">उत्तर</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>शून्य से विभाजन</item>
+        <item>सीमा के बाहर</item>
+        <item>परिणाम सकारात्मक होना चाहिए</item>
+        <item>परिणाम नकारात्मक होना चाहिए</item>
+    </string-array>
+
+</resources>

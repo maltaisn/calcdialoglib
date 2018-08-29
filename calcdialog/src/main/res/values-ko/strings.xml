@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">지우다</string>
+    <string name="calc_dialog_cancel">취소</string>
+    <string name="calc_dialog_ok">승인</string>
+
+    <string name="calc_answer">대답</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>0으로 나누기</item>
+        <item>출입 금지 구역의</item>
+        <item>결과는 양수 여야합니다</item>
+        <item>결과는 음수 여야합니다</item>
+    </string-array>
+
+</resources>

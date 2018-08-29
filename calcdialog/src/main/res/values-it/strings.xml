@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">Cancellare</string>
+    <string name="calc_dialog_cancel">Annullare</string>
+    <string name="calc_dialog_ok">OK</string>
+
+    <string name="calc_answer">Ris</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>Divisione per zero</item>
+        <item>Fuori dai limiti</item>
+        <item>Il risultato deve essere positivo</item>
+        <item>Il risultato deve essere negativo</item>
+    </string-array>
+
+</resources>

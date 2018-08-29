@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">làm lu mờ</string>
+    <string name="calc_dialog_cancel">Hủy bỏ</string>
+    <string name="calc_dialog_ok">được</string>
+
+    <string name="calc_answer">Ans</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>Chia cho số không</item>
+        <item>Ngoài giới hạn</item>
+        <item>Kết quả phải dương</item>
+        <item>Kết quả phải là số âm</item>
+    </string-array>
+
+</resources>
