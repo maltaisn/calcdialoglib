@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">طمس</string>
+    <string name="calc_dialog_cancel">إلغاء</string>
+    <string name="calc_dialog_ok">حسنا</string>
+
+    <string name="calc_answer">إجابة</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>القسمة على صفر</item>
+        <item>خارج الحدود</item>
+        <item>يجب أن تكون النتيجة إيجابية</item>
+        <item>يجب أن تكون النتيجة سلبية</item>
+    </string-array>
+
+</resources>
