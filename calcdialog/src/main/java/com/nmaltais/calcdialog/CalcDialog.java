@@ -143,6 +143,8 @@ public class CalcDialog extends DialogFragment {
     private CharSequence[] errorMessages;
     private int[] maxDialogDimensions;
 
+    private View selectedOperationView;
+
     private String zeroString;
 
     /**
@@ -286,6 +288,8 @@ public class CalcDialog extends DialogFragment {
                 public void onClick(View v) {
                     dismissError();
 
+                    hideSelectedOperation();
+
                     hideAnswerBtn();
 
                     if (resultIsDisplayed || overwriteValue) {
@@ -320,11 +324,18 @@ public class CalcDialog extends DialogFragment {
                 public void onClick(View v) {
                     if (dismissError()) return;
 
+                    // remove previous selected operation
+                    hideSelectedOperation();
+
                     if (valueStr.length() != 0 || currentIsAnswer) {
+                        selectedOperationView = v;
+                        selectedOperationView.setSelected(true);
+
                         if (operation != OPERATION_NONE) {
                             calculate();
                         } else {
                             resultValue = getCurrentValue();
+
                             if (!clearOnOperation) {
                                 valueStr = new StringBuilder();
                                 formatValue();
@@ -424,6 +435,9 @@ public class CalcDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (dismissError()) return;
+
+                hideSelectedOperation();
+
                 calculate();
 
                 answerValue = resultValue;
@@ -568,7 +582,6 @@ public class CalcDialog extends DialogFragment {
 
         if (operation == OPERATION_NONE || valueStr.length() == 0) {
             resultValue = getCurrentValue();
-
         } else {
             if (resultValue == null) resultValue = BigDecimal.ZERO;
             BigDecimal operand = getCurrentValue();
@@ -638,12 +651,21 @@ public class CalcDialog extends DialogFragment {
     private void clear() {
         if (dismissError()) return;
 
+        hideSelectedOperation();
+
         hideAnswerBtn();
 
         reset();
 
         textvDisplay.setText(valueStr.toString());
         resultIsDisplayed = false;
+    }
+
+    private void hideSelectedOperation() {
+        if (selectedOperationView != null){
+            selectedOperationView.setSelected(false);
+            selectedOperationView = null;
+        }
     }
 
     /**

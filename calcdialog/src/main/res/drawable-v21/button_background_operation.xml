@@ -3,9 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="?android:colorControlHighlight">
 
-    <!-- the normal bg color will be light grey -->
     <item>
-        <color android:color="@color/grey_100" />
+        <selector>
+            <!-- the normal bg color will be light grey -->
+            <item android:state_selected="true">
+                <color android:color="@color/grey_300" />
+            </item>
+
+            <!-- the normal bg color will be light grey -->
+            <item>
+                <color android:color="@color/grey_100" />
+            </item>
+        </selector>
     </item>
 
     <item

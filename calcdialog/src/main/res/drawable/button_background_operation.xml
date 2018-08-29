@@ -9,6 +9,10 @@
         android:drawable="@color/grey_300"/>
 
     <item
+        android:state_selected="true"
+        android:drawable="@color/grey_300"/>
+
+    <item
         android:state_focused="false"
         android:state_pressed="true"
         android:drawable="@color/grey_300"/>
