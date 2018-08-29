@@ -22,7 +22,6 @@
 package com.nmaltais.calcdialog;
 
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,13 +32,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,10 +50,31 @@ import java.util.Locale;
 /**
  * Dialog with calculator for entering and calculating a number
  */
-@SuppressWarnings("unused")
 public class CalcDialog extends DialogFragment {
 
     private static final String TAG = CalcDialog.class.getSimpleName();
+
+    // Digits button: 0-9
+    private final static int[] NUMBER_BTN_IDS = {
+            R.id.button_calc_0,
+            R.id.button_calc_1,
+            R.id.button_calc_2,
+            R.id.button_calc_3,
+            R.id.button_calc_4,
+            R.id.button_calc_5,
+            R.id.button_calc_6,
+            R.id.button_calc_7,
+            R.id.button_calc_8,
+            R.id.button_calc_9,
+    };
+
+    // Operator button: +, -, *, /
+    private final static int[] OPERATOR_BTN_IDS = {
+            R.id.button_calc_add,
+            R.id.button_calc_sub,
+            R.id.button_calc_mult,
+            R.id.button_calc_div,
+    };
 
     private static final int OPERATION_NONE = -1;
     private static final int OPERATION_ADD = 0;
@@ -85,6 +106,7 @@ public class CalcDialog extends DialogFragment {
     private boolean stripTrailingZeroes;
 
     private boolean signCanBeChanged;
+    private boolean hideSignButton;
     private int initialSign;
 
     private boolean clearOnOperation;
@@ -114,12 +136,14 @@ public class CalcDialog extends DialogFragment {
     private @Nullable BigDecimal answerValue;
     private boolean currentIsAnswer;
 
-    private TextView textvDisplay;
-    private TextView btnAnswer;
+    private AppCompatTextView textvDisplay;
+    private AppCompatTextView btnAnswer;
 
     private CharSequence[] btnTexts;
     private CharSequence[] errorMessages;
     private int[] maxDialogDimensions;
+
+    private View selectedOperationView;
 
     private String zeroString;
 
@@ -203,9 +227,12 @@ public class CalcDialog extends DialogFragment {
 
     @Override
     public @NonNull Dialog onCreateDialog(Bundle state) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        final View view = inflater.inflate(R.layout.dialog_calc, null);
+        final View view = View.inflate(context, R.layout.dialog_calc, null);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            LinearLayout header = view.findViewById(R.id.header);
+            header.setBackgroundResource(R.drawable.elevation);
+        }
 
         // Value display
         textvDisplay = view.findViewById(R.id.text_value);
@@ -251,21 +278,8 @@ public class CalcDialog extends DialogFragment {
             }
         });
 
-        // Digits button: 0-9
-        int[] numberBtnIds = {
-                R.id.button_calc_0,
-                R.id.button_calc_1,
-                R.id.button_calc_2,
-                R.id.button_calc_3,
-                R.id.button_calc_4,
-                R.id.button_calc_5,
-                R.id.button_calc_6,
-                R.id.button_calc_7,
-                R.id.button_calc_8,
-                R.id.button_calc_9,
-        };
-        for (int i = 0; i < 10; i++) {
-            TextView numberBtn = view.findViewById(numberBtnIds[i]);
+        for (int i = 0; i < NUMBER_BTN_IDS.length; i++) {
+            AppCompatTextView numberBtn = view.findViewById(NUMBER_BTN_IDS[i]);
             numberBtn.setText(btnTexts[i]);
 
             final int nb = i;
@@ -273,6 +287,8 @@ public class CalcDialog extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     dismissError();
+
+                    hideSelectedOperation();
 
                     hideAnswerBtn();
 
@@ -299,27 +315,27 @@ public class CalcDialog extends DialogFragment {
             });
         }
 
-        // Operator button: +, -, *, /
-        int[] operatorBtnIds = {
-                R.id.button_calc_add,
-                R.id.button_calc_sub,
-                R.id.button_calc_mult,
-                R.id.button_calc_div,
-        };
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < OPERATOR_BTN_IDS.length; i++) {
             final int op = i;
-            TextView operatorBtn = view.findViewById(operatorBtnIds[i]);
-            operatorBtn.setText(btnTexts[i + 10]);
+            AppCompatTextView operatorBtn = view.findViewById(OPERATOR_BTN_IDS[i]);
+            operatorBtn.setText(btnTexts[i + NUMBER_BTN_IDS.length]);
             operatorBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (dismissError()) return;
 
+                    // remove previous selected operation
+                    hideSelectedOperation();
+
                     if (valueStr.length() != 0 || currentIsAnswer) {
+                        selectedOperationView = v;
+                        selectedOperationView.setSelected(true);
+
                         if (operation != OPERATION_NONE) {
                             calculate();
                         } else {
                             resultValue = getCurrentValue();
+
                             if (!clearOnOperation) {
                                 valueStr = new StringBuilder();
                                 formatValue();
@@ -347,7 +363,7 @@ public class CalcDialog extends DialogFragment {
         }
 
         // Decimal separator button
-        final TextView decimalBtn = view.findViewById(R.id.button_calc_decimal);
+        final AppCompatTextView decimalBtn = view.findViewById(R.id.button_calc_decimal);
         decimalBtn.setText(btnTexts[15]);
         decimalBtn.setEnabled(maxFracDigits > 0);
         decimalBtn.setOnClickListener(new View.OnClickListener() {
@@ -378,43 +394,50 @@ public class CalcDialog extends DialogFragment {
         });
 
         // Sign button: +/-
-        TextView signBtn = view.findViewById(R.id.button_calc_sign);
-        signBtn.setText(btnTexts[14]);
-        signBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dismissError()) return;
+        AppCompatTextView signBtn = view.findViewById(R.id.button_calc_sign);
+        if (hideSignButton) {
+            signBtn.setVisibility(View.GONE);
+        } else {
+            signBtn.setText(btnTexts[14]);
+            signBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dismissError()) return;
 
-                // Negate value
-                String str = valueStr.toString();
-                if (!str.isEmpty() && !str.equals("0") && !str.equals("0" + decimalSep)) {
-                    // If value is not equal to zero or empty
-                    if (valueStr.charAt(0) != '-') {
-                        valueStr.insert(0, '-');
-                    } else {
-                        valueStr.deleteCharAt(0);
+                    // Negate value
+                    String str = valueStr.toString();
+                    if (!str.isEmpty() && !str.equals("0") && !str.equals("0" + decimalSep)) {
+                        // If value is not equal to zero or empty
+                        if (valueStr.charAt(0) != '-') {
+                            valueStr.insert(0, '-');
+                        } else {
+                            valueStr.deleteCharAt(0);
+                        }
+
+                        if (resultIsDisplayed) {
+                            //noinspection ConstantConditions
+                            resultValue = resultValue.negate();
+                            //noinspection ConstantConditions
+                            answerValue = answerValue.negate();
+                        }
+
+                        textvDisplay.setText(valueStr.toString());
+                        resultIsDisplayed = false;
                     }
-
-                    if (resultIsDisplayed) {
-                        //noinspection ConstantConditions
-                        resultValue = resultValue.negate();
-                        //noinspection ConstantConditions
-                        answerValue = answerValue.negate();
-                    }
-
-                    textvDisplay.setText(valueStr.toString());
-                    resultIsDisplayed = false;
                 }
-            }
-        });
+            });
+        }
 
         // Equal button
-        TextView equalBtn = view.findViewById(R.id.button_calc_equal);
+        AppCompatTextView equalBtn = view.findViewById(R.id.button_calc_equal);
         equalBtn.setText(btnTexts[16]);
         equalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (dismissError()) return;
+
+                hideSelectedOperation();
+
                 calculate();
 
                 answerValue = resultValue;
@@ -448,7 +471,7 @@ public class CalcDialog extends DialogFragment {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                dismissAllowingStateLoss();
             }
         });
 
@@ -491,13 +514,14 @@ public class CalcDialog extends DialogFragment {
                             // Interface callback is not implemented in activity
                         }
                     }
-                    dismiss();
+                    dismissAllowingStateLoss();
                 }
             }
         });
 
         // Set up dialog
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @SuppressWarnings("ConstantConditions")
             @Override
@@ -558,7 +582,6 @@ public class CalcDialog extends DialogFragment {
 
         if (operation == OPERATION_NONE || valueStr.length() == 0) {
             resultValue = getCurrentValue();
-
         } else {
             if (resultValue == null) resultValue = BigDecimal.ZERO;
             BigDecimal operand = getCurrentValue();
@@ -628,12 +651,21 @@ public class CalcDialog extends DialogFragment {
     private void clear() {
         if (dismissError()) return;
 
+        hideSelectedOperation();
+
         hideAnswerBtn();
 
         reset();
 
         textvDisplay.setText(valueStr.toString());
         resultIsDisplayed = false;
+    }
+
+    private void hideSelectedOperation() {
+        if (selectedOperationView != null){
+            selectedOperationView.setSelected(false);
+            selectedOperationView = null;
+        }
     }
 
     /**
@@ -871,6 +903,16 @@ public class CalcDialog extends DialogFragment {
     public CalcDialog setShowZeroWhenNoValue(boolean show) {
         showZeroWhenNoValue = show;
 
+        return this;
+    }
+
+    /**
+     * Set if the sign button should be hidden
+     * @param hideSignButton true to hide the sign button, false otherwise (default)
+     * @return the dialog
+     */
+    public CalcDialog setHideSignButton(boolean hideSignButton) {
+        this.hideSignButton = hideSignButton;
         return this;
     }
 

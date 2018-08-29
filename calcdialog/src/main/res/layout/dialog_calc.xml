@@ -58,7 +58,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_0"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
@@ -70,8 +70,8 @@
         app:layout_constraintTop_toTopOf="@+id/button_calc_decimal"
         tools:text="0"/>
 
-    <TextView
-        android:id="@+id/button_calc_1"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/button_calc_7"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -80,10 +80,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_calc_4"
-        tools:text="1"/>
+        tools:text="7"/>
 
-    <TextView
-        android:id="@+id/button_calc_2"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/button_calc_8"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -92,10 +92,10 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/button_calc_4"
-        tools:text="2"/>
+        tools:text="8"/>
 
-    <TextView
-        android:id="@+id/button_calc_3"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/button_calc_9"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -104,21 +104,21 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline_middle"
         app:layout_constraintTop_toBottomOf="@+id/button_calc_4"
-        tools:text="3"/>
+        tools:text="9"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_4"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_calc_1"
+        app:layout_constraintBottom_toTopOf="@+id/button_calc_7"
         app:layout_constraintEnd_toStartOf="@+id/guideline_start"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_calc_7"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_1"
         tools:text="4"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_5"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
@@ -127,10 +127,10 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/button_calc_7"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_1"
         tools:text="5"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_6"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
@@ -139,11 +139,11 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline_middle"
-        app:layout_constraintTop_toBottomOf="@+id/button_calc_7"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_1"
         tools:text="6"/>
 
-    <TextView
-        android:id="@+id/button_calc_7"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/button_calc_1"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -153,32 +153,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header"
         app:layout_constraintVertical_chainStyle="spread_inside"
-        tools:text="7"/>
+        tools:text="1"/>
 
-    <TextView
-        android:id="@+id/button_calc_8"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/button_calc_2"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_calc_7"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_1"
         app:layout_constraintEnd_toStartOf="@+id/guideline_middle"
         app:layout_constraintStart_toStartOf="@+id/guideline_start"
-        app:layout_constraintTop_toTopOf="@+id/button_calc_7"
-        tools:text="8"/>
+        app:layout_constraintTop_toTopOf="@+id/button_calc_1"
+        tools:text="2"/>
 
-    <TextView
-        android:id="@+id/button_calc_9"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/button_calc_3"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_calc_7"
+        app:layout_constraintBottom_toBottomOf="@+id/button_calc_1"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline_middle"
-        app:layout_constraintTop_toTopOf="@+id/button_calc_7"
-        tools:text="9"/>
+        app:layout_constraintTop_toTopOf="@+id/button_calc_1"
+        tools:text="3"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_decimal"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
@@ -187,10 +187,10 @@
         app:layout_constraintEnd_toStartOf="@+id/button_calc_0"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_calc_1"
+        app:layout_constraintTop_toBottomOf="@+id/button_calc_7"
         tools:text="."/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_sign"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
@@ -201,7 +201,7 @@
         app:layout_constraintTop_toTopOf="@+id/button_calc_decimal"
         tools:text="±"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_div"
         style="?attr/calcOperationBtnStyle"
         android:layout_width="0dp"
@@ -210,10 +210,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/guideline_end"
-        app:layout_constraintTop_toTopOf="@+id/button_calc_7"
+        app:layout_constraintTop_toTopOf="@+id/button_calc_1"
         tools:text="÷"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_mult"
         style="?attr/calcOperationBtnStyle"
         android:layout_width="0dp"
@@ -225,7 +225,7 @@
         app:layout_constraintTop_toBottomOf="@+id/button_calc_div"
         tools:text="×"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_sub"
         style="?attr/calcOperationBtnStyle"
         android:layout_width="0dp"
@@ -237,7 +237,7 @@
         app:layout_constraintTop_toBottomOf="@+id/button_calc_mult"
         tools:text="-"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_add"
         style="?attr/calcOperationBtnStyle"
         android:layout_width="0dp"
@@ -249,7 +249,7 @@
         app:layout_constraintTop_toBottomOf="@+id/button_calc_sub"
         tools:text="+"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_equal"
         style="?attr/calcOperationBtnStyle"
         android:layout_width="0dp"
@@ -261,7 +261,7 @@
         app:layout_constraintTop_toBottomOf="@+id/button_calc_add"
         tools:text="="/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/button_calc_answer"
         style="?attr/calcAnswerBtnStyle"
         android:layout_width="0dp"
@@ -290,6 +290,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:text="?attr/calcButtonTextClear"
@@ -303,6 +304,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginTop="5dp"
         android:text="?attr/calcButtonTextCancel"
@@ -317,6 +319,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginTop="5dp"
         android:text="?attr/calcButtonTextOk"

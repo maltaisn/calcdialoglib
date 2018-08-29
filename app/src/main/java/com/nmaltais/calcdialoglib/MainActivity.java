@@ -23,6 +23,7 @@ package com.nmaltais.calcdialoglib;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
     private TextView valueTextv;
     private CheckBox signCheck;
+    private CheckBox signHideBtn;
 
     private @Nullable BigDecimal value;
 
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
         signCheck = findViewById(R.id.check_sign);
         if (value == null) signCheck.setEnabled(false);
+        signHideBtn = findViewById(R.id.check_sign_hide_btn);
 
         final CheckBox showAnswerCheck = findViewById(R.id.check_answer_btn);
         final CheckBox clearOnOpCheck = findViewById(R.id.check_clear_operation);
@@ -126,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                 // Set settings and value
                 calcDialog.setValue(value)
                         .setShowAnswerButton(showAnswerCheck.isChecked())
+                        .setHideSignButton(signHideBtn.isChecked())
                         .setSignCanBeChanged(signCanBeChanged, signCanBeChanged ? 0 : value.signum())
                         .setClearDisplayOnOperation(clearOnOpCheck.isChecked())
                         .setShowZeroWhenNoValue(showZeroCheck.isChecked())
@@ -133,7 +137,10 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                         .setMaxValue(maxValue)
                         .setMaxDigits(maxInt, maxFrac);
 
-                calcDialog.show(getSupportFragmentManager(), "calc_dialog");
+                FragmentManager fm = getSupportFragmentManager();
+                if (fm.findFragmentByTag("calc_dialog") == null) {
+                    calcDialog.show(fm, "calc_dialog");
+                }
             }
         });
     }
