@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">Wymazać</string>
+    <string name="calc_dialog_cancel">Anuluj</string>
+    <string name="calc_dialog_ok">OK</string>
+
+    <string name="calc_answer">Odp</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>Dzielenie przez zero</item>
+        <item>Poza granicami</item>
+        <item>Wynik musi być dodatni</item>
+        <item>Wynik musi być ujemny</item>
+    </string-array>
+
+</resources>

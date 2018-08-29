@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">抹去</string>
+    <string name="calc_dialog_cancel">取消</string>
+    <string name="calc_dialog_ok">好</string>
+
+    <string name="calc_answer">答案</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>被零除</item>
+        <item>出界</item>
+        <item>结果必须是积极的</item>
+        <item>结果必须为负数</item>
+    </string-array>
+
+</resources>
