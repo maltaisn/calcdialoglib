@@ -149,6 +149,8 @@ public class CalcDialog extends DialogFragment {
 
     private String zeroString;
 
+    private CalcDialogCallback callback;
+
     /**
      * Create a new calculator dialog with default settings
      */
@@ -500,21 +502,8 @@ public class CalcDialog extends DialogFragment {
                     }
 
                     // Call callback
-                    if (getTargetFragment() != null) {
-                        // Caller was a fragment
-                        try {
-                            ((CalcDialogCallback) getTargetFragment()).onValueEntered(reference, resultValue);
-                        } catch (Exception e) {
-                            // Interface callback is not implemented in fragment
-                        }
-                    } else {
-                        // Caller was an activity
-                        try {
-                            //noinspection ConstantConditions
-                            ((CalcDialogCallback) getActivity()).onValueEntered(reference, resultValue);
-                        } catch (Exception e) {
-                            // Interface callback is not implemented in activity
-                        }
+                    if(callback != null){
+                        callback.onValueEntered(reference, resultValue);
                     }
                     dismissAllowingStateLoss();
                 }
@@ -954,6 +943,17 @@ public class CalcDialog extends DialogFragment {
      */
     public CalcDialog setShowAnswerButton(boolean show) {
         showAnswerBtn = show;
+        return this;
+    }
+
+    /**
+     * Set a custom callback.
+     * By default, it use getTargetFragment().
+     * @param callback the callback to defined
+     * @return the dialog
+     */
+    public CalcDialog setCallback(CalcDialogCallback callback) {
+        this.callback = callback;
         return this;
     }
 

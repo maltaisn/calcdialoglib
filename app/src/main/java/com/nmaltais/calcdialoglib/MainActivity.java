@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
                 // Set settings and value
                 calcDialog.setValue(value)
+                        .setCallback(MainActivity.this)
                         .setShowAnswerButton(showAnswerCheck.isChecked())
                         .setHideSignButton(signHideBtn.isChecked())
                         .setSignCanBeChanged(signCanBeChanged, signCanBeChanged ? 0 : value.signum())
