@@ -1,8 +1,12 @@
-## v1.1.2
+## v1.2.0
+- Removed `setRetainInstance(true)` on dialog and to manually save state instead
+- Fixed OK button not behaving like the equal button
+
+### v1.1.2
 - Fixed sign can be changed not being the default behavior
 - Fixed display not being saved on configuration change
 
-## v1.1.1
+### v1.1.1
 - Forced LTR layout on the dialog
 
 ## v1.1.0

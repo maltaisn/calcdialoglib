@@ -28,11 +28,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -43,7 +43,6 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 
@@ -51,46 +50,15 @@ import java.util.Locale;
  * Dialog with calculator for entering and calculating a number
  */
 @SuppressWarnings("unused")
-public class CalcDialog extends DialogFragment {
+public class CalcDialog extends AppCompatDialogFragment {
 
     private static final String TAG = CalcDialog.class.getSimpleName();
-
-    private static final int OPERATION_NONE = -1;
-    private static final int OPERATION_ADD = 0;
-    private static final int OPERATION_SUB = 1;
-    private static final int OPERATION_MULT = 2;
-    private static final int OPERATION_DIV = 3;
-
-    private static final int ERROR_NONE = -1;
-    private static final int ERROR_DIV_ZERO = 0;
-    private static final int ERROR_OUT_OF_BOUNDS = 1;
-    private static final int ERROR_WRONG_SIGN_POS = 2;
-    private static final int ERROR_WRONG_SIGN_NEG = 3;
-
-    private Context context;
-
-    private @Nullable BigDecimal maxValue;
 
     /**
      * Parameter value to set for {@link #setMaxDigits(int, int)}
      * to have to limit on the number of digits for a part of the number (int or frac).
      */
     public static final int MAX_DIGITS_UNLIMITED = -1;
-
-    private int maxIntDigits;
-    private int maxFracDigits;
-
-    private RoundingMode roundingMode;
-
-    private boolean stripTrailingZeroes;
-
-    private boolean signCanBeChanged;
-    private int initialSign;
-
-    private boolean clearOnOperation;
-    private boolean showZeroWhenNoValue;
-
-    private boolean showAnswerBtn;
 
     /**
      * Parameter to set for {@link #setFormatSymbols(char, char)}
@@ -99,94 +67,58 @@ public class CalcDialog extends DialogFragment {
      */
     public static final char FORMAT_CHAR_DEFAULT = 0;
 
-    private char decimalSep;
-    private char groupSep;
+    private static final int[] DIGIT_BTN_IDS = {
+            R.id.button_calc_0,
+            R.id.button_calc_1,
+            R.id.button_calc_2,
+            R.id.button_calc_3,
+            R.id.button_calc_4,
+            R.id.button_calc_5,
+            R.id.button_calc_6,
+            R.id.button_calc_7,
+            R.id.button_calc_8,
+            R.id.button_calc_9,
+    };
 
-    private int groupSize;
+    private static final int[] OPERATOR_BTN_IDS = {
+            R.id.button_calc_add,
+            R.id.button_calc_sub,
+            R.id.button_calc_mult,
+            R.id.button_calc_div,
+    };
 
-    private int operation;
-    private int error;
-    private StringBuilder valueStr;
-    private @Nullable BigDecimal resultValue;
-    private boolean resultIsDisplayed;
-    private boolean overwriteValue;
+    private Context context;
+    private CalcPresenter presenter;
 
-    private @Nullable BigDecimal answerValue;
-    private boolean currentIsAnswer;
+    private CalcSettings settings;
 
-    private TextView textvDisplay;
-    private TextView btnAnswer;
+    private TextView displayTxv;
+    private TextView decimalSepBtn;
+    private TextView answerBtn;
 
     private CharSequence[] btnTexts;
     private CharSequence[] errorMessages;
     private int[] maxDialogDimensions;
 
-    private String zeroString;
-
-    /**
-     * Create a new calculator dialog with default settings
-     */
     public CalcDialog() {
-        // Set default settings
-        maxValue = new BigDecimal("1E10");
-        maxIntDigits = 10;
-        maxFracDigits = 8;
-        roundingMode = RoundingMode.HALF_UP;
-        stripTrailingZeroes = true;
+        settings = new CalcSettings();
+    }
 
-        decimalSep = FORMAT_CHAR_DEFAULT;
-        groupSep = FORMAT_CHAR_DEFAULT;
-        groupSize = 3;
+    ////////// LIFECYCLE METHODS //////////
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-        signCanBeChanged = true;
-
-        clearOnOperation = false;
-        showZeroWhenNoValue = true;
-
-        showAnswerBtn = false;
-        answerValue = null;
-        currentIsAnswer = false;
-
-        operation = OPERATION_NONE;
-        error = ERROR_NONE;
-        resultValue = null;
+        // Wrap calculator dialog's theme to context
+        TypedArray ta = context.obtainStyledAttributes(new int[]{R.attr.calcDialogStyle});
+        int style = ta.getResourceId(0, R.style.CalcDialogStyle);
+        ta.recycle();
+        this.context = new ContextThemeWrapper(context, style);
     }
 
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        setRetainInstance(true);
-
-        // Get locale's symbols for number formatting
-        Locale locale = getDefaultLocale(context);
-        DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(locale);
-        if (decimalSep == FORMAT_CHAR_DEFAULT) decimalSep = dfs.getDecimalSeparator();
-        if (groupSep == FORMAT_CHAR_DEFAULT) groupSep = dfs.getGroupingSeparator();
-
-        // Get string to display for zero
-        BigDecimal zero = BigDecimal.ZERO;
-        if (!stripTrailingZeroes) zero = zero.setScale(maxFracDigits, roundingMode);
-        zeroString = zero.toPlainString();
-        int pointPos = zeroString.indexOf('.');
-        if (pointPos != -1 && decimalSep != '.') {
-            // Replace "." with correct decimal separator
-            StringBuilder sb = new StringBuilder(zeroString);
-            sb.setCharAt(pointPos, decimalSep);
-            zeroString = sb.toString();
-        }
-
-        // Init values
-        if (resultValue != null) {
-            resultValue = resultValue.setScale(maxFracDigits, roundingMode);
-            if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
-            answerValue = resultValue;
-
-            valueStr = new StringBuilder(resultValue.toPlainString());
-
-        } else {
-            valueStr = new StringBuilder();
-        }
-        formatValue();
 
         // Get strings
         TypedArray ta = context.obtainStyledAttributes(R.styleable.CalcDialog);
@@ -197,183 +129,65 @@ public class CalcDialog extends DialogFragment {
                 ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxHeight, -1)
         };
         ta.recycle();
-
-        resultIsDisplayed = true;
     }
 
+    @SuppressLint("InflateParams")
     @Override
-    public @NonNull Dialog onCreateDialog(Bundle state) {
+    public @NonNull Dialog onCreateDialog(final Bundle state) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
         final View view = inflater.inflate(R.layout.dialog_calc, null);
 
         // Value display
-        textvDisplay = view.findViewById(R.id.text_value);
-        textvDisplay.setText(valueStr.toString());
+        displayTxv = view.findViewById(R.id.text_value);
 
         // Erase button
         CalcEraseButton eraseBtn = view.findViewById(R.id.button_calc_erase);
         eraseBtn.setOnEraseListener(new CalcEraseButton.EraseListener() {
             @Override
             public void onErase() {
-                if (dismissError()) return;
-
-                hideAnswerBtn();
-
-                if (valueStr.length() > 0) {
-                    if (resultIsDisplayed || overwriteValue) {
-                        valueStr.setLength(0);
-                        overwriteValue = false;
-
-                    } else {
-                        removeGroupSeparators();
-
-                        // Erase last digit
-                        valueStr.deleteCharAt(valueStr.length() - 1);
-                        if (valueStr.length() > 0) {
-                            // Don't leave useless negative sign or decimal separator
-                            char last = valueStr.charAt(valueStr.length() - 1);
-                            if (last == decimalSep || last == '-') {
-                                valueStr.deleteCharAt(valueStr.length() - 1);
-                            }
-                        }
-                    }
-
-                    formatValue();
-                    textvDisplay.setText(valueStr.toString());
-                    resultIsDisplayed = false;
-                }
+                presenter.onErasedOnce();
             }
 
             @Override
             public void onEraseAll() {
-                clear();
+                presenter.onErasedAll();
             }
         });
 
-        // Digits button: 0-9
-        int[] numberBtnIds = {
-                R.id.button_calc_0,
-                R.id.button_calc_1,
-                R.id.button_calc_2,
-                R.id.button_calc_3,
-                R.id.button_calc_4,
-                R.id.button_calc_5,
-                R.id.button_calc_6,
-                R.id.button_calc_7,
-                R.id.button_calc_8,
-                R.id.button_calc_9,
-        };
+        // Digit buttons
         for (int i = 0; i < 10; i++) {
-            TextView numberBtn = view.findViewById(numberBtnIds[i]);
-            numberBtn.setText(btnTexts[i]);
+            TextView digitBtn = view.findViewById(DIGIT_BTN_IDS[i]);
+            digitBtn.setText(btnTexts[i]);
 
-            final int nb = i;
-            numberBtn.setOnClickListener(new View.OnClickListener() {
+            final int digit = i;
+            digitBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dismissError();
-
-                    hideAnswerBtn();
-
-                    if (resultIsDisplayed || overwriteValue) {
-                        valueStr.setLength(0);
-                        overwriteValue = false;
-                    }
-
-                    removeGroupSeparators();
-
-                    // Check if max digits has been exceeded
-                    int pointPos = valueStr.indexOf(String.valueOf(decimalSep));
-                    if ((pointPos != -1 || maxIntDigits == MAX_DIGITS_UNLIMITED || valueStr.length() < maxIntDigits) &&
-                            (pointPos == -1 || maxFracDigits == MAX_DIGITS_UNLIMITED || valueStr.length() - pointPos - 1 < maxFracDigits)) {
-                        // If max int or max frac digits have not already been reached
-                        // Concatenate current value with new digit
-                        valueStr.append(nb);
-                    }
-
-                    formatValue();
-                    textvDisplay.setText(valueStr.toString());
-                    resultIsDisplayed = false;
+                    presenter.onDigitBtnClicked(digit);
                 }
             });
         }
 
-        // Operator button: +, -, *, /
-        int[] operatorBtnIds = {
-                R.id.button_calc_add,
-                R.id.button_calc_sub,
-                R.id.button_calc_mult,
-                R.id.button_calc_div,
-        };
+        // Operator buttons
         for (int i = 0; i < 4; i++) {
             final int op = i;
-            TextView operatorBtn = view.findViewById(operatorBtnIds[i]);
+            TextView operatorBtn = view.findViewById(OPERATOR_BTN_IDS[i]);
             operatorBtn.setText(btnTexts[i + 10]);
             operatorBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (dismissError()) return;
-
-                    if (valueStr.length() != 0 || currentIsAnswer) {
-                        if (operation != OPERATION_NONE) {
-                            calculate();
-                        } else {
-                            resultValue = getCurrentValue();
-                            if (!clearOnOperation) {
-                                valueStr = new StringBuilder();
-                                formatValue();
-                                resultIsDisplayed = false;
-                            }
-                        }
-                    }
-
-                    operation = op;
-                    if (clearOnOperation) {
-                        valueStr = new StringBuilder();
-                        formatValue();
-                        textvDisplay.setText(valueStr.toString());
-                        resultIsDisplayed = false;
-                    }
-
-                    // Show answer button if needed
-                    if (showAnswerBtn && answerValue != null) {
-                        btnAnswer.setVisibility(View.VISIBLE);
-                    } else {
-                        hideAnswerBtn();
-                    }
+                    presenter.onOperatorBtnClicked(op);
                 }
             });
         }
 
         // Decimal separator button
-        final TextView decimalBtn = view.findViewById(R.id.button_calc_decimal);
-        decimalBtn.setText(btnTexts[15]);
-        decimalBtn.setEnabled(maxFracDigits > 0);
-        decimalBtn.setOnClickListener(new View.OnClickListener() {
+        decimalSepBtn = view.findViewById(R.id.button_calc_decimal);
+        decimalSepBtn.setText(btnTexts[15]);
+        decimalSepBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismissError();
-
-                hideAnswerBtn();
-
-                if (resultIsDisplayed || overwriteValue) {
-                    valueStr.setLength(0);
-                    overwriteValue = false;
-                }
-
-                if (valueStr.indexOf(String.valueOf(decimalSep)) == -1) {
-                    // Only insert a decimal point if there isn't one yet
-                    if (valueStr.length() == 0) {
-                        // Add 0 before decimal point .1 --> 0.1
-                        valueStr.append("0");
-                    }
-
-                    valueStr.append(decimalSep);
-
-                    textvDisplay.setText(valueStr.toString());
-                    resultIsDisplayed = false;
-                }
+                presenter.onDecimalSepBtnClicked();
             }
         });
 
@@ -383,28 +197,7 @@ public class CalcDialog extends DialogFragment {
         signBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dismissError()) return;
-
-                // Negate value
-                String str = valueStr.toString();
-                if (!str.isEmpty() && !str.equals("0") && !str.equals("0" + decimalSep)) {
-                    // If value is not equal to zero or empty
-                    if (valueStr.charAt(0) != '-') {
-                        valueStr.insert(0, '-');
-                    } else {
-                        valueStr.deleteCharAt(0);
-                    }
-
-                    if (resultIsDisplayed) {
-                        //noinspection ConstantConditions
-                        resultValue = resultValue.negate();
-                        //noinspection ConstantConditions
-                        answerValue = answerValue.negate();
-                    }
-
-                    textvDisplay.setText(valueStr.toString());
-                    resultIsDisplayed = false;
-                }
+                presenter.onSignBtnClicked();
             }
         });
 
@@ -414,24 +207,16 @@ public class CalcDialog extends DialogFragment {
         equalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dismissError()) return;
-                calculate();
-
-                answerValue = resultValue;
+                presenter.onEqualBtnClicked();
             }
         });
 
         // Answer button
-        btnAnswer = view.findViewById(R.id.button_calc_answer);
-        btnAnswer.setOnClickListener(new View.OnClickListener() {
+        answerBtn = view.findViewById(R.id.button_calc_answer);
+        answerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnAnswer.setVisibility(View.GONE);
-
-                textvDisplay.setText(R.string.calc_answer);
-
-                currentIsAnswer = true;
-                resultIsDisplayed = false;
+                presenter.onAnswerBtnClicked();
             }
         });
 
@@ -440,7 +225,7 @@ public class CalcDialog extends DialogFragment {
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clear();
+                presenter.onClearBtnClicked();
             }
         });
 
@@ -448,7 +233,7 @@ public class CalcDialog extends DialogFragment {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                presenter.onCancelBtnClicked();
             }
         });
 
@@ -456,43 +241,7 @@ public class CalcDialog extends DialogFragment {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dismissError()) return;
-
-                calculate();
-
-                // If operation was not done, make OK button act as an equal btn
-                if (operation != OPERATION_NONE) return;
-
-                if (error == ERROR_NONE) {
-                    // If sign can't be changed, check if sign is right
-                    if (!signCanBeChanged && resultValue != null) {
-                        int sign = resultValue.signum();
-                        if (sign != 0 && sign != initialSign) {
-                            // Wrong sign
-                            setError(sign == 1 ? ERROR_WRONG_SIGN_NEG : ERROR_WRONG_SIGN_POS);
-                            return;
-                        }
-                    }
-
-                    // Call callback
-                    if (getTargetFragment() != null) {
-                        // Caller was a fragment
-                        try {
-                            ((CalcDialogCallback) getTargetFragment()).onValueEntered(resultValue);
-                        } catch (Exception e) {
-                            // Interface callback is not implemented in fragment
-                        }
-                    } else {
-                        // Caller was an activity
-                        try {
-                            //noinspection ConstantConditions
-                            ((CalcDialogCallback) getActivity()).onValueEntered(resultValue);
-                        } catch (Exception e) {
-                            // Interface callback is not implemented in activity
-                        }
-                    }
-                    dismiss();
-                }
+                presenter.onOkBtnClicked();
             }
         });
 
@@ -517,8 +266,17 @@ public class CalcDialog extends DialogFragment {
                 // Set dialog's content
                 view.setLayoutParams(new ViewGroup.LayoutParams(width, height));
                 dialog.setContentView(view);
+
+                // Presenter
+                presenter = new CalcPresenter();
+                presenter.attach(CalcDialog.this, state);
             }
         });
+
+        if (state != null) {
+            settings.readFromBundle(state);
+            displayTxv.setText(state.getString("displayText"));
+        }
 
         return dialog;
     }
@@ -526,200 +284,84 @@ public class CalcDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-
-        reset();
-    }
-
-    /**
-     * Reset value and operation to none
-     * Doesn't dismiss error and doesn't update display
-     */
-    private void reset() {
-        operation = OPERATION_NONE;
-        resultValue = null;
-        overwriteValue = true;
-
-        answerValue = null;
-        hideAnswerBtn();
-
-        valueStr = new StringBuilder();
-        formatValue();
-
-        resultIsDisplayed = true;
-    }
-
-    /**
-     * Calculate result of operation between current result and operand
-     */
-    private void calculate() {
-        if (resultIsDisplayed) {
-            return;
+        if (presenter != null) {
+            // On config change, presenter is detached before this is called
+            presenter.onDismissed();
         }
+    }
 
-        if (operation == OPERATION_NONE || valueStr.length() == 0) {
-            resultValue = getCurrentValue();
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        presenter.writeStateToBundle(state);
+        settings.writeToBundle(state);
 
+        state.putString("displayText", displayTxv.getText().toString());
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        presenter.detach();
+
+        presenter = null;
+        context = null;
+    }
+
+    ////////// VIEW METHODS //////////
+    CalcSettings getSettings() {
+        return settings;
+    }
+
+    Locale getDefaultLocale() {
+        return CalcDialogUtils.getDefaultLocale(context);
+    }
+
+    void exit() {
+        dismiss();
+    }
+
+    void sendValueResult(BigDecimal value) {
+        // Call callback
+        if (getTargetFragment() != null) {
+            // Caller was a fragment
+            try {
+                ((CalcDialog.CalcDialogCallback) getTargetFragment()).onValueEntered(value);
+            } catch (Exception e) {
+                // Interface callback is not implemented in fragment
+            }
         } else {
-            if (resultValue == null) resultValue = BigDecimal.ZERO;
-            BigDecimal operand = getCurrentValue();
-
-            if (operation == OPERATION_ADD) {
+            // Caller was an activity
+            try {
                 //noinspection ConstantConditions
-                resultValue = resultValue.add(operand);
-            } else if (operation == OPERATION_SUB) {
-                resultValue = resultValue.subtract(operand);
-            } else if (operation == OPERATION_MULT) {
-                resultValue = resultValue.multiply(operand);
-            } else if (operation == OPERATION_DIV) {
-                if (operand.compareTo(BigDecimal.ZERO) == 0) {
-                    setError(ERROR_DIV_ZERO);
-                    return;
-                } else {
-                    resultValue = resultValue.divide(operand, maxFracDigits, roundingMode);
-                }
-            }
-        }
-
-        if (isValueOutOfBounds(resultValue)) {
-            setError(ERROR_OUT_OF_BOUNDS);
-            return;
-        }
-
-        resultValue = resultValue.setScale(maxFracDigits, roundingMode);
-        if (stripTrailingZeroes) resultValue = stripTrailingZeroes(resultValue);
-
-        // Display formatted result
-        valueStr = new StringBuilder(resultValue.toPlainString());
-        formatValue();
-        textvDisplay.setText(valueStr.toString());
-        resultIsDisplayed = true;
-
-        operation = OPERATION_NONE;
-    }
-
-    /**
-     * Display error message and disable dialog's OK button, because there is no value
-     * @param error ID of the error to show
-     */
-    private void setError(int error) {
-        this.error = error;
-        textvDisplay.setText(errorMessages[error]);
-
-        reset();
-    }
-
-    /**
-     * Dismiss error from display
-     * @return true if an error was dismissed
-     */
-    private boolean dismissError() {
-        if (error != ERROR_NONE) {
-            error = ERROR_NONE;
-            textvDisplay.setText(valueStr.toString());
-            resultIsDisplayed = false;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Reset, dismiss error, clear the display
-     */
-    private void clear() {
-        if (dismissError()) return;
-
-        hideAnswerBtn();
-
-        reset();
-
-        textvDisplay.setText(valueStr.toString());
-        resultIsDisplayed = false;
-    }
-
-    /**
-     * Get a BigDecimal corresponding to the displayed value
-     * Note that separators will be removed from display
-     * @return BigDecimal value of display
-     */
-    private BigDecimal getCurrentValue() {
-        if (currentIsAnswer) {
-            return answerValue;
-
-        } else if (valueStr.length() == 0) {
-            return BigDecimal.ZERO;
-
-        } else {
-            removeGroupSeparators();
-            int pointPos = valueStr.indexOf(String.valueOf(decimalSep));
-            if (pointPos != -1) valueStr.replace(pointPos, pointPos + 1, ".");
-            return new BigDecimal(valueStr.toString());
-        }
-    }
-
-    /**
-     * Checks if a BigDecimal exceeds maximum value
-     * @param value value to check for
-     * @return true if value is greater than maximum value
-     *         maximum value is applied equally for positive and negative value
-     */
-    private boolean isValueOutOfBounds(@NonNull BigDecimal value) {
-        return maxValue != null && (value.compareTo(maxValue) > 0 ||
-                value.compareTo(maxValue.negate()) < 0);
-    }
-
-    /**
-     * Add grouping separators and change decimal separator to custom one
-     * If value is empty, set it to 0 if necessary
-     */
-    private void formatValue() {
-        if (valueStr.length() == 0 && showZeroWhenNoValue) {
-            valueStr.append(zeroString);
-            overwriteValue = true;
-            return;
-        }
-
-        // Replace "." by correct decimal separator
-        int pointPos = valueStr.indexOf(".");
-        if (pointPos != -1) {
-            valueStr.setCharAt(pointPos, decimalSep);
-        } else {
-            pointPos = valueStr.indexOf(String.valueOf(decimalSep));
-        }
-
-        // Add group separators if needed
-        if (groupSize > 0) {
-            int start = (pointPos == -1 ? valueStr.length() : pointPos) - groupSize;
-            for (int i = start; i > 0; i--) {
-                if ((start - i) % groupSize == 0
-                        && (i != 1 || valueStr.charAt(0) != '-')) {
-                    valueStr.insert(i, groupSep);
-                }
+                ((CalcDialog.CalcDialogCallback) getActivity()).onValueEntered(value);
+            } catch (Exception e) {
+                // Interface callback is not implemented in activity
             }
         }
     }
 
-    /**
-     * Remove all grouping separators from display
-     * 10,000,000 becomes 10000000
-     * Used to format display to BigDecimal
-     */
-    private void removeGroupSeparators() {
-        if (groupSize > 0) {
-            for (int i = valueStr.length() - 1; i >= 0; i--) {
-                if (valueStr.charAt(i) == groupSep) {
-                    valueStr.deleteCharAt(i);
-                }
-            }
-        }
+    void setAnswerBtnShown(boolean shown) {
+        answerBtn.setVisibility(shown ? View.VISIBLE : View.GONE);
     }
 
-    private void hideAnswerBtn() {
-        if (showAnswerBtn) {
-            btnAnswer.setVisibility(View.GONE);
-            currentIsAnswer = false;
-        }
+    void setDecimalSepBtnEnabled(boolean enabled) {
+        decimalSepBtn.setEnabled(enabled);
     }
 
+    void displayValueText(String text) {
+        displayTxv.setText(text);
+    }
+
+    void displayErrorText(int error) {
+        displayTxv.setText(errorMessages[error]);
+    }
+
+    void displayAnswerText() {
+        displayTxv.setText(R.string.calc_answer);
+    }
+
+    ////////// CALCULATOR SETTINGS //////////
     /**
      * Set initial value to show
      * By default, initial value is null. That means value is 0 but if
@@ -728,10 +370,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setValue(@Nullable BigDecimal value) {
-        if (value != null && maxValue != null && isValueOutOfBounds(value)) {
-            value = (value.compareTo(BigDecimal.ZERO) > 0 ? maxValue : maxValue.negate());
-        }
-        resultValue = value;
+        settings.setValue(value);
         return this;
     }
 
@@ -744,17 +383,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setMaxValue(@Nullable BigDecimal maxValue) {
-        if (maxValue != null && maxValue.compareTo(BigDecimal.ZERO) < 0) {
-            // Must be positive
-            maxValue = maxValue.negate();
-        }
-        this.maxValue = maxValue;
-
-        if (resultValue != null && isValueOutOfBounds(resultValue)) {
-            // Initial value is greater than max value
-            resultValue = maxValue;
-        }
-
+        settings.setMaxValue(maxValue);
         return this;
     }
 
@@ -767,14 +396,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setMaxDigits(int intPart, int fracPart) {
-        if (intPart != MAX_DIGITS_UNLIMITED && intPart < 1 ||
-                fracPart != MAX_DIGITS_UNLIMITED && fracPart < 0) {
-            throw new IllegalArgumentException("Max integer part must be at least 1 and max fractional part must be at least 0.");
-        }
-
-        maxIntDigits = intPart;
-        maxFracDigits = fracPart;
-
+        settings.setMaxDigits(intPart, fracPart);
         return this;
     }
 
@@ -786,12 +408,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setRoundingMode(RoundingMode roundingMode) {
-        if (roundingMode.equals(RoundingMode.UNNECESSARY)) {
-            throw new IllegalArgumentException("Cannot use RoundingMode.UNNECESSARY as a rounding mode.");
-        }
-
-        this.roundingMode = roundingMode;
-
+        settings.setRoundingMode(roundingMode);
         return this;
     }
 
@@ -804,8 +421,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setStripTrailingZeroes(boolean strip) {
-        stripTrailingZeroes = strip;
-
+        settings.stripTrailingZeroes = strip;
         return this;
     }
 
@@ -820,14 +436,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setSignCanBeChanged(boolean canBeChanged, int sign) {
-        signCanBeChanged = canBeChanged;
-        if (!signCanBeChanged) {
-            if (sign != -1 && sign != 1) {
-                throw new IllegalArgumentException("Sign cannot be changed was set but no valid sign is given.");
-            }
-            initialSign = sign;
-        }
-
+        settings.setSignCanBeChanged(canBeChanged, sign);
         return this;
     }
 
@@ -840,13 +449,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setFormatSymbols(char decimalSep, char groupSep) {
-        if (decimalSep != FORMAT_CHAR_DEFAULT && decimalSep == groupSep) {
-            throw new IllegalArgumentException("Decimal separator cannot be the same as grouping separator.");
-        }
-
-        this.decimalSep = decimalSep;
-        this.groupSep = groupSep;
-
+        settings.setFormatSymbols(decimalSep, groupSep);
         return this;
     }
 
@@ -858,8 +461,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setClearDisplayOnOperation(boolean clear) {
-        clearOnOperation = clear;
-
+        settings.clearOnOperation = clear;
         return this;
     }
 
@@ -869,8 +471,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setShowZeroWhenNoValue(boolean show) {
-        showZeroWhenNoValue = show;
-
+        settings.showZeroWhenNoValue = show;
         return this;
     }
 
@@ -883,11 +484,7 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setGroupSize(int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException("Group size must be positive");
-        }
-        groupSize = size;
-
+        settings.setGroupSize(size);
         return this;
     }
 
@@ -899,80 +496,20 @@ public class CalcDialog extends DialogFragment {
      * @return the dialog
      */
     public CalcDialog setShowAnswerButton(boolean show) {
-        showAnswerBtn = show;
-
+        settings.showAnswerBtn = show;
         return this;
-    }
-
-    @Override
-    public void onDestroyView() {
-        Dialog dialog = getDialog();
-        // handles https://code.google.com/p/android/issues/detail?id=17423
-        if (dialog != null && getRetainInstance()) {
-            dialog.setDismissMessage(null);
-        }
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // Wrap calculator dialog's theme to context
-        TypedArray ta = context.obtainStyledAttributes(new int[]{R.attr.calcDialogStyle});
-        int style = ta.getResourceId(0, R.style.CalcDialogStyle);
-        ta.recycle();
-        this.context = new ContextThemeWrapper(context, style);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        context = null;
     }
 
     public interface CalcDialogCallback {
         /**
          * Called when the dialog's OK button is clicked
          * @param value value entered. If calculator didn't strip trailing zeroes, you can call
-         *              {@link #stripTrailingZeroes(BigDecimal)} to strip them. To format the value
-         *              to a String, use {@link BigDecimal#toPlainString()}.
+         *              {@link CalcDialogUtils#stripTrailingZeroes(BigDecimal)} to strip them.
+         *              To format the value to a String, use {@link BigDecimal#toPlainString()}.
          *              To format the value to a currency String you could do:
          *              {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}
          */
         void onValueEntered(BigDecimal value);
-    }
-
-
-    //// UTILITY METHODS ////
-    /**
-     * Get device's default locale
-     * @param context any context
-     * @return the default locale
-     */
-    public static Locale getDefaultLocale(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-            return context.getResources().getConfiguration().getLocales().get(0);
-        } else{
-            //noinspection deprecation
-            return context.getResources().getConfiguration().locale;
-        }
-    }
-
-    /**
-     * Strip trailing zeroes from a BigDecimal. Essentially calls {@link BigDecimal#stripTrailingZeros()}
-     * but fixes bug (http://hg.openjdk.java.net/jdk8/jdk8/jdk/rev/2ee772cda1d6) where zeroes
-     * aren't stripped if value is zero.
-     * @param from BigDecimal to strip trailing zeroes from
-     * @return BigDecimal with stripped trailing zeroes
-     */
-    public static BigDecimal stripTrailingZeroes(@NonNull BigDecimal from) {
-        if (from.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO;
-        } else {
-            return from.stripTrailingZeros();
-        }
     }
 
 }

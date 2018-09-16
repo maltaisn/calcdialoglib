@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
             }
         }
 
+
         final CalcDialog calcDialog = new CalcDialog();
 
         signCheck = findViewById(R.id.check_sign);
