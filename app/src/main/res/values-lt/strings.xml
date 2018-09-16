@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Skaičiuotuvo Langas</string>
+
+    <string name="open_dialog">Atidaryti skaičiuotuvą</string>
+    <string name="result_value">Rezultatas</string>
+    <string name="result_value_none">Nėra</string>
+    <string name="calc_settings">Skaičiuotuvo nustatymai</string>
+
+    <string name="option_sign">Ženklas gali būti pakeistas</string>
+    <string name="option_answer_btn">Rodyti atsakymo mygtuką</string>
+    <string name="option_clear_operation">Ištrinti laukelį veiksmo paspaudimo metu</string>
+    <string name="option_show_zero">Rodyti nulį, kai rezultatas neturi reikšmės</string>
+    <string name="option_max_value">Maks. reikšmė:</string>
+    <string name="option_max_int">Maks. skaitmenų skaičius:</string>
+    <string name="option_max_frac">Maks. trupmeninių skaitmenų skaičius:</string>
+    <string name="option_strip_zeroes">Panaikinti nereikalingus nulius</string>
+
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="calc_dialog_cancel">Atšaukti</string>
+    <string name="calc_dialog_ok">OK</string>
+
+    <string name="calc_answer">Ats</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>Dalyba iš nulio</item>
+        <item>Rezultatas per didelis</item>
+        <item>Rezultatas privalo būti teigiamas</item>
+        <item>Rezultatas privalo būti neigiamas</item>
+    </string-array>
+    <string name="calc_dialog_clear">Ištrinti</string>
+
+</resources>
