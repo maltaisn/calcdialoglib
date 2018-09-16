@@ -22,7 +22,6 @@
 package com.nmaltais.calcdialog;
 
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,11 +34,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -137,6 +136,11 @@ public class CalcDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View view = inflater.inflate(R.layout.dialog_calc, null);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            LinearLayout header = view.findViewById(R.id.header);
+            header.setBackgroundResource(R.drawable.elevation);
+        }
+
         // Value display
         displayTxv = view.findViewById(R.id.text_value);
 
@@ -202,7 +206,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Equal button
-        TextView equalBtn = view.findViewById(R.id.button_calc_equal);
+        AppCompatTextView equalBtn = view.findViewById(R.id.button_calc_equal);
         equalBtn.setText(btnTexts[16]);
         equalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,6 +251,7 @@ public class CalcDialog extends AppCompatDialogFragment {
 
         // Set up dialog
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @SuppressWarnings("ConstantConditions")
             @Override
@@ -476,6 +481,26 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     /**
+     * Set the reference id of the dialog
+     * @param reference define a dialog id
+     * @return the dialog
+     */
+    public CalcDialog setReference(int reference) {
+        this.reference = reference;
+        return this;
+    }
+
+    /**
+     * Set if the sign button should be hidden
+     * @param hideSignButton true to hide the sign button, false otherwise (default)
+     * @return the dialog
+     */
+    public CalcDialog setHideSignButton(boolean hideSignButton) {
+        this.hideSignButton = hideSignButton;
+        return this;
+    }
+
+    /**
      * Set the size of groups separated by group separators
      * 3 does 000,000,000
      * 4 does 0,0000,0000
@@ -508,8 +533,10 @@ public class CalcDialog extends AppCompatDialogFragment {
          *              To format the value to a String, use {@link BigDecimal#toPlainString()}.
          *              To format the value to a currency String you could do:
          *              {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}
+         * @param reference dialog reference. used to identify a dialog in the callback.
+         *              {@link #setReference(int)} to define it
          */
-        void onValueEntered(BigDecimal value);
+        void onValueEntered(int reference, BigDecimal value);
     }
 
 }

@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="calc_dialog_clear">Silmek</string>
+    <string name="calc_dialog_cancel">İptal etmek</string>
+    <string name="calc_dialog_ok">tamam</string>
+
+    <string name="calc_answer">Cev</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>Sıfıra bölüm</item>
+        <item>Sınırların dışında</item>
+        <item>Sonuç pozitif olmalı</item>
+        <item>Sonuç negatif olmalı</item>
+    </string-array>
+
+</resources>

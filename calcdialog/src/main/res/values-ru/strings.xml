@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calc_dialog_clear">Oчищать</string>
+    <string name="calc_dialog_cancel">Отмена</string>
+    <string name="calc_dialog_ok">OK</string>
+
+    <string name="calc_answer">Отв</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>Деление на ноль</item>
+        <item>За границами</item>
+        <item>Результат должен быть положительным</item>
+        <item>Результат должен быть отрицательным</item>
+    </string-array>
+</resources>
