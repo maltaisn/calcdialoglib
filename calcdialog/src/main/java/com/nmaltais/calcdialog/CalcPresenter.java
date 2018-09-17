@@ -189,8 +189,21 @@ public class CalcPresenter {
                 || settings.maxFracDigits == CalcDialog.MAX_DIGITS_UNLIMITED
                 || valueStr.length() - pointPos - 1 < settings.maxFracDigits)) {
             // If max int or max frac digits have not already been reached
-            // Concatenate current value with new digit
-            valueStr.append(digit);
+
+            boolean canAppend = true;
+
+            if(settings.preventLeadingZeroes && valueStr.length() != 0 && valueStr.indexOf(".") == -1 && Integer.parseInt(valueStr.toString()) == 0){
+                if(digit == 0){
+                    canAppend = false;
+                } else{
+                    valueStr.setLength(0);
+                }
+            }
+
+            if(canAppend){
+                // Concatenate current value with new digit
+                valueStr.append(digit);
+            }
         }
 
         formatValue();
