@@ -19,6 +19,7 @@ class CalcSettings {
 
     RoundingMode roundingMode;
 
+    boolean preventLeadingZeroes;
     boolean stripTrailingZeroes;
 
     boolean signCanBeChanged;
@@ -39,6 +40,8 @@ class CalcSettings {
         maxIntDigits = 10;
         maxFracDigits = 8;
         roundingMode = RoundingMode.HALF_UP;
+
+        preventLeadingZeroes = true;
         stripTrailingZeroes = true;
 
         decimalSep = CalcDialog.FORMAT_CHAR_DEFAULT;
@@ -62,6 +65,7 @@ class CalcSettings {
         bundle.putInt("maxIntDigits", maxIntDigits);
         bundle.putInt("maxFracDigits", maxFracDigits);
         bundle.putString("roundingMode", roundingMode.toString());
+        bundle.putBoolean("preventLeadingZeroes", preventLeadingZeroes);
         bundle.putBoolean("stripTrailingZeroes", stripTrailingZeroes);
         bundle.putBoolean("signCanBeChanged", signCanBeChanged);
         bundle.putInt("initialSign", initialSign);
@@ -82,6 +86,7 @@ class CalcSettings {
         maxIntDigits = bundle.getInt("maxIntDigits");
         maxFracDigits = bundle.getInt("maxFracDigits");
         roundingMode = RoundingMode.valueOf(bundle.getString("roundingMode"));
+        preventLeadingZeroes = bundle.getBoolean("preventLeadingZeroes");
         stripTrailingZeroes = bundle.getBoolean("stripTrailingZeroes");
         signCanBeChanged = bundle.getBoolean("signCanBeChanged");
         initialSign = bundle.getInt("initialSign");

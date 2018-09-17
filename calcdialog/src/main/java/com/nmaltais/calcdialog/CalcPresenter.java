@@ -155,6 +155,10 @@ public class CalcPresenter {
                     char last = valueStr.charAt(valueStr.length() - 1);
                     if (last == settings.decimalSep || last == '-') {
                         valueStr.deleteCharAt(valueStr.length() - 1);
+
+                        if(valueStr.toString().equals("-0")){
+                            valueStr.deleteCharAt(0);
+                        }
                     }
                 }
             }
@@ -189,8 +193,21 @@ public class CalcPresenter {
                 || settings.maxFracDigits == CalcDialog.MAX_DIGITS_UNLIMITED
                 || valueStr.length() - pointPos - 1 < settings.maxFracDigits)) {
             // If max int or max frac digits have not already been reached
-            // Concatenate current value with new digit
-            valueStr.append(digit);
+
+            boolean canAppend = true;
+
+            if(settings.preventLeadingZeroes && valueStr.length() != 0 && valueStr.indexOf(settings.decimalSep+"") == -1 && Integer.parseInt(valueStr.toString()) == 0){
+                if(digit == 0){
+                    canAppend = false;
+                } else{
+                    valueStr.setLength(0);
+                }
+            }
+
+            if(canAppend){
+                // Concatenate current value with new digit
+                valueStr.append(digit);
+            }
         }
 
         formatValue();

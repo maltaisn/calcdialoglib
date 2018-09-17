@@ -460,7 +460,20 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     /**
-     * Set whether to strip zeroes from the result or not
+     * Set whether to prevent leading zeroes from showing or not.
+     * By default, leading zeroes are blocked.
+     * blocked,  00012.34 will never be displayed
+     * Not blocked, 00012.34 can be typed
+     * @param block whether to block them or not
+     * @return the dialog
+     */
+    public CalcDialog setPreventLeadingZeroes(boolean block) {
+        settings.preventLeadingZeroes = block;
+        return this;
+    }
+
+    /**
+     * Set whether to strip trailing zeroes from the result or not.
      * By default, zeroes are stripped.
      * Strip,  12.340000 = 12.34
      * No strip, 12.340000 = 12.340000
