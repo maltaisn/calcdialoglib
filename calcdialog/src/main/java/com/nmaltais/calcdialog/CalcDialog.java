@@ -70,23 +70,23 @@ public class CalcDialog extends AppCompatDialogFragment {
     public static final char FORMAT_CHAR_DEFAULT = 0;
 
     private static final int[] DIGIT_BTN_IDS = {
-            R.id.button_calc_0,
-            R.id.button_calc_1,
-            R.id.button_calc_2,
-            R.id.button_calc_3,
-            R.id.button_calc_4,
-            R.id.button_calc_5,
-            R.id.button_calc_6,
-            R.id.button_calc_7,
-            R.id.button_calc_8,
-            R.id.button_calc_9,
+            R.id.calc_btn_0,
+            R.id.calc_btn_1,
+            R.id.calc_btn_2,
+            R.id.calc_btn_3,
+            R.id.calc_btn_4,
+            R.id.calc_btn_5,
+            R.id.calc_btn_6,
+            R.id.calc_btn_7,
+            R.id.calc_btn_8,
+            R.id.calc_btn_9,
     };
 
     private static final int[] OPERATOR_BTN_IDS = {
-            R.id.button_calc_add,
-            R.id.button_calc_sub,
-            R.id.button_calc_mult,
-            R.id.button_calc_div,
+            R.id.calc_btn_add,
+            R.id.calc_btn_sub,
+            R.id.calc_btn_mult,
+            R.id.calc_btn_div,
     };
 
     private Context context;
@@ -96,6 +96,7 @@ public class CalcDialog extends AppCompatDialogFragment {
 
     private TextView displayTxv;
     private TextView decimalSepBtn;
+    private TextView equalBtn;
     private TextView answerBtn;
     private TextView signBtn;
 
@@ -157,15 +158,15 @@ public class CalcDialog extends AppCompatDialogFragment {
         final View view = inflater.inflate(R.layout.dialog_calc, null);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            LinearLayout header = view.findViewById(R.id.header);
-            header.setBackgroundResource(R.drawable.bg_elevation);
+            LinearLayout header = view.findViewById(R.id.calc_layout_header);
+            header.setBackgroundResource(R.drawable.calc_bg_elevation);
         }
 
         // Value display
-        displayTxv = view.findViewById(R.id.text_value);
+        displayTxv = view.findViewById(R.id.calc_txv_value);
 
         // Erase button
-        CalcEraseButton eraseBtn = view.findViewById(R.id.button_calc_erase);
+        CalcEraseButton eraseBtn = view.findViewById(R.id.calc_btn_erase);
         eraseBtn.setOnEraseListener(new CalcEraseButton.EraseListener() {
             @Override
             public void onErase() {
@@ -206,7 +207,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         }
 
         // Decimal separator button
-        decimalSepBtn = view.findViewById(R.id.button_calc_decimal);
+        decimalSepBtn = view.findViewById(R.id.calc_btn_decimal);
         decimalSepBtn.setText(btnTexts[15]);
         decimalSepBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +217,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Sign button: +/-
-        signBtn = view.findViewById(R.id.button_calc_sign);
+        signBtn = view.findViewById(R.id.calc_btn_sign);
         signBtn.setText(btnTexts[14]);
         signBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +227,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Equal button
-        TextView equalBtn = view.findViewById(R.id.button_calc_equal);
+        equalBtn = view.findViewById(R.id.calc_btn_equal);
         equalBtn.setText(btnTexts[16]);
         equalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,7 +237,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Answer button
-        answerBtn = view.findViewById(R.id.button_calc_answer);
+        answerBtn = view.findViewById(R.id.calc_btn_answer);
         answerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -245,7 +246,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Dialog buttons
-        Button clearBtn = view.findViewById(R.id.button_dialog_clear);
+        Button clearBtn = view.findViewById(R.id.calc_btn_clear);
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,7 +254,7 @@ public class CalcDialog extends AppCompatDialogFragment {
             }
         });
 
-        Button cancelBtn = view.findViewById(R.id.button_dialog_cancel);
+        Button cancelBtn = view.findViewById(R.id.calc_btn_cancel);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,7 +262,7 @@ public class CalcDialog extends AppCompatDialogFragment {
             }
         });
 
-        Button okBtn = view.findViewById(R.id.button_dialog_ok);
+        Button okBtn = view.findViewById(R.id.calc_btn_ok);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -380,7 +381,11 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     void setAnswerBtnVisible(boolean visible) {
-        answerBtn.setVisibility(visible ? View.VISIBLE : View.GONE);
+        answerBtn.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    void setEqualBtnVisible(boolean visible) {
+        equalBtn.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     void setSignBtnVisible(boolean visible) {

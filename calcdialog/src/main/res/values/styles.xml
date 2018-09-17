@@ -15,10 +15,10 @@
         <item name="calcNumberBtnStyle">@style/CalcNumberBtnStyle</item>
         <item name="calcNumberBtnColor">@android:color/transparent</item>
         <item name="calcOperationBtnStyle">@style/CalcOperationBtnStyle</item>
-        <item name="calcOperationBtnColor">@color/grey_100</item>
+        <item name="calcOperationBtnColor">@color/calc_grey_100</item>
         <item name="calcAnswerBtnStyle">@style/CalcAnswerBtnStyle</item>
         <item name="calcEraseBtnStyle">@style/CalcEraseBtnStyle</item>
-        <item name="calcDialogSepColor">@color/grey_500</item>
+        <item name="calcDialogSepColor">@color/calc_grey_500</item>
         <item name="calcDialogButtonStyle">@style/CalcDialogButtonStyle</item>
         <item name="calcErrors">@array/calc_dialog_errors</item>
     </style>
@@ -65,7 +65,7 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
         <item name="android:scaleType">center</item>
-        <item name="android:src">@drawable/ic_backspace</item>
+        <item name="android:src">@drawable/calc_ic_backspace</item>
         <item name="tint">?android:attr/textColorSecondary</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>

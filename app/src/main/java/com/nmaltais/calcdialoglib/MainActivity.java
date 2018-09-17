@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
     private static final int DIALOG_REQUEST_CODE = 0;
 
-    private TextView valueTextv;
-    private CheckBox signCheck;
+    private TextView valueTxv;
+    private CheckBox signChk;
 
     private @Nullable BigDecimal value;
 
@@ -61,82 +61,82 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
         final CalcDialog calcDialog = CalcDialog.newInstance(DIALOG_REQUEST_CODE);
 
-        signCheck = findViewById(R.id.check_sign);
-        if (value == null) signCheck.setEnabled(false);
+        signChk = findViewById(R.id.chk_change_sign);
+        if (value == null) signChk.setEnabled(false);
 
-        final CheckBox showAnswerCheck = findViewById(R.id.check_answer_btn);
-        final CheckBox showSignCheck = findViewById(R.id.check_show_sign);
-        final CheckBox clearOnOpCheck = findViewById(R.id.check_clear_operation);
-        final CheckBox showZeroCheck = findViewById(R.id.check_show_zero);
-        final CheckBox stripZeroCheck = findViewById(R.id.check_strip_zeroes);
+        final CheckBox showAnswerChk = findViewById(R.id.chk_answer_btn);
+        final CheckBox showSignChk = findViewById(R.id.chk_show_sign);
+        final CheckBox clearOnOpChk = findViewById(R.id.chk_clear_operation);
+        final CheckBox showZeroChk = findViewById(R.id.chk_show_zero);
+        final CheckBox stripZeroChk = findViewById(R.id.chk_strip_zeroes);
 
         // Max value
-        final CheckBox maxValCheck = findViewById(R.id.check_max_value);
-        final EditText maxValEditt = findViewById(R.id.editt_max_value);
-        maxValCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox maxValChk = findViewById(R.id.chk_max_value);
+        final EditText maxValEdt = findViewById(R.id.edt_max_value);
+        maxValChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                maxValEditt.setEnabled(isChecked);
+                maxValEdt.setEnabled(isChecked);
             }
         });
-        maxValEditt.setEnabled(maxValCheck.isChecked());
-        maxValEditt.setText(String.valueOf(10000000000L));
+        maxValEdt.setEnabled(maxValChk.isChecked());
+        maxValEdt.setText(String.valueOf(10000000000L));
 
         // Max integer digits
-        final CheckBox maxIntCheck = findViewById(R.id.check_max_int);
-        final EditText maxIntEditt = findViewById(R.id.editt_max_int);
-        maxIntCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox maxIntChk = findViewById(R.id.chk_max_int);
+        final EditText maxIntEdt = findViewById(R.id.edt_max_int);
+        maxIntChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                maxIntEditt.setEnabled(isChecked);
+                maxIntEdt.setEnabled(isChecked);
             }
         });
-        maxIntEditt.setEnabled(maxIntCheck.isChecked());
-        maxIntEditt.setText(String.valueOf(10));
+        maxIntEdt.setEnabled(maxIntChk.isChecked());
+        maxIntEdt.setText(String.valueOf(10));
 
         // Max fractional digits
-        final CheckBox maxFracCheck = findViewById(R.id.check_max_frac);
-        final EditText maxFracEditt = findViewById(R.id.editt_max_frac);
-        maxIntCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox maxFracChk = findViewById(R.id.chk_max_frac);
+        final EditText maxFracEdt = findViewById(R.id.edt_max_frac);
+        maxIntChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                maxFracEditt.setEnabled(isChecked);
+                maxFracEdt.setEnabled(isChecked);
             }
         });
-        maxFracEditt.setEnabled(maxFracCheck.isChecked());
-        maxFracEditt.setText(String.valueOf(8));
+        maxFracEdt.setEnabled(maxFracChk.isChecked());
+        maxFracEdt.setText(String.valueOf(8));
 
         // Value display
-        valueTextv = findViewById(R.id.textv_result);
-        valueTextv.setText(value == null ? getString(R.string.result_value_none) : value.toPlainString());
+        valueTxv = findViewById(R.id.txv_result);
+        valueTxv.setText(value == null ? getString(R.string.result_value_none) : value.toPlainString());
 
         // Open dialog button
         Button openBtn = findViewById(R.id.btn_open);
         openBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean signCanBeChanged = !signCheck.isEnabled() || signCheck.isChecked();
+                boolean signCanBeChanged = !signChk.isEnabled() || signChk.isChecked();
 
-                String maxValueStr = maxValEditt.getText().toString();
-                BigDecimal maxValue = maxValCheck.isChecked() && !maxValueStr.isEmpty() ?
+                String maxValueStr = maxValEdt.getText().toString();
+                BigDecimal maxValue = maxValChk.isChecked() && !maxValueStr.isEmpty() ?
                         new BigDecimal(maxValueStr) : null;
 
-                String maxIntStr = maxIntEditt.getText().toString();
-                int maxInt = maxIntCheck.isChecked() && !maxIntStr.isEmpty() ?
+                String maxIntStr = maxIntEdt.getText().toString();
+                int maxInt = maxIntChk.isChecked() && !maxIntStr.isEmpty() ?
                         Integer.valueOf(maxIntStr) : CalcDialog.MAX_DIGITS_UNLIMITED;
 
-                String maxFracStr = maxFracEditt.getText().toString();
-                int maxFrac = maxFracCheck.isChecked() && !maxFracStr.isEmpty() ?
+                String maxFracStr = maxFracEdt.getText().toString();
+                int maxFrac = maxFracChk.isChecked() && !maxFracStr.isEmpty() ?
                         Integer.valueOf(maxFracStr) : CalcDialog.MAX_DIGITS_UNLIMITED;
 
                 // Set settings and value
                 calcDialog.setValue(value)
-                        .setShowSignButton(showSignCheck.isChecked())
-                        .setShowAnswerButton(showAnswerCheck.isChecked())
+                        .setShowSignButton(showSignChk.isChecked())
+                        .setShowAnswerButton(showAnswerChk.isChecked())
                         .setSignCanBeChanged(signCanBeChanged, signCanBeChanged ? 0 : value.signum())
-                        .setClearDisplayOnOperation(clearOnOpCheck.isChecked())
-                        .setShowZeroWhenNoValue(showZeroCheck.isChecked())
-                        .setStripTrailingZeroes(stripZeroCheck.isChecked())
+                        .setClearDisplayOnOperation(clearOnOpChk.isChecked())
+                        .setShowZeroWhenNoValue(showZeroChk.isChecked())
+                        .setStripTrailingZeroes(stripZeroChk.isChecked())
                         .setMaxValue(maxValue)
                         .setMaxDigits(maxInt, maxFrac);
 
@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
         this.value = value;
 
-        valueTextv.setText(value.toPlainString());
-        signCheck.setEnabled(value.compareTo(BigDecimal.ZERO) != 0);
+        valueTxv.setText(value.toPlainString());
+        signChk.setEnabled(value.compareTo(BigDecimal.ZERO) != 0);
     }
 }
 

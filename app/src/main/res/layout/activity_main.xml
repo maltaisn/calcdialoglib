@@ -35,13 +35,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/open_dialog"
-        app:layout_constraintBottom_toBottomOf="@+id/textv_result"
+        app:layout_constraintBottom_toBottomOf="@+id/txv_result"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="16dp" />
 
     <TextView
-        android:id="@+id/textv_result_label"
+        android:id="@+id/txv_result_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -52,7 +52,7 @@
         android:layout_marginLeft="16dp" />
 
     <TextView
-        android:id="@+id/textv_result"
+        android:id="@+id/txv_result"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -62,13 +62,13 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_open"
-        app:layout_constraintTop_toBottomOf="@+id/textv_result_label"
+        app:layout_constraintTop_toBottomOf="@+id/txv_result_label"
         tools:text="1000"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="16dp" />
 
     <TextView
-        android:id="@+id/textv_calc_settings"
+        android:id="@+id/txv_calc_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -81,7 +81,7 @@
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_answer_btn"
+        android:id="@+id/chk_answer_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -89,66 +89,66 @@
         android:checked="false"
         android:text="@string/option_answer_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textv_calc_settings"
+        app:layout_constraintTop_toBottomOf="@+id/txv_calc_settings"
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_sign"
+        android:id="@+id/chk_change_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:checked="true"
         android:text="@string/option_sign"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_answer_btn"
+        app:layout_constraintTop_toBottomOf="@+id/chk_answer_btn"
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_show_sign"
+        android:id="@+id/chk_show_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:checked="true"
         android:text="@string/option_sign_show_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_sign"
+        app:layout_constraintTop_toBottomOf="@+id/chk_change_sign"
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_clear_operation"
+        android:id="@+id/chk_clear_operation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:checked="false"
         android:text="@string/option_clear_operation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_show_sign"
+        app:layout_constraintTop_toBottomOf="@+id/chk_show_sign"
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_show_zero"
+        android:id="@+id/chk_show_zero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:checked="true"
         android:text="@string/option_show_zero"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_clear_operation"
+        app:layout_constraintTop_toBottomOf="@+id/chk_clear_operation"
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_strip_zeroes"
+        android:id="@+id/chk_strip_zeroes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:checked="true"
         android:text="@string/option_strip_zeroes"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_show_zero"
+        app:layout_constraintTop_toBottomOf="@+id/chk_show_zero"
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_max_value"
+        android:id="@+id/chk_max_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -156,14 +156,14 @@
         android:layout_marginTop="8dp"
         android:checked="true"
         android:text="@string/option_max_value"
-        app:layout_constraintBottom_toBottomOf="@+id/editt_max_value"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_max_value"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editt_max_value"
-        android:labelFor="@+id/editt_max_value"
+        app:layout_constraintTop_toTopOf="@+id/edt_max_value"
+        android:labelFor="@+id/edt_max_value"
         android:layout_marginLeft="16dp" />
 
     <EditText
-        android:id="@+id/editt_max_value"
+        android:id="@+id/edt_max_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -171,8 +171,8 @@
         android:ems="10"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/check_max_value"
-        app:layout_constraintTop_toBottomOf="@+id/check_strip_zeroes"
+        app:layout_constraintStart_toEndOf="@+id/chk_max_value"
+        app:layout_constraintTop_toBottomOf="@+id/chk_strip_zeroes"
         tools:text="10000000000"
         android:layout_marginRight="24dp"
         android:layout_marginLeft="8dp"
@@ -180,7 +180,7 @@
         />
 
     <CheckBox
-        android:id="@+id/check_max_int"
+        android:id="@+id/chk_max_int"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -188,14 +188,14 @@
         android:layout_marginTop="8dp"
         android:checked="true"
         android:text="@string/option_max_int"
-        app:layout_constraintBottom_toBottomOf="@+id/editt_max_int"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_max_int"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editt_max_int"
-        android:labelFor="@+id/editt_max_int"
+        app:layout_constraintTop_toTopOf="@+id/edt_max_int"
+        android:labelFor="@+id/edt_max_int"
         android:layout_marginLeft="16dp" />
 
     <EditText
-        android:id="@+id/editt_max_int"
+        android:id="@+id/edt_max_int"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -205,8 +205,8 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.875"
-        app:layout_constraintStart_toEndOf="@+id/check_max_int"
-        app:layout_constraintTop_toBottomOf="@+id/editt_max_value"
+        app:layout_constraintStart_toEndOf="@+id/chk_max_int"
+        app:layout_constraintTop_toBottomOf="@+id/edt_max_value"
         tools:text="10"
         android:layout_marginRight="24dp"
         android:layout_marginLeft="8dp"
@@ -214,7 +214,7 @@
         />
 
     <CheckBox
-        android:id="@+id/check_max_frac"
+        android:id="@+id/chk_max_frac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -222,14 +222,14 @@
         android:layout_marginTop="8dp"
         android:checked="true"
         android:text="@string/option_max_frac"
-        app:layout_constraintBottom_toBottomOf="@+id/editt_max_frac"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_max_frac"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editt_max_frac"
-        android:labelFor="@id/editt_max_frac"
+        app:layout_constraintTop_toTopOf="@+id/edt_max_frac"
+        android:labelFor="@id/edt_max_frac"
         android:layout_marginLeft="16dp" />
 
     <EditText
-        android:id="@+id/editt_max_frac"
+        android:id="@+id/edt_max_frac"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -239,8 +239,8 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/check_max_frac"
-        app:layout_constraintTop_toBottomOf="@+id/editt_max_int"
+        app:layout_constraintStart_toEndOf="@+id/chk_max_frac"
+        app:layout_constraintTop_toBottomOf="@+id/edt_max_int"
         tools:text="8"
         android:layout_marginRight="24dp"
         android:layout_marginLeft="8dp"
