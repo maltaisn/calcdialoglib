@@ -155,6 +155,10 @@ public class CalcPresenter {
                     char last = valueStr.charAt(valueStr.length() - 1);
                     if (last == settings.decimalSep || last == '-') {
                         valueStr.deleteCharAt(valueStr.length() - 1);
+
+                        if(valueStr.toString().equals("-0")){
+                            valueStr.deleteCharAt(0);
+                        }
                     }
                 }
             }
