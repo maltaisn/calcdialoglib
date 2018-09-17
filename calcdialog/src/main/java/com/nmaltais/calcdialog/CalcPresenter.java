@@ -192,7 +192,7 @@ public class CalcPresenter {
 
             boolean canAppend = true;
 
-            if(settings.preventLeadingZeroes && valueStr.length() != 0 && valueStr.indexOf(".") == -1 && Integer.parseInt(valueStr.toString()) == 0){
+            if(settings.preventLeadingZeroes && valueStr.length() != 0 && valueStr.indexOf(settings.decimalSep+"") == -1 && Integer.parseInt(valueStr.toString()) == 0){
                 if(digit == 0){
                     canAppend = false;
                 } else{
