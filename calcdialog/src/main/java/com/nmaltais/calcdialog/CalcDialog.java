@@ -22,23 +22,26 @@
 package com.nmaltais.calcdialog;
 
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -94,13 +97,30 @@ public class CalcDialog extends AppCompatDialogFragment {
     private TextView displayTxv;
     private TextView decimalSepBtn;
     private TextView answerBtn;
+    private TextView signBtn;
 
     private CharSequence[] btnTexts;
     private CharSequence[] errorMessages;
     private int[] maxDialogDimensions;
 
+    /**
+     * Do not use the constructor directly for creating
+     * an instance, use {@link #newInstance(int)} instead
+     */
     public CalcDialog() {
         settings = new CalcSettings();
+    }
+
+    /**
+     * Create a new instance of CalcDialog
+     * @param requestCode request code used by callback
+     *                    Useful in case there's multiple dialogs at the same time
+     * @return the dialog
+     */
+    public static CalcDialog newInstance(int requestCode) {
+        CalcDialog dialog = new CalcDialog();
+        dialog.settings.requestCode = requestCode;
+        return dialog;
     }
 
     ////////// LIFECYCLE METHODS //////////
@@ -138,7 +158,7 @@ public class CalcDialog extends AppCompatDialogFragment {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             LinearLayout header = view.findViewById(R.id.header);
-            header.setBackgroundResource(R.drawable.elevation);
+            header.setBackgroundResource(R.drawable.bg_elevation);
         }
 
         // Value display
@@ -196,7 +216,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Sign button: +/-
-        TextView signBtn = view.findViewById(R.id.button_calc_sign);
+        signBtn = view.findViewById(R.id.button_calc_sign);
         signBtn.setText(btnTexts[14]);
         signBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +226,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Equal button
-        AppCompatTextView equalBtn = view.findViewById(R.id.button_calc_equal);
+        TextView equalBtn = view.findViewById(R.id.button_calc_equal);
         equalBtn.setText(btnTexts[16]);
         equalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -313,6 +333,32 @@ public class CalcDialog extends AppCompatDialogFragment {
         context = null;
     }
 
+    @Nullable
+    private CalcDialogCallback getCallback() {
+        CalcDialogCallback cb = null;
+        if (getParentFragment() != null) {
+            try {
+                cb = (CalcDialogCallback) getParentFragment();
+            } catch (Exception e) {
+                // Interface callback is not implemented in fragment
+            }
+        } else if (getTargetFragment() != null) {
+            try {
+                cb = (CalcDialogCallback) getTargetFragment();
+            } catch (Exception e) {
+                // Interface callback is not implemented in fragment
+            }
+        } else {
+            // Caller was an activity
+            try {
+                cb = (CalcDialog.CalcDialogCallback) requireActivity();
+            } catch (Exception e) {
+                // Interface callback is not implemented in activity
+            }
+        }
+        return cb;
+    }
+
     ////////// VIEW METHODS //////////
     CalcSettings getSettings() {
         return settings;
@@ -323,31 +369,22 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     void exit() {
-        dismiss();
+        dismissAllowingStateLoss();
     }
 
     void sendValueResult(BigDecimal value) {
-        // Call callback
-        if (getTargetFragment() != null) {
-            // Caller was a fragment
-            try {
-                ((CalcDialog.CalcDialogCallback) getTargetFragment()).onValueEntered(value);
-            } catch (Exception e) {
-                // Interface callback is not implemented in fragment
-            }
-        } else {
-            // Caller was an activity
-            try {
-                //noinspection ConstantConditions
-                ((CalcDialog.CalcDialogCallback) getActivity()).onValueEntered(value);
-            } catch (Exception e) {
-                // Interface callback is not implemented in activity
-            }
+        CalcDialogCallback cb = getCallback();
+        if (cb != null) {
+            cb.onValueEntered(settings.requestCode, value);
         }
     }
 
-    void setAnswerBtnShown(boolean shown) {
-        answerBtn.setVisibility(shown ? View.VISIBLE : View.GONE);
+    void setAnswerBtnVisible(boolean visible) {
+        answerBtn.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    void setSignBtnVisible(boolean visible) {
+        signBtn.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     void setDecimalSepBtnEnabled(boolean enabled) {
@@ -481,26 +518,6 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     /**
-     * Set the reference id of the dialog
-     * @param reference define a dialog id
-     * @return the dialog
-     */
-    public CalcDialog setReference(int reference) {
-        this.reference = reference;
-        return this;
-    }
-
-    /**
-     * Set if the sign button should be hidden
-     * @param hideSignButton true to hide the sign button, false otherwise (default)
-     * @return the dialog
-     */
-    public CalcDialog setHideSignButton(boolean hideSignButton) {
-        this.hideSignButton = hideSignButton;
-        return this;
-    }
-
-    /**
      * Set the size of groups separated by group separators
      * 3 does 000,000,000
      * 4 does 0,0000,0000
@@ -525,6 +542,17 @@ public class CalcDialog extends AppCompatDialogFragment {
         return this;
     }
 
+    /**
+     * Set whether the sign button should be shown.
+     * By default, the sign button is shown.
+     * @param show whether to show it or not
+     * @return the dialog
+     */
+    public CalcDialog setShowSignButton(boolean show) {
+        settings.showSignBtn = show;
+        return this;
+    }
+
     public interface CalcDialogCallback {
         /**
          * Called when the dialog's OK button is clicked
@@ -533,10 +561,10 @@ public class CalcDialog extends AppCompatDialogFragment {
          *              To format the value to a String, use {@link BigDecimal#toPlainString()}.
          *              To format the value to a currency String you could do:
          *              {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}
-         * @param reference dialog reference. used to identify a dialog in the callback.
-         *              {@link #setReference(int)} to define it
+         * @param requestCode dialog request code given when dialog
+         *                    was created with {@link #newInstance(int)}
          */
-        void onValueEntered(int reference, BigDecimal value);
+        void onValueEntered(int requestCode, BigDecimal value);
     }
 
 }

@@ -38,9 +38,12 @@ import java.math.BigDecimal;
 
 public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDialogCallback {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int DIALOG_REQUEST_CODE = 0;
+
     private TextView valueTextv;
     private CheckBox signCheck;
-    private CheckBox signHideBtn;
 
     private @Nullable BigDecimal value;
 
@@ -56,14 +59,13 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
             }
         }
 
-
-        final CalcDialog calcDialog = new CalcDialog();
+        final CalcDialog calcDialog = CalcDialog.newInstance(DIALOG_REQUEST_CODE);
 
         signCheck = findViewById(R.id.check_sign);
         if (value == null) signCheck.setEnabled(false);
-        signHideBtn = findViewById(R.id.check_sign_hide_btn);
 
         final CheckBox showAnswerCheck = findViewById(R.id.check_answer_btn);
+        final CheckBox showSignCheck = findViewById(R.id.check_show_sign);
         final CheckBox clearOnOpCheck = findViewById(R.id.check_clear_operation);
         final CheckBox showZeroCheck = findViewById(R.id.check_show_zero);
         final CheckBox stripZeroCheck = findViewById(R.id.check_strip_zeroes);
@@ -129,9 +131,8 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
                 // Set settings and value
                 calcDialog.setValue(value)
-                        .setCallback(MainActivity.this)
+                        .setShowSignButton(showSignCheck.isChecked())
                         .setShowAnswerButton(showAnswerCheck.isChecked())
-                        .setHideSignButton(signHideBtn.isChecked())
                         .setSignCanBeChanged(signCanBeChanged, signCanBeChanged ? 0 : value.signum())
                         .setClearDisplayOnOperation(clearOnOpCheck.isChecked())
                         .setShowZeroWhenNoValue(showZeroCheck.isChecked())
@@ -157,7 +158,9 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
     }
 
     @Override
-    public void onValueEntered(int reference, BigDecimal value) {
+    public void onValueEntered(int requestCode, BigDecimal value) {
+        // if (requestCode == DIALOG_REQUEST_CODE) {}  <-- If there's many dialogs
+
         this.value = value;
 
         valueTextv.setText(value.toPlainString());

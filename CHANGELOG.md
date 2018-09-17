@@ -1,4 +1,8 @@
 ## v1.2.0
+- Added a request code when creating dialog and on callback (breaking change)
+- Backported to API 16
+- Added translations in arabic, chinese, german, hindi, italian, japenese, korean, lithuanian, polish, portuguese, russian, spanish, turkish and vietnamese
+- Added option to hide the sign button
 - Removed `setRetainInstance(true)` on dialog and to manually save state instead
 - Fixed OK button not behaving like the equal button
 

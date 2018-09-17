@@ -94,7 +94,8 @@ public class CalcPresenter {
         }
 
         view.setDecimalSepBtnEnabled(settings.maxFracDigits > 0);
-        view.setAnswerBtnShown(settings.showAnswerBtn && answerValue != null);
+        view.setAnswerBtnVisible(settings.showAnswerBtn && answerValue != null);
+        view.setSignBtnVisible(settings.showSignBtn);
     }
 
     void detach() {
@@ -137,7 +138,7 @@ public class CalcPresenter {
         if (dismissError()) return;
 
         currentIsAnswer = false;
-        view.setAnswerBtnShown(false);
+        view.setAnswerBtnVisible(false);
 
         if (valueStr.length() > 0) {
             if (resultIsDisplayed || overwriteValue) {
@@ -172,7 +173,7 @@ public class CalcPresenter {
         dismissError();
 
         currentIsAnswer = false;
-        view.setAnswerBtnShown(false);
+        view.setAnswerBtnVisible(false);
 
         if (resultIsDisplayed || overwriteValue) {
             valueStr.setLength(0);
@@ -221,14 +222,14 @@ public class CalcPresenter {
             resultIsDisplayed = false;
         }
 
-        view.setAnswerBtnShown(settings.showAnswerBtn && answerValue != null);
+        view.setAnswerBtnVisible(settings.showAnswerBtn && answerValue != null);
     }
 
     void onDecimalSepBtnClicked() {
         dismissError();
 
         currentIsAnswer = false;
-        view.setAnswerBtnShown(false);
+        view.setAnswerBtnVisible(false);
 
         if (resultIsDisplayed || overwriteValue) {
             valueStr.setLength(0);
@@ -282,7 +283,7 @@ public class CalcPresenter {
     }
 
     void onAnswerBtnClicked() {
-        view.setAnswerBtnShown(false);
+        view.setAnswerBtnVisible(false);
         view.displayAnswerText();
 
         currentIsAnswer = true;
@@ -338,7 +339,7 @@ public class CalcPresenter {
 
         answerValue = null;
         currentIsAnswer = false;
-        view.setAnswerBtnShown(false);
+        view.setAnswerBtnVisible(false);
 
         valueStr = new StringBuilder();
         formatValue();
@@ -427,7 +428,7 @@ public class CalcPresenter {
         if (dismissError()) return;
 
         currentIsAnswer = false;
-        view.setAnswerBtnShown(false);
+        view.setAnswerBtnVisible(false);
 
         reset();
 

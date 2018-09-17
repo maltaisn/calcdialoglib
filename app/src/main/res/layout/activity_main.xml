@@ -104,12 +104,12 @@
         android:layout_marginLeft="16dp" />
 
     <CheckBox
-        android:id="@+id/check_sign_hide_btn"
+        android:id="@+id/check_show_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:checked="false"
-        android:text="@string/option_sign_hide_btn"
+        android:checked="true"
+        android:text="@string/option_sign_show_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/check_sign"
         android:layout_marginLeft="16dp" />
@@ -122,7 +122,7 @@
         android:checked="false"
         android:text="@string/option_clear_operation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_sign_hide_btn"
+        app:layout_constraintTop_toBottomOf="@+id/check_show_sign"
         android:layout_marginLeft="16dp" />
 
     <CheckBox
@@ -175,7 +175,9 @@
         app:layout_constraintTop_toBottomOf="@+id/check_strip_zeroes"
         tools:text="10000000000"
         android:layout_marginRight="24dp"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        tools:ignore="LabelFor"
+        />
 
     <CheckBox
         android:id="@+id/check_max_int"
@@ -207,7 +209,9 @@
         app:layout_constraintTop_toBottomOf="@+id/editt_max_value"
         tools:text="10"
         android:layout_marginRight="24dp"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        tools:ignore="LabelFor"
+        />
 
     <CheckBox
         android:id="@+id/check_max_frac"
@@ -239,6 +243,8 @@
         app:layout_constraintTop_toBottomOf="@+id/editt_max_int"
         tools:text="8"
         android:layout_marginRight="24dp"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        tools:ignore="LabelFor"
+        />
 
 </android.support.constraint.ConstraintLayout>

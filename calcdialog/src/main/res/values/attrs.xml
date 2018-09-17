@@ -14,7 +14,9 @@
         <attr name="calcHeaderHeight" format="dimension"/>
         <attr name="calcValueStyle" format="reference"/>
         <attr name="calcNumberBtnStyle" format="reference"/>
+        <attr name="calcNumberBtnColor" format="color|reference"/>
         <attr name="calcOperationBtnStyle" format="reference"/>
+        <attr name="calcOperationBtnColor" format="color|reference"/>
         <attr name="calcAnswerBtnStyle" format="reference"/>
         <attr name="calcEraseBtnStyle" format="reference"/>
         <attr name="calcDialogSepColor" format="color|reference"/>

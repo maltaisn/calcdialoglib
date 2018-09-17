@@ -8,7 +8,7 @@
     <string name="calc_settings">Calculator settings</string>
 
     <string name="option_sign">Sign can be changed</string>
-    <string name="option_sign_hide_btn">Hide sign button</string>
+    <string name="option_sign_show_btn">Show sign button</string>
     <string name="option_answer_btn">Show answer button</string>
     <string name="option_clear_operation">Clear display on operation button click</string>
     <string name="option_show_zero">Show zero when there is no value</string>

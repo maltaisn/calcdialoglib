@@ -1,5 +1,5 @@
 # Calculator dialog
-A fully customizable calculator dialog for Android. Can be used to replace the numeric keyboard and useful to enter monetary amounts.
+A fully customizable calculator dialog for Android compatible with API 16. Can be used to replace the numeric keyboard and useful to enter monetary amounts.
 
 ### Gradle dependency
 `compile 'com.maltaisn:calcdialog:X.Y.Z'`
@@ -19,4 +19,4 @@ Replace `X.Y.Z` with lastest version number: [ ![Download](https://api.bintray.c
 View [changelog](https://github.com/maltaisn/calcdialoglib/blob/master/CHANGELOG.md)
 
 ## Translations
-This library is only available in English and in French for now. If you make a translation please send a pull request. There are less than 10 strings to translate, it's an easy job! Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml`. And don't waste your time translating the demo app.
+The library is available in 16 languages. If you make a translation please send a pull request. There are less than 10 strings to translate, it's an easy job! Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml`. And no need to translate the demo app.
