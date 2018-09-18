@@ -13,6 +13,7 @@
     <string name="option_clear_operation">Clear display on operation button click</string>
     <string name="option_show_zero">Show zero when there is no value</string>
     <string name="option_strip_zeroes">Strip trailing zeroes</string>
+    <string name="option_leading_zeroes">Prevent leading zeroes</string>
     <string name="option_max_value">Maximum value:</string>
     <string name="option_max_int">Maximum integer digits:</string>
     <string name="option_max_frac">Maximum fractional digits:</string>

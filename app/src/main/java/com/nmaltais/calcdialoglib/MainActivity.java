@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         final CheckBox clearOnOpChk = findViewById(R.id.chk_clear_operation);
         final CheckBox showZeroChk = findViewById(R.id.chk_show_zero);
         final CheckBox stripZeroChk = findViewById(R.id.chk_strip_zeroes);
+        final CheckBox leadingZeroChk = findViewById(R.id.chk_leading_zeroes);
 
         // Max value
         final CheckBox maxValChk = findViewById(R.id.chk_max_value);
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                         .setClearDisplayOnOperation(clearOnOpChk.isChecked())
                         .setShowZeroWhenNoValue(showZeroChk.isChecked())
                         .setStripTrailingZeroes(stripZeroChk.isChecked())
+                        .setPreventLeadingZeroes(leadingZeroChk.isChecked())
                         .setMaxValue(maxValue)
                         .setMaxDigits(maxInt, maxFrac);
 
