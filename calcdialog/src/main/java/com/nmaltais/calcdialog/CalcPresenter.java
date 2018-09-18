@@ -53,11 +53,7 @@ public class CalcPresenter {
         }
 
         // Get string to display for zero
-        BigDecimal zero = BigDecimal.ZERO;
-        if (!settings.stripTrailingZeroes) {
-            zero = zero.setScale(settings.maxFracDigits, settings.roundingMode);
-        }
-        zeroString = zero.toPlainString();
+        zeroString = BigDecimal.ZERO.toPlainString();
         int pointPos = zeroString.indexOf('.');
         if (pointPos != -1 && settings.decimalSep != '.') {
             // Replace "." with correct decimal separator
@@ -77,8 +73,7 @@ public class CalcPresenter {
             // Init values
             if (settings.initialValue != null) {
                 resultValue = settings.initialValue.setScale(settings.maxFracDigits, settings.roundingMode);
-                if (settings.stripTrailingZeroes)
-                    resultValue = CalcDialogUtils.stripTrailingZeroes(resultValue);
+                resultValue = CalcDialogUtils.stripTrailingZeroes(resultValue);
                 answerValue = resultValue;
 
                 valueStr = new StringBuilder(resultValue.toPlainString());
@@ -400,8 +395,7 @@ public class CalcPresenter {
         }
 
         resultValue = resultValue.setScale(settings.maxFracDigits, settings.roundingMode);
-        if (settings.stripTrailingZeroes)
-            resultValue = CalcDialogUtils.stripTrailingZeroes(resultValue);
+        resultValue = CalcDialogUtils.stripTrailingZeroes(resultValue);
 
         // Display formatted result
         valueStr = new StringBuilder(resultValue.toPlainString());

@@ -147,30 +147,6 @@
         />
 
     <CheckBox
-        android:id="@+id/chk_strip_zeroes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:checked="true"
-        android:text="@string/option_strip_zeroes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chk_show_zero"
-        />
-
-    <CheckBox
-        android:id="@+id/chk_leading_zeroes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:checked="true"
-        android:text="@string/option_leading_zeroes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chk_strip_zeroes"
-        />
-
-    <CheckBox
         android:id="@+id/chk_max_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -198,8 +174,10 @@
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/chk_max_value"
-        app:layout_constraintTop_toBottomOf="@+id/chk_leading_zeroes"
+        app:layout_constraintTop_toBottomOf="@+id/chk_show_zero"
         tools:text="10000000000"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="8dp"
         tools:ignore="LabelFor"
         />
 
@@ -235,6 +213,8 @@
         app:layout_constraintStart_toEndOf="@+id/chk_max_int"
         app:layout_constraintTop_toBottomOf="@+id/edt_max_value"
         tools:text="10"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="8dp"
         tools:ignore="LabelFor"
         />
 
@@ -270,6 +250,8 @@
         app:layout_constraintStart_toEndOf="@+id/chk_max_frac"
         app:layout_constraintTop_toBottomOf="@+id/edt_max_int"
         tools:text="8"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="8dp"
         tools:ignore="LabelFor"
         />
 
