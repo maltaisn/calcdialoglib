@@ -1,3 +1,8 @@
+## v1.3.0
+- Removed setting that allowed keeping trailing zeroes (breaking change)
+- Fixed leading zeroes being allowed
+- Fixed "-0" displayed when erasing from "-0.2" for example
+
 ## v1.2.0
 - Added a request code when creating dialog and on callback (breaking change)
 - Backported to API 16
