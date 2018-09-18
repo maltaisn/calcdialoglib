@@ -548,8 +548,7 @@ public class CalcDialog extends AppCompatDialogFragment {
     public interface CalcDialogCallback {
         /**
          * Called when the dialog's OK button is clicked
-         * @param value value entered. If calculator didn't strip trailing zeroes, you can call
-         *              {@link CalcDialogUtils#stripTrailingZeroes(BigDecimal)} to strip them.
+         * @param value value entered.
          *              To format the value to a String, use {@link BigDecimal#toPlainString()}.
          *              To format the value to a currency String you could do:
          *              {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}

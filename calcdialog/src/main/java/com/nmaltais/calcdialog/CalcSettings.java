@@ -19,9 +19,6 @@ class CalcSettings {
 
     RoundingMode roundingMode;
 
-    boolean preventLeadingZeroes;
-    boolean stripTrailingZeroes;
-
     boolean signCanBeChanged;
     int initialSign;
 

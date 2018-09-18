@@ -72,8 +72,8 @@ public class CalcPresenter {
 
             // Init values
             if (settings.initialValue != null) {
-                resultValue = settings.initialValue.setScale(settings.maxFracDigits, settings.roundingMode);
-                resultValue = CalcDialogUtils.stripTrailingZeroes(resultValue);
+                resultValue = CalcDialogUtils.stripTrailingZeroes(settings.initialValue
+                        .setScale(settings.maxFracDigits, settings.roundingMode));
                 answerValue = resultValue;
 
                 valueStr = new StringBuilder(resultValue.toPlainString());
@@ -192,11 +192,10 @@ public class CalcPresenter {
                 || valueStr.length() - pointPos - 1 < settings.maxFracDigits));
         boolean isValueZero = (pointPos == -1 && valueStr.length() == 1 && valueStr.charAt(0) == '0');
 
-        if ((withinMaxInt || withinMaxFrac)
-                && (!isValueZero || !settings.preventLeadingZeroes || digit != 0))  {
+        if ((withinMaxInt || withinMaxFrac) && (!isValueZero || digit != 0))  {
             // If max int or max frac digits have not already been reached
             // Concatenate current value with new digit
-            if (isValueZero && digit != 0) {
+            if (isValueZero) {
                 // If current value is zero, clear it before adding new digit
                 valueStr.setLength(0);
             }
@@ -394,8 +393,8 @@ public class CalcPresenter {
             return;
         }
 
-        resultValue = resultValue.setScale(settings.maxFracDigits, settings.roundingMode);
-        resultValue = CalcDialogUtils.stripTrailingZeroes(resultValue);
+        resultValue = CalcDialogUtils.stripTrailingZeroes(
+                resultValue.setScale(settings.maxFracDigits, settings.roundingMode));
 
         // Display formatted result
         valueStr = new StringBuilder(resultValue.toPlainString());

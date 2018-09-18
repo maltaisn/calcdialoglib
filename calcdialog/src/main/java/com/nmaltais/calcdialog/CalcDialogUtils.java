@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-public class CalcDialogUtils {
+class CalcDialogUtils {
 
     /**
      * Checks if a BigDecimal exceeds maximum value
@@ -26,7 +26,7 @@ public class CalcDialogUtils {
      * @param context any context
      * @return the default locale
      */
-    public static Locale getDefaultLocale(Context context) {
+    static Locale getDefaultLocale(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             return context.getResources().getConfiguration().getLocales().get(0);
         } else{
@@ -42,7 +42,7 @@ public class CalcDialogUtils {
      * @param from BigDecimal to strip trailing zeroes from
      * @return BigDecimal with stripped trailing zeroes
      */
-    public static BigDecimal stripTrailingZeroes(@NonNull BigDecimal from) {
+    static BigDecimal stripTrailingZeroes(@NonNull BigDecimal from) {
         if (from.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         } else {

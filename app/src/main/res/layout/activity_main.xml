@@ -176,8 +176,6 @@
         app:layout_constraintStart_toEndOf="@+id/chk_max_value"
         app:layout_constraintTop_toBottomOf="@+id/chk_show_zero"
         tools:text="10000000000"
-        android:layout_marginRight="24dp"
-        android:layout_marginLeft="8dp"
         tools:ignore="LabelFor"
         />
 
@@ -213,8 +211,6 @@
         app:layout_constraintStart_toEndOf="@+id/chk_max_int"
         app:layout_constraintTop_toBottomOf="@+id/edt_max_value"
         tools:text="10"
-        android:layout_marginRight="24dp"
-        android:layout_marginLeft="8dp"
         tools:ignore="LabelFor"
         />
 
@@ -250,8 +246,6 @@
         app:layout_constraintStart_toEndOf="@+id/chk_max_frac"
         app:layout_constraintTop_toBottomOf="@+id/edt_max_int"
         tools:text="8"
-        android:layout_marginRight="24dp"
-        android:layout_marginLeft="8dp"
         tools:ignore="LabelFor"
         />
 
