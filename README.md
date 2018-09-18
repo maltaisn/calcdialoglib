@@ -13,10 +13,10 @@ Replace `X.Y.Z` with lastest version number: [ ![Download](https://api.bintray.c
 
 ## Screenshots
 <img src="screenshots/demo.gif" alt="Demo" width="400px"/> <img src="screenshots/errors.gif" alt="Errors" width="400px"/>
-(Screenshots date back to version 1.0)
+(Screenshots date back to version 1.0.0)
 
 ## Changelog
 View [changelog](https://github.com/maltaisn/calcdialoglib/blob/master/CHANGELOG.md)
 
 ## Translations
-The library is available in 16 languages. If you make a translation please send a pull request. There are less than 10 strings to translate, it's an easy job! Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml`. And no need to translate the demo app.
+The library is available in 16 languages. If you make a translation please make a pull request. There are less than 10 strings to translate, it's an easy task! Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml`. And no need to translate the demo app.
