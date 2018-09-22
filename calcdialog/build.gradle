@@ -1,12 +1,35 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'calc-dialog'
+    bintrayName = 'calc-dialog'
+
+    publishedGroupId = 'com.maltaisn'
+    libraryName = 'calc-dialog'
+    artifact = 'calcdialog'
+
+    libraryDescription = 'Calculator dialog for Android'
+
+    siteUrl = 'https://github.com/maltaisn/calcdialoglib'
+    gitUrl = 'https://github.com/maltaisn/calcdialoglib.git'
+
+    libraryVersionCode = 9
+    libraryVersion = '1.3.1'
+
+    developerId = 'maltaisn'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 27
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 9
-        versionName "1.3.1"
+        versionCode libraryVersionCode
+        versionName libraryVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -25,13 +48,13 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    api 'com.android.support:appcompat-v7:27.1.1'
-    api 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
 
-apply from: rootProject.file('release-bintray.gradle')
+apply from: 'maven-install.gradle'
+apply from: 'bintray.gradle'

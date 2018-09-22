@@ -1,3 +1,6 @@
+### v1.3.1
+- Fixed library dependencies not being added to the project
+
 ## v1.3.0
 - Removed setting that allowed keeping trailing zeroes (breaking change)
 - Fixed leading zeroes being allowed
