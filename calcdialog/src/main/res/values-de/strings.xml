@@ -7,7 +7,7 @@
     <string name="calc_answer">Ant</string>
 
     <string-array name="calc_dialog_errors">
-        <item>Durch Null teilen</item>
+        <item>Division durch Null</item>
         <item>Außerhalb der Grenzen</item>
         <item>Ergebnis muss positiv sein</item>
         <item>Ergebnis muss negativ sein</item>
