@@ -1,3 +1,6 @@
+## v1.4.0
+- Migrated to AndroidX.
+
 ### v1.3.1
 - Fixed library dependencies not being added to the project
 

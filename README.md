@@ -6,6 +6,8 @@ A fully customizable calculator dialog for Android compatible with API 16. Can b
 
 Replace `X.Y.Z` with lastest version number: [ ![Download](https://api.bintray.com/packages/maltaisn/calc-dialog/calc-dialog/images/download.svg) ](https://bintray.com/maltaisn/calc-dialog/calc-dialog/_latestVersion)
 
+If you haven't migrated to AndroidX, use version 1.3.2. Versions 1.4.0 and up use AndroidX.
+
 ## Tutorial
 - **Get started on the wiki page [Using the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Using-the-dialog).**
 - Customize the dialog's behavior by [changing its settings](https://github.com/maltaisn/calcdialoglib/wiki/Calculator-settings).
