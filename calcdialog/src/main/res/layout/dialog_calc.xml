@@ -20,7 +20,7 @@
   under the License.
   -->
 
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent"
         >
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/calc_txv_value"
             style="?attr/calcValueStyle"
             android:layout_width="match_parent"
@@ -373,7 +373,7 @@
         app:layout_constraintVertical_bias="0.0"
         />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/calc_guideline_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -381,7 +381,7 @@
         app:layout_constraintGuide_percent="0.27"
         />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/calc_guideline_middle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -389,7 +389,7 @@
         app:layout_constraintGuide_percent="0.54"
         />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/calc_guideline_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -397,4 +397,4 @@
         app:layout_constraintGuide_percent="0.8"
         />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
