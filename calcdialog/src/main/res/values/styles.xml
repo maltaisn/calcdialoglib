@@ -72,7 +72,7 @@
     </style>
 
     <public name="CalcDialogButtonStyle" type="style"/>
-    <style name="CalcDialogButtonStyle" parent="Base.Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <style name="CalcDialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <!-- Nothing -->
     </style>
 
