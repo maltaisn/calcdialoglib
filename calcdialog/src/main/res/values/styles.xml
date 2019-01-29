@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <public name="CalcDialogStyle" type="style"/>
+    <public name="CalcDialogStyle" type="style" />
+
     <style name="CalcDialogStyle">
         <item name="calcDialogMaxWidth">400dp</item>
         <item name="calcDialogMaxHeight">400dp</item>
@@ -23,7 +24,8 @@
         <item name="calcErrors">@array/calc_dialog_errors</item>
     </style>
 
-    <public name="CalcValueStyle" type="style"/>
+    <public name="CalcValueStyle" type="style" />
+
     <style name="CalcValueStyle">
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">16dp</item>
@@ -36,7 +38,8 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <public name="CalcNumberBtnStyle" type="style"/>
+    <public name="CalcNumberBtnStyle" type="style" />
+
     <style name="CalcNumberBtnStyle">
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:gravity">center</item>
@@ -44,14 +47,16 @@
         <item name="android:textSize">28sp</item>
     </style>
 
-    <public name="CalcOperationBtnStyle" type="style"/>
+    <public name="CalcOperationBtnStyle" type="style" />
+
     <style name="CalcOperationBtnStyle">
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
     </style>
 
-    <public name="CalcAnswerBtnStyle" type="style"/>
+    <public name="CalcAnswerBtnStyle" type="style" />
+
     <style name="CalcAnswerBtnStyle">
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:gravity">center</item>
@@ -59,7 +64,8 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <public name="CalcEraseBtnStyle" type="style"/>
+    <public name="CalcEraseBtnStyle" type="style" />
+
     <style name="CalcEraseBtnStyle">
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:paddingLeft">16dp</item>
@@ -71,8 +77,9 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <public name="CalcDialogButtonStyle" type="style"/>
-    <style name="CalcDialogButtonStyle" parent="Base.Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <public name="CalcDialogButtonStyle" type="style" />
+
+    <style name="CalcDialogButtonStyle" parent="Base.Widget.AppCompat.ButtonBar.AlertDialog">
         <!-- Nothing -->
     </style>
 
