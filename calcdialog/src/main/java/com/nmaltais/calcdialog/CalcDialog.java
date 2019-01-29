@@ -30,9 +30,6 @@ import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDialogFragment;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -46,6 +43,10 @@ import android.widget.TextView;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialogFragment;
 
 
 /**
@@ -153,7 +154,8 @@ public class CalcDialog extends AppCompatDialogFragment {
 
     @SuppressLint("InflateParams")
     @Override
-    public @NonNull Dialog onCreateDialog(final Bundle state) {
+    public @NonNull
+    Dialog onCreateDialog(final Bundle state) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View view = inflater.inflate(R.layout.dialog_calc, null);
 
@@ -328,7 +330,9 @@ public class CalcDialog extends AppCompatDialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        presenter.detach();
+        if (presenter != null) {
+            presenter.detach();
+        }
 
         presenter = null;
         context = null;
@@ -409,6 +413,7 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     ////////// CALCULATOR SETTINGS //////////
+
     /**
      * Set initial value to show
      * By default, initial value is null. That means value is 0 but if
@@ -437,7 +442,7 @@ public class CalcDialog extends AppCompatDialogFragment {
     /**
      * Set max digits that can be entered on the calculator
      * Use {@link #MAX_DIGITS_UNLIMITED} for no limit
-     * @param intPart Max digits for the integer part
+     * @param intPart  Max digits for the integer part
      * @param fracPart Max digits for the fractional part.
      *                 A value of 0 means the value can't have a fractional part
      * @return the dialog
@@ -465,8 +470,8 @@ public class CalcDialog extends AppCompatDialogFragment {
      * @param canBeChanged whether sign can be changed or not
      *                     if true, dialog can't be confirmed with a value of wrong sign
      *                     and an error will be shown
-     * @param sign if canBeChanged is true, sign to force, -1 or 1
-     *             otherwise use any value
+     * @param sign         if canBeChanged is true, sign to force, -1 or 1
+     *                     otherwise use any value
      * @return the dialog
      */
     public CalcDialog setSignCanBeChanged(boolean canBeChanged, int sign) {
@@ -479,7 +484,7 @@ public class CalcDialog extends AppCompatDialogFragment {
      * Use {@link #FORMAT_CHAR_DEFAULT} to use device locale's default symbol
      * By default, formatting will use locale's symbols
      * @param decimalSep decimal separator
-     * @param groupSep grouping separator
+     * @param groupSep   grouping separator
      * @return the dialog
      */
     public CalcDialog setFormatSymbols(char decimalSep, char groupSep) {
@@ -548,14 +553,15 @@ public class CalcDialog extends AppCompatDialogFragment {
     public interface CalcDialogCallback {
         /**
          * Called when the dialog's OK button is clicked
-         * @param value value entered.
-         *              To format the value to a String, use {@link BigDecimal#toPlainString()}.
-         *              To format the value to a currency String you could do:
-         *              {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}
+         * @param value       value entered. May be null if no value was entered, in this case,
+         *                    it should be interpreted as zero or no value.
+         *                    To format the value to a String, use {@link BigDecimal#toPlainString()}.
+         *                    To format the value to a currency String you could do:
+         *                    {@code NumberFormat.getCurrencyInstance(Locale).format(BigDecimal)}
          * @param requestCode dialog request code given when dialog
          *                    was created with {@link #newInstance(int)}
          */
-        void onValueEntered(int requestCode, BigDecimal value);
+        void onValueEntered(int requestCode, @Nullable BigDecimal value);
     }
 
 }

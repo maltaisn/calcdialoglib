@@ -2,11 +2,12 @@ package com.nmaltais.calcdialog;
 
 import android.content.Context;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 class CalcDialogUtils {
 
@@ -14,7 +15,7 @@ class CalcDialogUtils {
      * Checks if a BigDecimal exceeds maximum value
      * @param value value to check for
      * @return true if value is greater than maximum value
-     *         maximum value is applied equally for positive and negative value
+     * maximum value is applied equally for positive and negative value
      */
     static boolean isValueOutOfBounds(@NonNull BigDecimal value, @Nullable BigDecimal maxValue) {
         return maxValue != null && (value.compareTo(maxValue) > 0 ||
@@ -27,9 +28,9 @@ class CalcDialogUtils {
      * @return the default locale
      */
     static Locale getDefaultLocale(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return context.getResources().getConfiguration().getLocales().get(0);
-        } else{
+        } else {
             //noinspection deprecation
             return context.getResources().getConfiguration().locale;
         }

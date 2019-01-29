@@ -1,23 +1,25 @@
 package com.nmaltais.calcdialog;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 class CalcSettings {
 
     int requestCode;
 
-    BigDecimal initialValue;
+    @Nullable BigDecimal initialValue;
 
     @Nullable BigDecimal maxValue;
 
     int maxIntDigits;
     int maxFracDigits;
 
-    RoundingMode roundingMode;
+    @NonNull RoundingMode roundingMode;
 
     boolean signCanBeChanged;
     int initialSign;
@@ -90,7 +92,7 @@ class CalcSettings {
     }
 
     void setValue(@Nullable BigDecimal value) {
-        if (value != null && maxValue != null && CalcDialogUtils.isValueOutOfBounds(value, maxValue)) {
+        if (value != null && CalcDialogUtils.isValueOutOfBounds(value, maxValue)) {
             value = (value.compareTo(BigDecimal.ZERO) > 0 ? maxValue : maxValue.negate());
         }
         initialValue = value;

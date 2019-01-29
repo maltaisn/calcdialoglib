@@ -26,21 +26,22 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 
 /**
  * ImageView that triggers erase events when held down
  * Attributes:
  * - eraseBtnHoldDelay: Time view has to be held down to trigger quick erase (in ms)
- *                      Default value is 750ms. Use -1 for no quick erase and 0 for no delay
+ * Default value is 750ms. Use -1 for no quick erase and 0 for no delay
  * - eraseBtnHoldSpeed: Time after which an erase event is triggered in quick erase mode (in ms)
- *                      Default value is 100ms
+ * Default value is 100ms
  * - eraseAllOnHold: If true, holding button will trigger an erase all event instead of quick
- *                   erase mode if false. By default this is false.
+ * erase mode if false. By default this is false.
  */
 class CalcEraseButton extends AppCompatImageView {
 

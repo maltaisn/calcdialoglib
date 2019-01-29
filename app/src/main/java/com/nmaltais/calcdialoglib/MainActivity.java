@@ -156,13 +156,18 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
     }
 
     @Override
-    public void onValueEntered(int requestCode, BigDecimal value) {
-        // if (requestCode == DIALOG_REQUEST_CODE) {}  <-- If there's many dialogs
+    public void onValueEntered(int requestCode, @Nullable BigDecimal value) {
+        // if (requestCode == DIALOG_REQUEST_CODE) {}  <-- If there are many dialogs
 
         this.value = value;
 
-        valueTxv.setText(value.toPlainString());
-        signChk.setEnabled(value.compareTo(BigDecimal.ZERO) != 0);
+        if (value == null) {
+            valueTxv.setText(R.string.result_value_none);
+            signChk.setEnabled(false);
+        } else {
+            valueTxv.setText(value.toPlainString());
+            signChk.setEnabled(value.compareTo(BigDecimal.ZERO) != 0);
+        }
     }
 }
 

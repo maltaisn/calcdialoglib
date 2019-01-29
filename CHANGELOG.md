@@ -1,3 +1,7 @@
+## v1.4.1
+- Improved material components compatibility.
+- Fixed custom button style not working.
+
 ## v1.4.0
 - Migrated to AndroidX.
 

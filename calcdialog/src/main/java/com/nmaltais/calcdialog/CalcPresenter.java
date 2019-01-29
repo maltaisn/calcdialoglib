@@ -1,13 +1,15 @@
 package com.nmaltais.calcdialog;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-public class CalcPresenter {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+class CalcPresenter {
 
     private static final int OPERATION_NONE = -1;
     private static final int OPERATION_ADD = 0;
@@ -96,6 +98,7 @@ public class CalcPresenter {
 
     void detach() {
         view = null;
+        settings = null;
     }
 
     void writeStateToBundle(Bundle bundle) {
@@ -117,10 +120,13 @@ public class CalcPresenter {
     private void readStateFromBundle(Bundle bundle) {
         operation = bundle.getInt("operation");
         error = bundle.getInt("error");
-        valueStr = new StringBuilder(bundle.getString("valueStr"));
+        String value = bundle.getString("valueStr");
         resultIsDisplayed = bundle.getBoolean("resultIsDisplayed");
         overwriteValue = bundle.getBoolean("overwriteValue");
         currentIsAnswer = bundle.getBoolean("currentIsAnswer");
+
+        assert value != null;
+        valueStr = new StringBuilder();
 
         if (bundle.containsKey("resultValue")) {
             resultValue = new BigDecimal(bundle.getString("resultValue"));
@@ -192,7 +198,7 @@ public class CalcPresenter {
                 || valueStr.length() - pointPos - 1 < settings.maxFracDigits));
         boolean isValueZero = (pointPos == -1 && valueStr.length() == 1 && valueStr.charAt(0) == '0');
 
-        if ((withinMaxInt || withinMaxFrac) && (!isValueZero || digit != 0))  {
+        if ((withinMaxInt || withinMaxFrac) && (!isValueZero || digit != 0)) {
             // If max int or max frac digits have not already been reached
             // Concatenate current value with new digit
             if (isValueZero) {
@@ -273,9 +279,8 @@ public class CalcPresenter {
             }
 
             if (resultIsDisplayed) {
-                //noinspection ConstantConditions
+                assert resultValue != null && answerValue != null;
                 resultValue = resultValue.negate();
-                //noinspection ConstantConditions
                 answerValue = answerValue.negate();
             }
 
@@ -372,7 +377,7 @@ public class CalcPresenter {
             BigDecimal operand = getCurrentValue();
 
             if (operation == OPERATION_ADD) {
-                //noinspection ConstantConditions
+                assert resultValue != null;
                 resultValue = resultValue.add(operand);
             } else if (operation == OPERATION_SUB) {
                 resultValue = resultValue.subtract(operand);
