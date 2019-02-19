@@ -73,7 +73,8 @@
     </style>
 
     <public name="CalcDialogButtonStyle" type="style"/>
+
     <style name="CalcDialogButtonStyle"
-           parent="Widget.MaterialComponents.Button.TextButton.Dialog"/>
+           parent="Base.Widget.AppCompat.Button.ButtonBar.AlertDialog"/>
 
 </resources>
