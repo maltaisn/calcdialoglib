@@ -1,4 +1,6 @@
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <string name="app_name">Calculator Dialog</string>
 
@@ -15,5 +17,8 @@
     <string name="option_max_value">Maximum value:</string>
     <string name="option_max_int">Maximum integer digits:</string>
     <string name="option_max_frac">Maximum fractional digits:</string>
+    <string name="option_numpad">Numpad layout:</string>
+    <string name="option_numpad_calc">Calculator (789 on the top row)</string>
+    <string name="option_numpad_phone">Phone (123 on the top row)</string>
 
 </resources>

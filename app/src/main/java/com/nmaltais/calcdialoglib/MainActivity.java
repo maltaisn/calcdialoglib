@@ -22,19 +22,22 @@
 package com.nmaltais.calcdialoglib;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.nmaltais.calcdialog.CalcDialog;
+import com.nmaltais.calcdialog.CalcNumpadLayout;
 
 import java.math.BigDecimal;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDialogCallback {
 
@@ -105,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         maxFracEdt.setEnabled(maxFracChk.isChecked());
         maxFracEdt.setText(String.valueOf(8));
 
+        // Numpad layout
+        final RadioGroup numpadLayoutGroup = findViewById(R.id.radiogroup_numpad);
+
         // Value display
         valueTxv = findViewById(R.id.txv_result);
         valueTxv.setText(value == null ? getString(R.string.result_value_none) : value.toPlainString());
@@ -128,6 +134,13 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                 int maxFrac = maxFracChk.isChecked() && !maxFracStr.isEmpty() ?
                         Integer.valueOf(maxFracStr) : CalcDialog.MAX_DIGITS_UNLIMITED;
 
+                CalcNumpadLayout layout;
+                if (numpadLayoutGroup.getCheckedRadioButtonId() == R.id.radio_numpad_calc) {
+                    layout = CalcNumpadLayout.CALCULATOR;
+                } else {
+                    layout = CalcNumpadLayout.PHONE;
+                }
+
                 // Set settings and value
                 calcDialog.setValue(value)
                         .setShowSignButton(showSignChk.isChecked())
@@ -136,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                         .setClearDisplayOnOperation(clearOnOpChk.isChecked())
                         .setShowZeroWhenNoValue(showZeroChk.isChecked())
                         .setMaxValue(maxValue)
-                        .setMaxDigits(maxInt, maxFrac);
+                        .setMaxDigits(maxInt, maxFrac)
+                        .setNumpadLayout(layout);
 
                 FragmentManager fm = getSupportFragmentManager();
                 if (fm.findFragmentByTag("calc_dialog") == null) {

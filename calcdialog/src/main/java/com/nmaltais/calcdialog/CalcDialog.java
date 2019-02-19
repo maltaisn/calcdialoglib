@@ -70,19 +70,6 @@ public class CalcDialog extends AppCompatDialogFragment {
      */
     public static final char FORMAT_CHAR_DEFAULT = 0;
 
-    private static final int[] DIGIT_BTN_IDS = {
-            R.id.calc_btn_0,
-            R.id.calc_btn_1,
-            R.id.calc_btn_2,
-            R.id.calc_btn_3,
-            R.id.calc_btn_4,
-            R.id.calc_btn_5,
-            R.id.calc_btn_6,
-            R.id.calc_btn_7,
-            R.id.calc_btn_8,
-            R.id.calc_btn_9,
-    };
-
     private static final int[] OPERATOR_BTN_IDS = {
             R.id.calc_btn_add,
             R.id.calc_btn_sub,
@@ -183,7 +170,7 @@ public class CalcDialog extends AppCompatDialogFragment {
 
         // Digit buttons
         for (int i = 0; i < 10; i++) {
-            TextView digitBtn = view.findViewById(DIGIT_BTN_IDS[i]);
+            TextView digitBtn = view.findViewById(settings.numpadLayout.buttonIds[i]);
             digitBtn.setText(btnTexts[i]);
 
             final int digit = i;
@@ -319,7 +306,7 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle state) {
+    public void onSaveInstanceState(@NonNull Bundle state) {
         super.onSaveInstanceState(state);
         presenter.writeStateToBundle(state);
         settings.writeToBundle(state);
@@ -436,6 +423,18 @@ public class CalcDialog extends AppCompatDialogFragment {
      */
     public CalcDialog setMaxValue(@Nullable BigDecimal maxValue) {
         settings.setMaxValue(maxValue);
+        return this;
+    }
+
+    /**
+     * Set the layout of the calculator's numpad, either with 123 on the top row or 789.
+     * Default layout is {@link CalcNumpadLayout#CALCULATOR}, with 789 on the top row.
+     * @param layout Numpad layout to use
+     * @return the dialog
+     * @see CalcNumpadLayout
+     */
+    public CalcDialog setNumpadLayout(@NonNull CalcNumpadLayout layout) {
+        settings.setNumpadLayout(layout);
         return this;
     }
 

@@ -1,4 +1,8 @@
-## v1.4.1
+## v1.5.0
+- Added a setting for choosing the numpad layout: like a phone or a calculator.
+- Removed `com.google.android.material` dependency.
+
+### v1.4.1
 - Improved material components compatibility.
 - Fixed custom button style not working.
 

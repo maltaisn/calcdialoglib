@@ -14,49 +14,34 @@ class CalcSettings {
 
     @Nullable BigDecimal initialValue;
 
-    @Nullable BigDecimal maxValue;
+    @Nullable BigDecimal maxValue = new BigDecimal("1E10");
 
-    int maxIntDigits;
-    int maxFracDigits;
+    CalcNumpadLayout numpadLayout = CalcNumpadLayout.CALCULATOR;
 
-    @NonNull RoundingMode roundingMode;
+    int maxIntDigits = 10;
+    int maxFracDigits = 8;
 
-    boolean signCanBeChanged;
-    int initialSign;
+    @NonNull RoundingMode roundingMode = RoundingMode.HALF_UP;
 
-    boolean clearOnOperation;
-    boolean showZeroWhenNoValue;
+    boolean signCanBeChanged = true;
+    int initialSign = 0;
 
-    boolean showAnswerBtn;
-    boolean showSignBtn;
+    boolean clearOnOperation = false;
+    boolean showZeroWhenNoValue = true;
 
-    char decimalSep;
-    char groupSep;
-    int groupSize;
+    boolean showAnswerBtn = false;
+    boolean showSignBtn = true;
 
-    CalcSettings() {
-        maxValue = new BigDecimal("1E10");
-        maxIntDigits = 10;
-        maxFracDigits = 8;
-        roundingMode = RoundingMode.HALF_UP;
+    char decimalSep = CalcDialog.FORMAT_CHAR_DEFAULT;
+    char groupSep = CalcDialog.FORMAT_CHAR_DEFAULT;
+    int groupSize = 3;
 
-        decimalSep = CalcDialog.FORMAT_CHAR_DEFAULT;
-        groupSep = CalcDialog.FORMAT_CHAR_DEFAULT;
-        groupSize = 3;
-
-        signCanBeChanged = true;
-
-        clearOnOperation = false;
-        showZeroWhenNoValue = true;
-
-        showAnswerBtn = false;
-        showSignBtn = true;
-    }
 
     void writeToBundle(Bundle bundle) {
         if (maxValue != null) {
             bundle.putString("maxValue", maxValue.toString());
         }
+        bundle.putSerializable("numpadLayout", numpadLayout);
         bundle.putInt("requestCode", requestCode);
         bundle.putInt("maxIntDigits", maxIntDigits);
         bundle.putInt("maxFracDigits", maxFracDigits);
@@ -76,6 +61,7 @@ class CalcSettings {
         if (bundle.containsKey("maxValue")) {
             maxValue = new BigDecimal(bundle.getString("maxValue"));
         }
+        numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
         requestCode = bundle.getInt("requestCode");
         maxIntDigits = bundle.getInt("maxIntDigits");
         maxFracDigits = bundle.getInt("maxFracDigits");
@@ -111,6 +97,10 @@ class CalcSettings {
         }
     }
 
+    void setNumpadLayout(@NonNull CalcNumpadLayout layout) {
+        numpadLayout = layout;
+    }
+
     void setMaxDigits(int intPart, int fracPart) {
         if (intPart != CalcDialog.MAX_DIGITS_UNLIMITED && intPart < 1 ||
                 fracPart != CalcDialog.MAX_DIGITS_UNLIMITED && fracPart < 0) {
@@ -136,6 +126,8 @@ class CalcSettings {
                 throw new IllegalArgumentException("Sign cannot be changed was set but no valid sign is given.");
             }
             initialSign = sign;
+        } else {
+            initialSign = 0;
         }
     }
 

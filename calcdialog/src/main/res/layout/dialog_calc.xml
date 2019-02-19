@@ -83,7 +83,7 @@
         />
 
     <TextView
-        android:id="@+id/calc_btn_0"
+        android:id="@+id/calc_btn_24"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -96,7 +96,7 @@
         />
 
     <TextView
-        android:id="@+id/calc_btn_1"
+        android:id="@+id/calc_btn_13"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -104,12 +104,12 @@
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_start"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_4"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_12"
         tools:text="1"
         />
 
     <TextView
-        android:id="@+id/calc_btn_2"
+        android:id="@+id/calc_btn_23"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -117,12 +117,12 @@
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_middle"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_4"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_12"
         tools:text="2"
         />
 
     <TextView
-        android:id="@+id/calc_btn_3"
+        android:id="@+id/calc_btn_33"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -130,55 +130,55 @@
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_middle"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_4"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_12"
         tools:text="3"
         />
 
     <TextView
-        android:id="@+id/calc_btn_4"
+        android:id="@+id/calc_btn_12"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/calc_btn_1"
+        app:layout_constraintBottom_toTopOf="@+id/calc_btn_13"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_start"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_7"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_11"
         tools:text="4"
         />
 
     <TextView
-        android:id="@+id/calc_btn_5"
+        android:id="@+id/calc_btn_22"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_4"
+        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_12"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_middle"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_start"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_7"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_11"
         tools:text="5"
         />
 
     <TextView
-        android:id="@+id/calc_btn_6"
+        android:id="@+id/calc_btn_32"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_4"
+        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_12"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_middle"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_7"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_11"
         tools:text="6"
         />
 
     <TextView
-        android:id="@+id/calc_btn_7"
+        android:id="@+id/calc_btn_11"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/calc_btn_4"
+        app:layout_constraintBottom_toTopOf="@+id/calc_btn_12"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_start"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -188,27 +188,27 @@
         />
 
     <TextView
-        android:id="@+id/calc_btn_8"
+        android:id="@+id/calc_btn_21"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_7"
+        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_11"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_middle"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_start"
-        app:layout_constraintTop_toTopOf="@+id/calc_btn_7"
+        app:layout_constraintTop_toTopOf="@+id/calc_btn_11"
         tools:text="8"
         />
 
     <TextView
-        android:id="@+id/calc_btn_9"
+        android:id="@+id/calc_btn_31"
         style="?attr/calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_7"
+        app:layout_constraintBottom_toBottomOf="@+id/calc_btn_11"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_middle"
-        app:layout_constraintTop_toTopOf="@+id/calc_btn_7"
+        app:layout_constraintTop_toTopOf="@+id/calc_btn_11"
         tools:text="9"
         />
 
@@ -218,10 +218,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_view_sep_footer"
-        app:layout_constraintEnd_toStartOf="@+id/calc_btn_0"
+        app:layout_constraintEnd_toStartOf="@+id/calc_btn_24"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_1"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_13"
         tools:text="."
         />
 
@@ -246,7 +246,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_end"
-        app:layout_constraintTop_toTopOf="@+id/calc_btn_7"
+        app:layout_constraintTop_toTopOf="@+id/calc_btn_11"
         tools:text="÷"
         />
 
