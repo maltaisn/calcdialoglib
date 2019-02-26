@@ -29,36 +29,68 @@
     tools:theme="@style/CalcDialogStyle"
     >
 
-    <LinearLayout
-        android:id="@+id/calc_layout_header"
+    <View
+        android:id="@+id/view_header_background"
+        style="?attr/calcHeaderStyle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="?attr/calcHeaderElevation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/calc_txv_value"
+        tools:ignore="UnusedAttribute"
+        tools:background="@drawable/calc_bg_elevation"
+        />
+
+    <HorizontalScrollView
+        android:id="@+id/calc_hsv_expression"
+        style="?attr/calcExpressionScrollViewStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/calcBackgroundColor"
-        android:elevation="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="?attr/calcHeaderElevation"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="UnusedAttribute"
+        tools:visibility="visible"
         >
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/calc_txv_value"
-            style="?attr/calcValueStyle"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/calcHeaderHeight"
-            android:layout_weight="1"
-            tools:text="-1,211.52"
-            />
-
-        <com.nmaltais.calcdialog.CalcEraseButton
-            android:id="@+id/calc_btn_erase"
-            style="?attr/calcEraseBtnStyle"
+            android:id="@+id/calc_txv_expression"
+            style="?attr/calcExpressionStyle"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            tools:ignore="ContentDescription"
+            android:layout_height="wrap_content"
+            tools:text="3 × 3 + 2 ÷ 1.5 − -12.57 +"
             />
 
-    </LinearLayout>
+    </HorizontalScrollView>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/calc_txv_value"
+        style="?attr/calcValueStyle"
+        android:layout_width="0dp"
+        android:elevation="?attr/calcHeaderElevation"
+        app:layout_constraintTop_toBottomOf="@id/calc_hsv_expression"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/calc_btn_erase"
+        tools:text="-1,211.52"
+        tools:ignore="UnusedAttribute"
+        />
+
+    <com.nmaltais.calcdialog.CalcEraseButton
+        android:id="@+id/calc_btn_erase"
+        style="?attr/calcEraseBtnStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:elevation="?attr/calcHeaderElevation"
+        app:layout_constraintStart_toEndOf="@id/calc_txv_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/calc_txv_value"
+        app:layout_constraintBottom_toBottomOf="@id/calc_txv_value"
+        tools:ignore="ContentDescription,UnusedAttribute"
+        />
 
     <View
         android:id="@+id/calc_view_number_bg"
@@ -68,7 +100,7 @@
         app:layout_constraintBottom_toTopOf="@+id/calc_view_sep_footer"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_end"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calc_layout_header"
+        app:layout_constraintTop_toBottomOf="@id/view_header_background"
         />
 
     <View
@@ -79,7 +111,7 @@
         app:layout_constraintBottom_toTopOf="@+id/calc_view_sep_footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_end"
-        app:layout_constraintTop_toBottomOf="@+id/calc_layout_header"
+        app:layout_constraintTop_toBottomOf="@id/view_header_background"
         />
 
     <TextView
@@ -182,7 +214,7 @@
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_start"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calc_layout_header"
+        app:layout_constraintTop_toBottomOf="@id/view_header_background"
         app:layout_constraintVertical_chainStyle="spread_inside"
         tools:text="7"
         />
@@ -242,7 +274,7 @@
         style="?attr/calcOperationBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/calc_btn_mult"
+        app:layout_constraintBottom_toTopOf="@+id/calc_btn_mul"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_end"
@@ -251,7 +283,7 @@
         />
 
     <TextView
-        android:id="@+id/calc_btn_mult"
+        android:id="@+id/calc_btn_mul"
         style="?attr/calcOperationBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -272,8 +304,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_end"
-        app:layout_constraintTop_toBottomOf="@+id/calc_btn_mult"
-        tools:text="-"
+        app:layout_constraintTop_toBottomOf="@+id/calc_btn_mul"
+        tools:text="−"
         />
 
     <TextView

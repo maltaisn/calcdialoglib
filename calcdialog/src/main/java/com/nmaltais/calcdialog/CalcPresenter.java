@@ -3,19 +3,14 @@ package com.nmaltais.calcdialog;
 import android.os.Bundle;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 class CalcPresenter {
-
-    private static final int OPERATION_NONE = -1;
-    private static final int OPERATION_ADD = 0;
-    private static final int OPERATION_SUB = 1;
-    private static final int OPERATION_MULT = 2;
-    private static final int OPERATION_DIV = 3;
 
     private static final int ERROR_NONE = -1;
     private static final int ERROR_DIV_ZERO = 0;
@@ -24,76 +19,78 @@ class CalcPresenter {
     private static final int ERROR_WRONG_SIGN_NEG = 3;
 
     private CalcDialog view;
-
     private CalcSettings settings;
+    private NumberFormat nbFormat;
 
-    private int operation;
-    private int error;
-    private StringBuilder valueStr;
-    private @Nullable BigDecimal resultValue;
-    private boolean resultIsDisplayed;
-    private boolean overwriteValue;
+    /** The typed expression. */
+    @NonNull
+    private Expression expression = new Expression();
 
-    private @Nullable BigDecimal answerValue;
+    /**
+     * The current displayed value. Can be user input, evaluated result, answer from the answer
+     * button, or can be null if there's no current value.
+     */
+    @Nullable
+    private BigDecimal currentValue;
+
+    /** The last evaluated result, null for none. */
+    @Nullable
+    private BigDecimal resultValue;
+
+    /**
+     * The number of digits shown after the decimal separator in {@link #currentValue}.
+     * If -1, there's no fractional part. If 0, only the decimal separator is shown.
+     * If more than 0, indicates the number of fraction digits.
+     */
+    private int currentValueScale;
+
+    /** If there's an error, the error code. */
+    private int errorCode;
+
+    /** Whether {@link #currentValue} is from the answer button. */
     private boolean currentIsAnswer;
 
-    private String zeroString;
+    /** Whether {@link #currentValue} is the result from the equal button. */
+    private boolean currentIsResult;
+
+    /**
+     * Whether user can edit {@link #currentValue} or not.
+     * If not editable, a button press clears the current value.
+     */
+    private boolean canEditCurrentValue;
+
+    /**
+     * Whether user can edit expression or not.
+     * If not editable, a button press clears the expression.
+     */
+    private boolean canEditExpression;
+
 
     void attach(CalcDialog v, Bundle state) {
         view = v;
 
         settings = view.getSettings();
+        settings.validate();
 
-        // Get locale's symbols for number formatting
-        Locale locale = view.getDefaultLocale();
-        DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(locale);
-        if (settings.decimalSep == CalcDialog.FORMAT_CHAR_DEFAULT) {
-            settings.decimalSep = dfs.getDecimalSeparator();
-        }
-        if (settings.groupSep == CalcDialog.FORMAT_CHAR_DEFAULT) {
-            settings.groupSep = dfs.getGroupingSeparator();
-        }
-
-        // Get string to display for zero
-        zeroString = BigDecimal.ZERO.toPlainString();
-        int pointPos = zeroString.indexOf('.');
-        if (pointPos != -1 && settings.decimalSep != '.') {
-            // Replace "." with correct decimal separator
-            StringBuilder sb = new StringBuilder(zeroString);
-            sb.setCharAt(pointPos, settings.decimalSep);
-            zeroString = sb.toString();
-        }
+        nbFormat = settings.nbFormat;
 
         if (state == null) {
-            answerValue = null;
-            currentIsAnswer = false;
-            operation = OPERATION_NONE;
-            error = ERROR_NONE;
-            resultValue = null;
-            resultIsDisplayed = true;
+            reset();
 
-            // Init values
-            if (settings.initialValue != null) {
-                resultValue = CalcDialogUtils.stripTrailingZeroes(settings.initialValue
-                        .setScale(settings.maxFracDigits, settings.roundingMode));
-                answerValue = resultValue;
-
-                valueStr = new StringBuilder(resultValue.toPlainString());
-
-            } else {
-                valueStr = new StringBuilder();
-            }
-            formatValue();
-
-            view.displayValueText(valueStr.toString());
+            currentValue = settings.initialValue;
+            canEditCurrentValue = true;
 
         } else {
             readStateFromBundle(state);
         }
 
-        view.setDecimalSepBtnEnabled(settings.maxFracDigits > 0);
-        setAnswerBtnVisible(settings.showAnswerBtn && answerValue != null);
-        view.setSignBtnVisible(settings.showSignBtn);
+        view.setExpressionVisible(settings.isExpressionShown);
+        view.setDecimalSepBtnEnabled(nbFormat.getMaximumFractionDigits() > 0);
+        view.setAnswerBtnVisible(settings.isAnswerBtnShown && resultValue != null);
+        view.setSignBtnVisible(settings.isSignBtnShown);
+
+        updateCurrentValue();
+        updateExpression();
     }
 
     void detach() {
@@ -102,210 +99,194 @@ class CalcPresenter {
     }
 
     void writeStateToBundle(Bundle bundle) {
-        bundle.putInt("operation", operation);
-        bundle.putInt("error", error);
-        bundle.putString("valueStr", valueStr.toString());
-        bundle.putBoolean("resultIsDisplayed", resultIsDisplayed);
-        bundle.putBoolean("overwriteValue", overwriteValue);
-        bundle.putBoolean("currentIsAnswer", currentIsAnswer);
-
+        bundle.putParcelable("expression", expression);
+        if (currentValue != null) {
+            bundle.putSerializable("currentValue", currentValue);
+        }
         if (resultValue != null) {
-            bundle.putString("resultValue", resultValue.toString());
+            bundle.putSerializable("resultValue", resultValue);
         }
-        if (answerValue != null) {
-            bundle.putString("answerValue", answerValue.toString());
-        }
+        bundle.putInt("currentValueScale", currentValueScale);
+        bundle.putInt("errorCode", errorCode);
+        bundle.putBoolean("currentIsAnswer", currentIsAnswer);
+        bundle.putBoolean("currentIsResult", currentIsResult);
+        bundle.putBoolean("canEditCurrentValue", canEditCurrentValue);
+        bundle.putBoolean("canEditExpression", canEditExpression);
     }
 
     private void readStateFromBundle(Bundle bundle) {
-        operation = bundle.getInt("operation");
-        error = bundle.getInt("error");
-        String value = bundle.getString("valueStr");
-        resultIsDisplayed = bundle.getBoolean("resultIsDisplayed");
-        overwriteValue = bundle.getBoolean("overwriteValue");
-        currentIsAnswer = bundle.getBoolean("currentIsAnswer");
-
-        assert value != null;
-        valueStr = new StringBuilder();
-
+        //noinspection ConstantConditions
+        expression = bundle.getParcelable("expression");
+        if (bundle.containsKey("currentValue")) {
+            currentValue = (BigDecimal) bundle.getSerializable("currentValue");
+        }
         if (bundle.containsKey("resultValue")) {
-            resultValue = new BigDecimal(bundle.getString("resultValue"));
+            resultValue = (BigDecimal) bundle.getSerializable("resultValue");
         }
-        if (bundle.containsKey("answerValue")) {
-            answerValue = new BigDecimal(bundle.getString("answerValue"));
-        }
+        currentValueScale = bundle.getInt("currentValueScale");
+        errorCode = bundle.getInt("errorCode");
+        currentIsAnswer = bundle.getBoolean("currentIsAnswer");
+        currentIsResult = bundle.getBoolean("currentIsResult");
+        canEditCurrentValue = bundle.getBoolean("canEditCurrentValue");
+        canEditExpression = bundle.getBoolean("canEditExpression");
     }
 
     void onErasedOnce() {
+        clearExpressionIfNeeded();
         if (dismissError()) return;
 
         currentIsAnswer = false;
-        setAnswerBtnVisible(false);
+        currentIsResult = false;
+        view.setAnswerBtnVisible(false);
 
-        if (valueStr.length() > 0) {
-            if (resultIsDisplayed || overwriteValue) {
-                valueStr.setLength(0);
-                overwriteValue = false;
+        if (!canEditCurrentValue) {
+            currentValue = null;
+            canEditCurrentValue = true;
 
-            } else {
-                removeGroupSeparators();
-
-                // Erase last digit
-                valueStr.deleteCharAt(valueStr.length() - 1);
-                if (valueStr.length() > 0) {
-                    // Don't leave useless negative sign or decimal separator
-                    char last = valueStr.charAt(valueStr.length() - 1);
-                    if (last == settings.decimalSep || last == '-') {
-                        valueStr.deleteCharAt(valueStr.length() - 1);
-
-                        if (valueStr.toString().equals("-0")) {
-                            // Don't allow negative 0
-                            valueStr.deleteCharAt(0);
-                        }
-                    }
+        } else if (currentValue != null) {
+            String valueStr = getCurrentValueString();
+            valueStr = valueStr.substring(0, valueStr.length() - 1);
+            try {
+                currentValue = new BigDecimal(valueStr);
+                if (currentValueScale >= 0) {
+                    currentValueScale--;
                 }
+            } catch (NumberFormatException e) {
+                // Happens if string is empty or "-".
+                currentValue = null;
+                currentValueScale = -1;
             }
 
-            formatValue();
-            view.displayValueText(valueStr.toString());
-            resultIsDisplayed = false;
+        } else if (settings.isExpressionEditable && expression.numbers.size() > 0) {
+            // No more digits to erase: pop last expression number and operator and make it current value
+            currentValue = expression.numbers.remove(expression.numbers.size() - 1);
+            expression.operators.remove(expression.operators.size() - 1);
+
+            assert currentValue != null;
+            currentValueScale = currentValue.scale();
+            if (currentValueScale == 0) currentValueScale = -1;
+
+            updateExpression();
         }
+
+        updateCurrentValue();
     }
 
     void onErasedAll() {
-        clear();
+        onClearBtnClicked();
     }
 
     void onDigitBtnClicked(int digit) {
-        dismissError();
+        clearExpressionIfNeeded();
+        dismissOldValue();
 
-        currentIsAnswer = false;
-        setAnswerBtnVisible(false);
-
-        if (resultIsDisplayed || overwriteValue) {
-            valueStr.setLength(0);
-            overwriteValue = false;
-        }
-
-        removeGroupSeparators();
+        String valueStr = getCurrentValueString();
 
         // Check if max digits has been exceeded
-        int pointPos = valueStr.indexOf(String.valueOf(settings.decimalSep));
-        boolean withinMaxInt = (pointPos == -1 && (settings.maxIntDigits == CalcDialog.MAX_DIGITS_UNLIMITED
-                || valueStr.length() < settings.maxIntDigits));
-        boolean withinMaxFrac = (pointPos != -1
-                && (settings.maxFracDigits == CalcDialog.MAX_DIGITS_UNLIMITED
-                || valueStr.length() - pointPos - 1 < settings.maxFracDigits));
-        boolean isValueZero = (pointPos == -1 && valueStr.length() == 1 && valueStr.charAt(0) == '0');
-
-        if ((withinMaxInt || withinMaxFrac) && (!isValueZero || digit != 0)) {
-            // If max int or max frac digits have not already been reached
-            // Concatenate current value with new digit
-            if (isValueZero) {
-                // If current value is zero, clear it before adding new digit
-                valueStr.setLength(0);
-            }
-            valueStr.append(digit);
+        int pointPos = valueStr.indexOf('.');
+        boolean maxIntReached = (pointPos == -1 && valueStr.length() >= settings.maxIntDigits);
+        boolean maxFracReached = (pointPos != -1 && valueStr.length() - pointPos - 1 >= nbFormat.getMaximumFractionDigits());
+        if (maxIntReached || maxFracReached) {
+            // Can't add a new digit, it's already at the maximum.
+            return;
         }
 
-        formatValue();
-        view.displayValueText(valueStr.toString());
-        resultIsDisplayed = false;
+        if (pointPos != -1) {
+            currentValueScale++;
+        }
+
+        currentValue = new BigDecimal(valueStr + digit);
+        updateCurrentValue();
     }
 
-    void onOperatorBtnClicked(int op) {
+    void onOperatorBtnClicked(@NonNull Expression.Operator operator) {
+        clearExpressionIfNeeded();
         if (dismissError()) return;
 
-        if (valueStr.length() != 0 || currentIsAnswer) {
-            if (operation != OPERATION_NONE) {
-                calculate();
-            } else {
-                resultValue = getCurrentValue();
-                if (!settings.clearOnOperation) {
-                    valueStr = new StringBuilder();
-                    formatValue();
-                    resultIsDisplayed = false;
-                }
+        currentIsResult = false;
+        currentValueScale = -1;
+
+        if (!currentIsAnswer && !canEditCurrentValue && !expression.operators.isEmpty()) {
+            // Undo previous operator button click if the current value is the
+            // result of the expression calculated on the last button click.
+            expression.operators.set(expression.operators.size() - 1, operator);
+
+        } else {
+            calculate();
+            expression.operators.add(operator);
+
+            if (!settings.shouldEvaluateOnOperation) {
+                currentValue = null;
             }
         }
 
-        operation = op;
-        if (settings.clearOnOperation) {
-            valueStr = new StringBuilder();
-            formatValue();
-            view.displayValueText(valueStr.toString());
-            resultIsDisplayed = false;
-        }
-
-        setAnswerBtnVisible(settings.showAnswerBtn && answerValue != null);
+        view.setAnswerBtnVisible(settings.isAnswerBtnShown && resultValue != null);
+        updateCurrentValue();
+        updateExpression();
     }
 
     void onDecimalSepBtnClicked() {
-        dismissError();
+        clearExpressionIfNeeded();
+        dismissOldValue();
 
-        currentIsAnswer = false;
-        setAnswerBtnVisible(false);
-
-        if (resultIsDisplayed || overwriteValue) {
-            valueStr.setLength(0);
-            overwriteValue = false;
-        }
-
-        if (valueStr.indexOf(String.valueOf(settings.decimalSep)) == -1) {
+        if (currentValueScale == -1) {
             // Only insert a decimal point if there isn't one yet
-            if (valueStr.length() == 0) {
-                // Add 0 before decimal point .1 --> 0.1
-                valueStr.append("0");
+            if (currentValue == null) {
+                currentValue = BigDecimal.ZERO;
             }
-
-            valueStr.append(settings.decimalSep);
-
-            view.displayValueText(valueStr.toString());
-            resultIsDisplayed = false;
+            currentValueScale = 0;
+            updateCurrentValue();
         }
     }
 
     void onSignBtnClicked() {
-        if (dismissError()) return;
+        dismissError();
 
-        // Negate value
-        String str = valueStr.toString();
-        if (!str.isEmpty() && !str.equals("0") && !str.equals("0" + settings.decimalSep)) {
-            // If value is not equal to zero or empty
-            if (valueStr.charAt(0) != '-') {
-                valueStr.insert(0, '-');
-            } else {
-                valueStr.deleteCharAt(0);
-            }
+        currentIsAnswer = false;
+        view.setAnswerBtnVisible(false);
 
-            if (resultIsDisplayed) {
-                assert resultValue != null && answerValue != null;
-                resultValue = resultValue.negate();
-                answerValue = answerValue.negate();
-            }
-
-            view.displayValueText(valueStr.toString());
-            resultIsDisplayed = false;
+        if (!canEditCurrentValue && !currentIsResult) {
+            // If current value is result, it's not editable but still allow negation.
+            currentValue = null;
+            canEditCurrentValue = true;
+            currentValueScale = -1;
         }
+
+        // Negate value if there's one and it's not zero.
+        if (currentValue != null && currentValue.compareTo(BigDecimal.ZERO) != 0) {
+            currentValue = currentValue.negate();
+        }
+
+        updateCurrentValue();
     }
 
     void onEqualBtnClicked() {
+        clearExpressionIfNeeded();
         if (dismissError()) return;
-        calculate();
-
-        answerValue = resultValue;
+        equal();
     }
 
     void onAnswerBtnClicked() {
-        setAnswerBtnVisible(false);
-        view.displayAnswerText();
+        assert resultValue != null;
 
+        currentValue = resultValue;
+        currentValueScale = -1;
         currentIsAnswer = true;
-        resultIsDisplayed = false;
+        canEditCurrentValue = false;
+
+        view.setAnswerBtnVisible(false);
+        updateCurrentValue();
     }
 
     void onClearBtnClicked() {
-        clear();
+        clearExpressionIfNeeded();
+        if (dismissError()) return;
+
+        reset();
+
+        view.setAnswerBtnVisible(false);
+        updateCurrentValue();
+        updateExpression();
     }
 
     void onCancelBtnClicked() {
@@ -313,26 +294,38 @@ class CalcPresenter {
     }
 
     void onOkBtnClicked() {
+        clearExpressionIfNeeded();
         if (dismissError()) return;
 
-        int opBefore = operation;
+        equal();
 
-        calculate();
+        if (expression.numbers.size() > 1) {
+            // If the expression still has more than 1 number it means it was just calculated.
+            // Don't dismiss already to let user see the result.
+            return;
+        }
 
-        // If operation was not done, make OK button act as an equal btn
-        if (opBefore != OPERATION_NONE) return;
-
-        if (error == ERROR_NONE) {
-            // If sign can't be changed, check if sign is right
-            if (!settings.signCanBeChanged && resultValue != null) {
-                int sign = resultValue.signum();
-                if (sign != 0 && sign != settings.initialSign) {
-                    // Wrong sign
-                    setError(sign == 1 ? ERROR_WRONG_SIGN_NEG : ERROR_WRONG_SIGN_POS);
-                    return;
+        if (resultValue != null) {
+            // Check if value is out of bounds and if so, show an error.
+            // Show special error messages if minimum or maximum is 0.
+            if (settings.maxValue != null && resultValue.compareTo(settings.maxValue) > 0) {
+                if (settings.maxValue.compareTo(BigDecimal.ZERO) == 0) {
+                    setError(ERROR_WRONG_SIGN_NEG);
+                } else {
+                    setError(ERROR_OUT_OF_BOUNDS);
                 }
+                return;
+            } else if (settings.minValue != null && resultValue.compareTo(settings.minValue) < 0) {
+                if (settings.minValue.compareTo(BigDecimal.ZERO) == 0) {
+                    setError(ERROR_WRONG_SIGN_POS);
+                } else {
+                    setError(ERROR_OUT_OF_BOUNDS);
+                }
+                return;
             }
+        }
 
+        if (errorCode == ERROR_NONE) {
             view.sendValueResult(resultValue);
             view.exit();
         }
@@ -342,184 +335,176 @@ class CalcPresenter {
         reset();
     }
 
+    private void clearExpressionIfNeeded() {
+        if (!canEditExpression) {
+            expression.clear();
+            canEditExpression = true;
+            currentIsResult = false;
+            updateExpression();
+        }
+    }
+
+    private void dismissOldValue() {
+        dismissError();
+
+        currentIsAnswer = false;
+
+        view.setAnswerBtnVisible(false);
+
+        if (!canEditCurrentValue) {
+            currentValue = null;
+            canEditCurrentValue = true;
+            currentValueScale = -1;
+        }
+    }
+
     /**
-     * Reset value and operation to none
-     * Doesn't dismiss error and doesn't update display
+     * Reset all variables to their initial value. Doesn't update the display.
      */
     private void reset() {
-        operation = OPERATION_NONE;
+        expression.clear();
+        currentValue = null;
         resultValue = null;
-        overwriteValue = true;
+        currentValueScale = -1;
+        errorCode = ERROR_NONE;
 
-        answerValue = null;
         currentIsAnswer = false;
-        setAnswerBtnVisible(false);
+        currentIsResult = false;
+        canEditCurrentValue = false;
+        canEditExpression = true;
 
-        valueStr = new StringBuilder();
-        formatValue();
-
-        resultIsDisplayed = true;
+        view.setAnswerBtnVisible(false);
     }
 
-    /**
-     * Calculate result of operation between current result and operand
-     */
     private void calculate() {
-        if (resultIsDisplayed) {
+        if (currentValue == null) {
+            currentValue = BigDecimal.ZERO;
+        }
+        expression.numbers.add(currentValue);
+
+        try {
+            currentValue = expression.evaluate(settings.isOrderOfOperationsApplied,
+                    nbFormat.getMaximumFractionDigits(), nbFormat.getRoundingMode());
+        } catch (ArithmeticException e) {
+            // Division by zero occurred.
+            setError(ERROR_DIV_ZERO);
             return;
         }
 
-        if (operation == OPERATION_NONE || valueStr.length() == 0) {
-            resultValue = getCurrentValue();
+        currentIsAnswer = false;
+        canEditCurrentValue = false;
+    }
 
+    private void equal() {
+        if (!currentIsAnswer && !canEditCurrentValue && !expression.operators.isEmpty()) {
+            // Undo previous operation button click.
+            expression.operators.remove(expression.operators.size() - 1);
         } else {
-            if (resultValue == null) resultValue = BigDecimal.ZERO;
-            BigDecimal operand = getCurrentValue();
-
-            if (operation == OPERATION_ADD) {
-                assert resultValue != null;
-                resultValue = resultValue.add(operand);
-            } else if (operation == OPERATION_SUB) {
-                resultValue = resultValue.subtract(operand);
-            } else if (operation == OPERATION_MULT) {
-                resultValue = resultValue.multiply(operand);
-            } else if (operation == OPERATION_DIV) {
-                if (operand.compareTo(BigDecimal.ZERO) == 0) {
-                    setError(ERROR_DIV_ZERO);
-                    return;
-                } else {
-                    resultValue = resultValue.divide(operand, settings.maxFracDigits, settings.roundingMode);
-                }
-            }
+            calculate();
         }
 
-        if (CalcDialogUtils.isValueOutOfBounds(resultValue, settings.maxValue)) {
-            setError(ERROR_OUT_OF_BOUNDS);
-            return;
+        if (errorCode == ERROR_NONE) {
+            resultValue = currentValue;
+            currentIsResult = true;
+            currentValueScale = -1;
+            updateCurrentValue();
         }
 
-        resultValue = CalcDialogUtils.stripTrailingZeroes(
-                resultValue.setScale(settings.maxFracDigits, settings.roundingMode));
-
-        // Display formatted result
-        valueStr = new StringBuilder(resultValue.toPlainString());
-        formatValue();
-        view.displayValueText(valueStr.toString());
-        resultIsDisplayed = true;
-
-        operation = OPERATION_NONE;
+        canEditExpression = false;
+        updateExpression();
     }
 
-    /**
-     * Display error message and disable dialog's OK button, because there is no value
-     * @param error ID of the error to show
-     */
     private void setError(int error) {
-        this.error = error;
-        view.displayErrorText(error);
+        errorCode = error;
 
-        reset();
+        // Reset all but not the expression.
+        currentValue = null;
+        resultValue = null;
+        currentValueScale = -1;
+        currentIsAnswer = false;
+        canEditCurrentValue = false;
+        canEditExpression = false;
+
+        view.showErrorText(error);
     }
 
-    /**
-     * Dismiss error from display
-     * @return true if an error was dismissed
-     */
     private boolean dismissError() {
-        if (error != ERROR_NONE) {
-            error = ERROR_NONE;
-            view.displayValueText(valueStr.toString());
-            resultIsDisplayed = false;
+        if (errorCode != ERROR_NONE) {
+            errorCode = ERROR_NONE;
+            updateCurrentValue();
             return true;
         }
         return false;
     }
 
-    /**
-     * Reset, dismiss error, clear the display
-     */
-    private void clear() {
-        if (dismissError()) return;
-
-        currentIsAnswer = false;
-        setAnswerBtnVisible(false);
-
-        reset();
-
-        view.displayValueText(valueStr.toString());
-        resultIsDisplayed = false;
-    }
-
-    /**
-     * Get a BigDecimal corresponding to the displayed value
-     * Note that separators will be removed from display
-     * @return BigDecimal value of display
-     */
-    private BigDecimal getCurrentValue() {
+    private void updateCurrentValue() {
         if (currentIsAnswer) {
-            return answerValue;
-
-        } else if (valueStr.length() == 0) {
-            return BigDecimal.ZERO;
-
-        } else {
-            removeGroupSeparators();
-            int pointPos = valueStr.indexOf(String.valueOf(settings.decimalSep));
-            if (pointPos != -1) valueStr.replace(pointPos, pointPos + 1, ".");
-            return new BigDecimal(valueStr.toString());
-        }
-    }
-
-
-    /**
-     * Add grouping separators and change decimal separator to custom one
-     * If value is empty, set it to 0 if necessary
-     */
-    private void formatValue() {
-        if (valueStr.length() == 0 && settings.showZeroWhenNoValue) {
-            valueStr.append(zeroString);
-            overwriteValue = true;
+            view.showAnswerText();
             return;
         }
 
-        // Replace "." by correct decimal separator
-        int pointPos = valueStr.indexOf(".");
-        if (pointPos != -1) {
-            valueStr.setCharAt(pointPos, settings.decimalSep);
+        BigDecimal value = currentValue;
+        if (value == null && settings.isZeroShownWhenNoValue) {
+            value = BigDecimal.ZERO;
+        }
+
+        String text = null;
+        if (value != null) {
+            if (currentValueScale > 0 && nbFormat.getMinimumFractionDigits() < currentValueScale) {
+                // Set a minimum number of fraction digits so that trailing zeroes are shown.
+                int minFracBefore = nbFormat.getMinimumFractionDigits();
+                nbFormat.setMinimumFractionDigits(currentValueScale);
+                text = nbFormat.format(value);
+                nbFormat.setMinimumFractionDigits(minFracBefore);
+
+            } else if (currentValueScale == 0
+                    && nbFormat.getMinimumFractionDigits() == 0
+                    && nbFormat instanceof DecimalFormat) {
+                // Append the decimal separator at the end of the number.
+                DecimalFormat fmt = (DecimalFormat) nbFormat;
+                char sep = fmt.getDecimalFormatSymbols().getDecimalSeparator();
+                if (currentValue.compareTo(BigDecimal.ZERO) >= 0) {
+                    String suffixBefore = fmt.getPositiveSuffix();
+                    fmt.setPositiveSuffix(sep + suffixBefore);
+                    text = nbFormat.format(currentValue);
+                    fmt.setPositiveSuffix(suffixBefore);
+                } else {
+                    String suffixBefore = fmt.getNegativeSuffix();
+                    fmt.setNegativeSuffix(sep + suffixBefore);
+                    text = nbFormat.format(currentValue);
+                    fmt.setNegativeSuffix(suffixBefore);
+                }
+            } else {
+                text = nbFormat.format(value);
+            }
+        }
+
+        view.updateCurrentValue(text);
+    }
+
+    private void updateExpression() {
+        if (settings.isExpressionShown) {
+            String text = expression.format(nbFormat);
+            if (currentIsResult) {
+                // If current value is the result from the equal button, append = to the expression.
+                text += " =";
+            }
+            view.updateExpression(text);
+        }
+    }
+
+    private String getCurrentValueString() {
+        if (currentValue == null) return "";
+
+        if (currentValueScale != -1) {
+            String str = currentValue.setScale(currentValueScale, RoundingMode.UNNECESSARY).toPlainString();
+            if (currentValueScale == 0) {
+                str += '.';
+            }
+            return str;
         } else {
-            pointPos = valueStr.indexOf(String.valueOf(settings.decimalSep));
+            return currentValue.toPlainString();
         }
-
-        // Add group separators if needed
-        if (settings.groupSize > 0) {
-            int start = (pointPos == -1 ? valueStr.length() : pointPos) - settings.groupSize;
-            for (int i = start; i > 0; i--) {
-                if ((start - i) % settings.groupSize == 0
-                        && (i != 1 || valueStr.charAt(0) != '-')) {
-                    valueStr.insert(i, settings.groupSep);
-                }
-            }
-        }
-    }
-
-    /**
-     * Remove all grouping separators from display
-     * 10,000,000 becomes 10000000
-     * Used to format display to BigDecimal
-     */
-    private void removeGroupSeparators() {
-        if (settings.groupSize > 0) {
-            for (int i = valueStr.length() - 1; i >= 0; i--) {
-                if (valueStr.charAt(i) == settings.groupSep) {
-                    valueStr.deleteCharAt(i);
-                }
-            }
-        }
-    }
-
-    private void setAnswerBtnVisible(boolean visible) {
-        view.setAnswerBtnVisible(visible);
-        view.setEqualBtnVisible(!visible);
     }
 
 }

@@ -299,6 +299,61 @@
 
         </RadioGroup>
 
+        <TextView
+            android:id="@+id/txv_expr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/option_expr"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radiogroup_numpad"
+            />
+
+        <RadioGroup
+            android:id="@+id/radiogroup_expr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txv_expr"
+            >
+
+            <RadioButton
+                android:id="@+id/radio_expr_always"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/option_expr_always"
+                android:checked="true"
+                />
+
+            <RadioButton
+                android:id="@+id/radio_expr_once"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/option_expr_once"
+                />
+
+            <RadioButton
+                android:id="@+id/radio_expr_once_show"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/option_expr_once_show"
+                />
+
+        </RadioGroup>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

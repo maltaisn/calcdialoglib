@@ -20,5 +20,9 @@
     <string name="option_numpad">Numpad layout:</string>
     <string name="option_numpad_calc">Calculator (789 on the top row)</string>
     <string name="option_numpad_phone">Phone (123 on the top row)</string>
+    <string name="option_expr">Expression mode:</string>
+    <string name="option_expr_always">Compute when any operator is used.</string>
+    <string name="option_expr_once">Compute only when equal is pressed.</string>
+    <string name="option_expr_once_show">Compute only when equal is pressed and show the expression on screen.</string>
 
 </resources>

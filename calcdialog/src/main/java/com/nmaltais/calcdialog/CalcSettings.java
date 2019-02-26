@@ -1,150 +1,341 @@
 package com.nmaltais.calcdialog;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-class CalcSettings {
+/**
+ * Settings for the calculator dialog.
+ */
+public class CalcSettings implements Parcelable {
 
-    int requestCode;
+    int requestCode = 0;
 
-    @Nullable BigDecimal initialValue;
-
-    @Nullable BigDecimal maxValue = new BigDecimal("1E10");
-
-    CalcNumpadLayout numpadLayout = CalcNumpadLayout.CALCULATOR;
-
+    // Appearance settings
+    @NonNull NumberFormat nbFormat = NumberFormat.getInstance();
     int maxIntDigits = 10;
-    int maxFracDigits = 8;
 
-    @NonNull RoundingMode roundingMode = RoundingMode.HALF_UP;
+    @NonNull CalcNumpadLayout numpadLayout = CalcNumpadLayout.CALCULATOR;
+    boolean isExpressionShown = false;
+    boolean isZeroShownWhenNoValue = true;
+    boolean isAnswerBtnShown = false;
+    boolean isSignBtnShown = true;
+    boolean isExpressionEditable = false;
+    boolean shouldEvaluateOnOperation = false;
 
-    boolean signCanBeChanged = true;
-    int initialSign = 0;
+    // Behavior settings
+    @Nullable BigDecimal initialValue = null;
+    @Nullable BigDecimal minValue = new BigDecimal("-1E10");
+    @Nullable BigDecimal maxValue = new BigDecimal("1E10");
+    boolean isOrderOfOperationsApplied = true;
 
-    boolean clearOnOperation = false;
-    boolean showZeroWhenNoValue = true;
-
-    boolean showAnswerBtn = false;
-    boolean showSignBtn = true;
-
-    char decimalSep = CalcDialog.FORMAT_CHAR_DEFAULT;
-    char groupSep = CalcDialog.FORMAT_CHAR_DEFAULT;
-    int groupSize = 3;
-
-
-    void writeToBundle(Bundle bundle) {
-        if (maxValue != null) {
-            bundle.putString("maxValue", maxValue.toString());
-        }
-        bundle.putSerializable("numpadLayout", numpadLayout);
-        bundle.putInt("requestCode", requestCode);
-        bundle.putInt("maxIntDigits", maxIntDigits);
-        bundle.putInt("maxFracDigits", maxFracDigits);
-        bundle.putString("roundingMode", roundingMode.toString());
-        bundle.putBoolean("signCanBeChanged", signCanBeChanged);
-        bundle.putInt("initialSign", initialSign);
-        bundle.putBoolean("clearOnOperation", clearOnOperation);
-        bundle.putBoolean("showZeroWhenNoValue", showZeroWhenNoValue);
-        bundle.putBoolean("showAnswerBtn", showAnswerBtn);
-        bundle.putBoolean("showSignBtn", showSignBtn);
-        bundle.putChar("decimalSep", decimalSep);
-        bundle.putChar("groupSep", groupSep);
-        bundle.putInt("groupSize", groupSize);
+    CalcSettings() {
+        nbFormat.setMaximumIntegerDigits(Integer.MAX_VALUE);
+        nbFormat.setMaximumFractionDigits(8);
     }
 
-    void readFromBundle(Bundle bundle) {
-        if (bundle.containsKey("maxValue")) {
-            maxValue = new BigDecimal(bundle.getString("maxValue"));
+    void validate() {
+        if (minValue != null && maxValue != null && minValue.compareTo(maxValue) >= 0) {
+            throw new IllegalArgumentException("Minimum value must be less than maximum value.");
         }
-        numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
-        requestCode = bundle.getInt("requestCode");
-        maxIntDigits = bundle.getInt("maxIntDigits");
-        maxFracDigits = bundle.getInt("maxFracDigits");
-        roundingMode = RoundingMode.valueOf(bundle.getString("roundingMode"));
-        signCanBeChanged = bundle.getBoolean("signCanBeChanged");
-        initialSign = bundle.getInt("initialSign");
-        clearOnOperation = bundle.getBoolean("clearOnOperation");
-        showZeroWhenNoValue = bundle.getBoolean("showZeroWhenNoValue");
-        showAnswerBtn = bundle.getBoolean("showAnswerBtn");
-        showSignBtn = bundle.getBoolean("showSignBtn");
-        decimalSep = bundle.getChar("decimalSep");
-        groupSep = bundle.getChar("groupSep");
-        groupSize = bundle.getInt("groupSize");
-    }
-
-    void setValue(@Nullable BigDecimal value) {
-        if (value != null && CalcDialogUtils.isValueOutOfBounds(value, maxValue)) {
-            value = (value.compareTo(BigDecimal.ZERO) > 0 ? maxValue : maxValue.negate());
-        }
-        initialValue = value;
-    }
-
-    void setMaxValue(@Nullable BigDecimal maxValue) {
-        if (maxValue != null && maxValue.compareTo(BigDecimal.ZERO) < 0) {
-            // Must be positive
-            maxValue = maxValue.negate();
-        }
-        this.maxValue = maxValue;
-
-        if (initialValue != null && CalcDialogUtils.isValueOutOfBounds(initialValue, maxValue)) {
-            // Initial value is greater than max value
-            initialValue = maxValue;
+        if (initialValue != null && (minValue != null && initialValue.compareTo(minValue) < 0
+                || maxValue != null && initialValue.compareTo(maxValue) > 0)) {
+            throw new IllegalArgumentException("Initial value is out of bounds.");
         }
     }
 
-    void setNumpadLayout(@NonNull CalcNumpadLayout layout) {
-        numpadLayout = layout;
+    /**
+     * Set the request code by which the dialog is identified
+     * @param requestCode A request code.
+     * @return The settings
+     */
+    public CalcSettings setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
+        return this;
     }
 
-    void setMaxDigits(int intPart, int fracPart) {
-        if (intPart != CalcDialog.MAX_DIGITS_UNLIMITED && intPart < 1 ||
-                fracPart != CalcDialog.MAX_DIGITS_UNLIMITED && fracPart < 0) {
-            throw new IllegalArgumentException("Max integer part must be at least 1 and max fractional part must be at least 0.");
-        }
-
-        maxIntDigits = intPart;
-        maxFracDigits = fracPart;
+    public int getRequestCode() {
+        return requestCode;
     }
 
-    void setRoundingMode(RoundingMode roundingMode) {
-        if (roundingMode.equals(RoundingMode.UNNECESSARY)) {
+    /**
+     * Set the number format to use for formatting the currently displayed value and the
+     * values in the expression (if shown). This can be used to set a prefix and a suffix,
+     * changing the grouping settings, the minimum and maximum integer and fraction digits,
+     * the decimal separator, the rounding mode, and probably more.
+     * By default, the locale's default decimal format is used.
+     * @param format A number format.
+     * @return The settings
+     * @see NumberFormat
+     */
+    public CalcSettings setNumberFormat(@NonNull NumberFormat format) {
+        if (format.getRoundingMode() == RoundingMode.UNNECESSARY) {
             throw new IllegalArgumentException("Cannot use RoundingMode.UNNECESSARY as a rounding mode.");
         }
 
-        this.roundingMode = roundingMode;
+        this.nbFormat = format;
+
+        // The max int setting on number format is used to set the maximum int digits that can be entered.
+        // However, it is possible that the user evaluates expressions resulting in bigger numbers.
+        // If not changed, this would show those values as "0,000" instead of "10,000" for example.
+        maxIntDigits = nbFormat.getMaximumIntegerDigits();
+        nbFormat.setMaximumIntegerDigits(Integer.MAX_VALUE);
+
+        return this;
     }
 
-    void setSignCanBeChanged(boolean canBeChanged, int sign) {
-        signCanBeChanged = canBeChanged;
-        if (!signCanBeChanged) {
-            if (sign != -1 && sign != 1) {
-                throw new IllegalArgumentException("Sign cannot be changed was set but no valid sign is given.");
-            }
-            initialSign = sign;
-        } else {
-            initialSign = 0;
+    @NonNull
+    public NumberFormat getNumberFormat() {
+        return nbFormat;
+    }
+
+    /**
+     * Set the layout of the calculator's numpad, either with 123 on the top row or 789.
+     * Default layout is {@link CalcNumpadLayout#CALCULATOR}, with 789 on the top row.
+     * @param layout Numpad layout to use
+     * @return The settings
+     * @see CalcNumpadLayout
+     */
+    public CalcSettings setNumpadLayout(@NonNull CalcNumpadLayout layout) {
+        numpadLayout = layout;
+        return this;
+    }
+
+    @NonNull
+    public CalcNumpadLayout getNumpadLayout() {
+        return numpadLayout;
+    }
+
+    /**
+     * Set whether to show the expression above the value when the user is typing it.
+     * By default, the expression is not shown.
+     * @param shown Whether to show it or not.
+     * @return The settings
+     */
+    public CalcSettings setExpressionShown(boolean shown) {
+        isExpressionShown = shown;
+        return this;
+    }
+
+    public boolean isExpressionShown() {
+        return isExpressionShown;
+    }
+
+    /**
+     * Set whether to the expression can be edited by erasing further than the current value.
+     * By default the expression is not editable.
+     * @param editable Whether to show it or not.
+     * @return The settings
+     */
+    public CalcSettings setExpressionEditable(boolean editable) {
+        isExpressionEditable = editable;
+        return this;
+    }
+
+    public boolean isExpressionEditable() {
+        return isExpressionEditable;
+    }
+
+    /**
+     * Set whether zero should be displayed when no value has been entered or just display nothing.
+     * This happens when initial value is null, when an error is dismissed, or when an operator
+     * is clicked and {@link #shouldEvaluateOnOperation} is set to true.
+     * @param shown Whether to show it or not.
+     * @return The settings
+     */
+    public CalcSettings setZeroShownWhenNoValue(boolean shown) {
+        isZeroShownWhenNoValue = shown;
+        return this;
+    }
+
+    public boolean isZeroShownWhenNoValue() {
+        return isZeroShownWhenNoValue;
+    }
+
+    /**
+     * Set whether to show the answer button when an operation button is clicked or not.
+     * This button allows the user to enter the value that was previously calculated.
+     * By default, the answer button is not shown.
+     * @param shown Whether to show it or not.
+     * @return The settings
+     */
+    public CalcSettings setAnswerBtnShown(boolean shown) {
+        isAnswerBtnShown = shown;
+        return this;
+    }
+
+    public boolean isAnswerBtnShown() {
+        return isAnswerBtnShown;
+    }
+
+    /**
+     * Set whether the sign button should be shown. By default it is shown.
+     * @param shown Whether to show it or not.
+     * @return The settings
+     */
+    public CalcSettings setSignBtnShown(boolean shown) {
+        isSignBtnShown = shown;
+        return this;
+    }
+
+    public boolean isSignBtnShown() {
+        return isSignBtnShown;
+    }
+
+    /**
+     * Set whether to evaluate the expression when an operation button is pressed (+, -, * and /).
+     * If not, the display will show zero or no value if {@link #isZeroShownWhenNoValue} is true.
+     * By default, the expression is evaluated.
+     * @param shouldClear Whether to evaluate it or not.
+     * @return The settings
+     */
+    public CalcSettings setShouldEvaluateOnOperation(boolean shouldClear) {
+        shouldEvaluateOnOperation = shouldClear;
+        return this;
+    }
+
+    public boolean isShouldEvaluateOnOperation() {
+        return shouldEvaluateOnOperation;
+    }
+
+    /**
+     * Set initial value to show. It must be within minimum and maximum values.
+     * If null and {@link #isZeroShownWhenNoValue} is set to false, no value will be shown.
+     * By default, initial value is null, which results in a 0 for the calculator.
+     * @param value Initial value to display. Use null for no value.
+     * @return The settings
+     */
+    public CalcSettings setInitialValue(@Nullable BigDecimal value) {
+        initialValue = value;
+        return this;
+    }
+
+    @Nullable
+    public BigDecimal getInitialValue() {
+        return initialValue;
+    }
+
+    /**
+     * Set minimum value that can be entered.
+     * If the minimum value is exceeded, an "Out of bounds" error will be shown when user clicks OK.
+     * Default minimum is -10,000,000,000 (-1e+10).
+     * @param minValue Minimum value, use null for no minimum.
+     * @return The settings
+     */
+    public CalcSettings setMinValue(@Nullable BigDecimal minValue) {
+        this.minValue = minValue;
+        return this;
+    }
+
+    @Nullable
+    public BigDecimal getMinValue() {
+        return minValue;
+    }
+
+    /**
+     * Set maximum value that can be entered.
+     * If the maximum value is exceeded, an "Out of bounds" error will be shown when user clicks OK.
+     * Default maximum is 10,000,000,000 (1e+10).
+     * @param maxValue Maximum value, use null for no maximum.
+     * @return The settings
+     */
+    public CalcSettings setMaxValue(@Nullable BigDecimal maxValue) {
+        this.maxValue = maxValue;
+        return this;
+    }
+
+    @Nullable
+    public BigDecimal getMaxValue() {
+        return maxValue;
+    }
+
+    /**
+     * Set whether to apply the operation priority on the entered expression, i.e. evaluating
+     * products and quotients before, from left to right.
+     * If not, the operations are evaluated in the same order as they are entered.
+     * @param isApplied Whether to apply operation priority or not.
+     * @return The settings
+     */
+    public CalcSettings setOrderOfOperationsApplied(boolean isApplied) {
+        isOrderOfOperationsApplied = isApplied;
+        return this;
+    }
+
+    public boolean isOrderOfOperationsApplied() {
+        return isOrderOfOperationsApplied;
+    }
+
+
+    ////////// PARCELABLE //////////
+    private CalcSettings(Parcel in) {
+        Bundle bundle = in.readBundle(getClass().getClassLoader());
+        assert bundle != null;
+
+        requestCode = bundle.getInt("requestCode");
+
+        //noinspection ConstantConditions
+        nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+        //noinspection ConstantConditions
+        numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
+        isExpressionShown = bundle.getBoolean("isExpressionShown");
+        isZeroShownWhenNoValue = bundle.getBoolean("isZeroShownWhenNoValue");
+        isAnswerBtnShown = bundle.getBoolean("isAnswerBtnShown");
+        isSignBtnShown = bundle.getBoolean("isSignBtnShown");
+        shouldEvaluateOnOperation = bundle.getBoolean("shouldEvaluateOnOperation");
+
+        if (bundle.containsKey("initialValue"))
+            initialValue = (BigDecimal) bundle.getSerializable("initialValue");
+        if (bundle.containsKey("minValue"))
+            minValue = (BigDecimal) bundle.getSerializable("minValue");
+        if (bundle.containsKey("maxValue"))
+            maxValue = (BigDecimal) bundle.getSerializable("maxValue");
+        isOrderOfOperationsApplied = bundle.getBoolean("isOrderOfOperationsApplied");
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel out, int flags) {
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("requestCode", requestCode);
+
+        bundle.putSerializable("numpadLayout", numpadLayout);
+        bundle.putSerializable("nbFormat", nbFormat);
+        bundle.putBoolean("isExpressionShown", isExpressionShown);
+        bundle.putBoolean("isZeroShownWhenNoValue", isZeroShownWhenNoValue);
+        bundle.putBoolean("isAnswerBtnShown", isAnswerBtnShown);
+        bundle.putBoolean("isSignBtnShown", isSignBtnShown);
+        bundle.putBoolean("shouldEvaluateOnOperation", shouldEvaluateOnOperation);
+
+        if (initialValue != null) bundle.putSerializable("initialValue", initialValue);
+        if (minValue != null) bundle.putSerializable("minValue", minValue);
+        if (maxValue != null) bundle.putSerializable("maxValue", maxValue);
+        bundle.putBoolean("isOrderOfOperationsApplied", isOrderOfOperationsApplied);
+
+        out.writeBundle(bundle);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CalcSettings> CREATOR = new Creator<CalcSettings>() {
+        @Override
+        public CalcSettings createFromParcel(Parcel in) {
+            return new CalcSettings(in);
         }
-    }
 
-    void setFormatSymbols(char decimalSep, char groupSep) {
-        if (decimalSep != CalcDialog.FORMAT_CHAR_DEFAULT && decimalSep == groupSep) {
-            throw new IllegalArgumentException("Decimal separator cannot be the same as grouping separator.");
+        @Override
+        public CalcSettings[] newArray(int size) {
+            return new CalcSettings[size];
         }
-
-        this.decimalSep = decimalSep;
-        this.groupSep = groupSep;
-    }
-
-    void setGroupSize(int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException("Group size must be positive");
-        }
-        groupSize = size;
-    }
+    };
 
 }

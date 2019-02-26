@@ -34,6 +34,7 @@ import com.nmaltais.calcdialog.CalcDialog;
 import com.nmaltais.calcdialog.CalcNumpadLayout;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
             }
         }
 
-        final CalcDialog calcDialog = CalcDialog.newInstance(DIALOG_REQUEST_CODE);
+        final CalcDialog calcDialog = new CalcDialog();
 
         signChk = findViewById(R.id.chk_change_sign);
         if (value == null) signChk.setEnabled(false);
@@ -111,6 +112,9 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         // Numpad layout
         final RadioGroup numpadLayoutGroup = findViewById(R.id.radiogroup_numpad);
 
+        // Expression mode
+        final RadioGroup exprModeGroup = findViewById(R.id.radiogroup_expr);
+
         // Value display
         valueTxv = findViewById(R.id.txv_result);
         valueTxv.setText(value == null ? getString(R.string.result_value_none) : value.toPlainString());
@@ -120,37 +124,26 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         openBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean signCanBeChanged = !signChk.isEnabled() || signChk.isChecked();
-
-                String maxValueStr = maxValEdt.getText().toString();
-                BigDecimal maxValue = maxValChk.isChecked() && !maxValueStr.isEmpty() ?
-                        new BigDecimal(maxValueStr) : null;
-
-                String maxIntStr = maxIntEdt.getText().toString();
-                int maxInt = maxIntChk.isChecked() && !maxIntStr.isEmpty() ?
-                        Integer.valueOf(maxIntStr) : CalcDialog.MAX_DIGITS_UNLIMITED;
-
-                String maxFracStr = maxFracEdt.getText().toString();
-                int maxFrac = maxFracChk.isChecked() && !maxFracStr.isEmpty() ?
-                        Integer.valueOf(maxFracStr) : CalcDialog.MAX_DIGITS_UNLIMITED;
-
-                CalcNumpadLayout layout;
-                if (numpadLayoutGroup.getCheckedRadioButtonId() == R.id.radio_numpad_calc) {
-                    layout = CalcNumpadLayout.CALCULATOR;
-                } else {
-                    layout = CalcNumpadLayout.PHONE;
-                }
-
                 // Set settings and value
-                calcDialog.setValue(value)
-                        .setShowSignButton(showSignChk.isChecked())
-                        .setShowAnswerButton(showAnswerChk.isChecked())
-                        .setSignCanBeChanged(signCanBeChanged, signCanBeChanged ? 0 : value.signum())
-                        .setClearDisplayOnOperation(clearOnOpChk.isChecked())
-                        .setShowZeroWhenNoValue(showZeroChk.isChecked())
-                        .setMaxValue(maxValue)
-                        .setMaxDigits(maxInt, maxFrac)
-                        .setNumpadLayout(layout);
+                DecimalFormat nbFmt = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+                nbFmt.setGroupingUsed(true);
+                nbFmt.setGroupingSize(3);
+                nbFmt.setMaximumIntegerDigits(10);
+                nbFmt.setMaximumFractionDigits(8);
+                nbFmt.setMinimumFractionDigits(2);
+
+                calcDialog.getSettings()
+                        .setNumpadLayout(CalcNumpadLayout.CALCULATOR)
+                        .setAnswerBtnShown(true)
+                        .setExpressionShown(true)
+                        .setExpressionEditable(true)
+                        .setOrderOfOperationsApplied(true)
+                        .setInitialValue(value)
+                        .setMinValue(new BigDecimal("0"))
+                        .setMaxValue(new BigDecimal("1E10"))
+                        .setZeroShownWhenNoValue(true)
+                        .setShouldEvaluateOnOperation(true)
+                        .setNumberFormat(nbFmt);
 
                 FragmentManager fm = getSupportFragmentManager();
                 if (fm.findFragmentByTag("calc_dialog") == null) {
