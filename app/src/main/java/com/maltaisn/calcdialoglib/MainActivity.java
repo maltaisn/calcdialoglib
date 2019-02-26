@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nmaltais.calcdialoglib;
+package com.maltaisn.calcdialoglib;
 
 import android.os.Bundle;
 import android.view.View;
@@ -25,8 +25,8 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.nmaltais.calcdialog.CalcDialog;
-import com.nmaltais.calcdialog.CalcNumpadLayout;
+import com.maltaisn.calcdialog.CalcDialog;
+import com.maltaisn.calcdialog.CalcNumpadLayout;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

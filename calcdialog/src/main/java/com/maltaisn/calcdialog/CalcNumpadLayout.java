@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nmaltais.calcdialog;
+package com.maltaisn.calcdialog;
 
 /**
  * A layout type for the calculator dialog digit buttons.

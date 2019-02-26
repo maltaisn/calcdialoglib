@@ -59,7 +59,7 @@
         tools:ignore="UnusedAttribute"
         />
 
-    <com.nmaltais.calcdialog.CalcEraseButton
+    <com.maltaisn.calcdialog.CalcEraseButton
         android:id="@+id/calc_btn_erase"
         style="?attr/calcEraseBtnStyle"
         android:layout_width="wrap_content"

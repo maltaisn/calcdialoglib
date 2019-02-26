@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nmaltais.calcdialog;
+package com.maltaisn.calcdialog;
 
 import android.os.Bundle;
 import android.os.Parcel;

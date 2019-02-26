@@ -1,4 +1,5 @@
 # v2.0.0
+- Changed package name to `com.maltaisn.calcdialoglib`.
 - To change the dialog settings, `CalcDialog.getSettings()` must now be used.
 - Added a setting to show the typed expression (`setExpressionShown(Boolean)`), which can also be edited (`setExpressionEditable(Boolean)`).
 - Added a setting for choosing the numpad layout: like a phone (top row 123) or a calculator (top row 789).
