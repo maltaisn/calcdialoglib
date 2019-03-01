@@ -29,7 +29,7 @@ import com.maltaisn.calcdialog.CalcDialog;
 import com.maltaisn.calcdialog.CalcNumpadLayout;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,34 +39,42 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final int DIALOG_REQUEST_CODE = 0;
-
     private TextView valueTxv;
-    private CheckBox signChk;
 
-    private @Nullable BigDecimal value;
+    @Nullable
+    private BigDecimal value;
 
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.activity_main);
 
-        if (state != null) {
-            String valueStr = state.getString("value");
-            if (valueStr != null) {
-                value = new BigDecimal(valueStr);
-            }
+        if (state != null && state.containsKey("value")) {
+            value = (BigDecimal) state.getSerializable("value");
         }
 
         final CalcDialog calcDialog = new CalcDialog();
 
-        signChk = findViewById(R.id.chk_change_sign);
-        if (value == null) signChk.setEnabled(false);
-
-        final CheckBox showAnswerChk = findViewById(R.id.chk_answer_btn);
-        final CheckBox showSignChk = findViewById(R.id.chk_show_sign);
-        final CheckBox clearOnOpChk = findViewById(R.id.chk_clear_operation);
+        // CALCULATOR SETTINGS
+        final CheckBox showExprChk = findViewById(R.id.chk_show_expr);
+        final CheckBox exprEditableChk = findViewById(R.id.chk_expr_editable);
+        final CheckBox showAnswerBtnChk = findViewById(R.id.chk_show_answer_btn);
+        final CheckBox showSignBtnChk = findViewById(R.id.chk_show_sign_btn);
+        final CheckBox applyOrderOpChk = findViewById(R.id.chk_order_operation);
+        final CheckBox evalOnOperationChk = findViewById(R.id.chk_eval_operation);
         final CheckBox showZeroChk = findViewById(R.id.chk_show_zero);
+
+        // Min value
+        final CheckBox minValChk = findViewById(R.id.chk_min_value);
+        final EditText minValEdt = findViewById(R.id.edt_min_value);
+        minValChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                minValEdt.setEnabled(isChecked);
+            }
+        });
+        minValEdt.setEnabled(minValChk.isChecked());
+        minValEdt.setText(new BigDecimal("-1E10").toPlainString());
 
         // Max value
         final CheckBox maxValChk = findViewById(R.id.chk_max_value);
@@ -78,7 +86,13 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
             }
         });
         maxValEdt.setEnabled(maxValChk.isChecked());
-        maxValEdt.setText(String.valueOf(10000000000L));
+        maxValEdt.setText(new BigDecimal("1E10").toPlainString());
+
+        // Numpad layout
+        final RadioGroup numpadLayoutGroup = findViewById(R.id.radiogroup_numpad);
+
+        // NUMBER FORMAT SETTINGS
+        final RadioGroup nbFmtTypeGroup = findViewById(R.id.radiogroup_nbfmt);
 
         // Max integer digits
         final CheckBox maxIntChk = findViewById(R.id.chk_max_int);
@@ -95,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         // Max fractional digits
         final CheckBox maxFracChk = findViewById(R.id.chk_max_frac);
         final EditText maxFracEdt = findViewById(R.id.edt_max_frac);
-        maxIntChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        maxFracChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 maxFracEdt.setEnabled(isChecked);
@@ -104,40 +118,49 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         maxFracEdt.setEnabled(maxFracChk.isChecked());
         maxFracEdt.setText(String.valueOf(8));
 
-        // Numpad layout
-        final RadioGroup numpadLayoutGroup = findViewById(R.id.radiogroup_numpad);
-
-        // Expression mode
-        final RadioGroup exprModeGroup = findViewById(R.id.radiogroup_expr);
-
-        // Value display
+        // Dialog views
         valueTxv = findViewById(R.id.txv_result);
-        valueTxv.setText(value == null ? getString(R.string.result_value_none) : value.toPlainString());
-
-        // Open dialog button
-        Button openBtn = findViewById(R.id.btn_open);
+        final Button openBtn = findViewById(R.id.btn_open);
         openBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Set settings and value
-                DecimalFormat nbFmt = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-                nbFmt.setGroupingUsed(true);
-                nbFmt.setGroupingSize(3);
-                nbFmt.setMaximumIntegerDigits(10);
-                nbFmt.setMaximumFractionDigits(8);
-                nbFmt.setMinimumFractionDigits(2);
+                // Set dialog settings
+                NumberFormat nbFmt;
+                if (nbFmtTypeGroup.getCheckedRadioButtonId() == R.id.radio_nbfmt_default) {
+                    nbFmt = NumberFormat.getInstance();
+                } else {
+                    nbFmt = NumberFormat.getCurrencyInstance();
+                }
+                nbFmt.setMaximumIntegerDigits(maxIntChk.isChecked() ?
+                        Integer.valueOf(maxIntEdt.getText().toString()) : Integer.MAX_VALUE);
+                nbFmt.setMaximumFractionDigits(maxFracChk.isChecked() ?
+                        Integer.valueOf(maxFracEdt.getText().toString()) : Integer.MAX_VALUE);
+
+                BigDecimal minValue = minValChk.isChecked() ?
+                        new BigDecimal(minValEdt.getText().toString()) : null;
+                BigDecimal maxValue = maxValChk.isChecked() ?
+                        new BigDecimal(maxValEdt.getText().toString()) : null;
+                CalcNumpadLayout numpadLayout = numpadLayoutGroup.getCheckedRadioButtonId() == R.id.radio_numpad_calc ?
+                        CalcNumpadLayout.CALCULATOR : CalcNumpadLayout.PHONE;
+
+                if (minValue != null && maxValue != null && minValue.compareTo(maxValue) > 0) {
+                    // Min can't be greater than max, disable max value.
+                    maxValChk.setChecked(false);
+                    maxValue = null;
+                }
 
                 calcDialog.getSettings()
-                        .setNumpadLayout(CalcNumpadLayout.CALCULATOR)
-                        .setAnswerBtnShown(true)
-                        .setExpressionShown(true)
-                        .setExpressionEditable(true)
-                        .setOrderOfOperationsApplied(true)
                         .setInitialValue(value)
-                        .setMinValue(new BigDecimal("0"))
-                        .setMaxValue(new BigDecimal("1E10"))
-                        .setZeroShownWhenNoValue(true)
-                        .setShouldEvaluateOnOperation(true)
+                        .setExpressionShown(showExprChk.isChecked())
+                        .setExpressionEditable(exprEditableChk.isChecked())
+                        .setAnswerBtnShown(showAnswerBtnChk.isChecked())
+                        .setSignBtnShown(showSignBtnChk.isChecked())
+                        .setOrderOfOperationsApplied(applyOrderOpChk.isChecked())
+                        .setShouldEvaluateOnOperation(evalOnOperationChk.isChecked())
+                        .setZeroShownWhenNoValue(showZeroChk.isChecked())
+                        .setMinValue(minValue)
+                        .setMaxValue(maxValue)
+                        .setNumpadLayout(numpadLayout)
                         .setNumberFormat(nbFmt);
 
                 FragmentManager fm = getSupportFragmentManager();
@@ -146,6 +169,8 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                 }
             }
         });
+
+        updateValueText();
     }
 
     @Override
@@ -153,23 +178,23 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         super.onSaveInstanceState(state);
 
         if (value != null) {
-            state.putString("value", value.toString());
+            state.putSerializable("value", value);
         }
     }
 
     @Override
     public void onValueEntered(int requestCode, @Nullable BigDecimal value) {
-        // if (requestCode == DIALOG_REQUEST_CODE) {}  <-- If there are many dialogs
-
         this.value = value;
+        updateValueText();
+    }
 
+    private void updateValueText() {
         if (value == null) {
             valueTxv.setText(R.string.result_value_none);
-            signChk.setEnabled(false);
         } else {
             valueTxv.setText(value.toPlainString());
-            signChk.setEnabled(value.compareTo(BigDecimal.ZERO) != 0);
         }
     }
+
 }
 

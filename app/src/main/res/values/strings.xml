@@ -7,22 +7,25 @@
     <string name="open_dialog">Open dialog</string>
     <string name="result_value">Result</string>
     <string name="result_value_none">None</string>
-    <string name="calc_settings">Calculator settings</string>
 
-    <string name="option_sign">Sign can be changed</string>
-    <string name="option_sign_show_btn">Show sign button</string>
-    <string name="option_answer_btn">Show answer button</string>
-    <string name="option_clear_operation">Clear display on operation button click</string>
-    <string name="option_show_zero">Show zero when there is no value</string>
-    <string name="option_max_value">Maximum value:</string>
-    <string name="option_max_int">Maximum integer digits:</string>
-    <string name="option_max_frac">Maximum fractional digits:</string>
-    <string name="option_numpad">Numpad layout:</string>
-    <string name="option_numpad_calc">Calculator (789 on the top row)</string>
-    <string name="option_numpad_phone">Phone (123 on the top row)</string>
-    <string name="option_expr">Expression mode:</string>
-    <string name="option_expr_always">Compute when any operator is used.</string>
-    <string name="option_expr_once">Compute only when equal is pressed.</string>
-    <string name="option_expr_once_show">Compute only when equal is pressed and show the expression on screen.</string>
+    <string name="calc_settings">Calculator settings</string>
+    <string name="calc_show_expr">Show expression</string>
+    <string name="calc_expr_editable">Expression can be edited</string>
+    <string name="calc_show_sign_btn">Show sign button</string>
+    <string name="calc_show_ans_btn">Show answer button</string>
+    <string name="calc_order_operation">Apply order of operations</string>
+    <string name="calc_eval_operation">Evaluate expression on operation</string>
+    <string name="calc_show_zero">Show zero when there is no value</string>
+    <string name="calc_min_value">Minimum value:</string>
+    <string name="calc_max_value">Maximum value:</string>
+    <string name="calc_numpad">Numpad layout:</string>
+    <string name="calc_numpad_calc">Calculator (789 on the top row)</string>
+    <string name="calc_numpad_phone">Phone (123 on the top row)</string>
+
+    <string name="nbfmt_settings">Number format settings</string>
+    <string name="nbfmt_default">Default</string>
+    <string name="nbfmt_currency">Currency</string>
+    <string name="nbfmt_max_int">Maximum integer digits:</string>
+    <string name="nbfmt_max_frac">Maximum fraction digits:</string>
 
 </resources>
