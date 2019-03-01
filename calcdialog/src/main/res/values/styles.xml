@@ -13,6 +13,7 @@
         <item name="calcBackgroundColor">?attr/colorBackgroundFloating</item>
         <item name="calcHeaderStyle">@style/CalcHeaderStyle</item>
         <item name="calcHeaderElevation">2dp</item>
+        <item name="calcHeaderElevationDrawable">@drawable/calc_bg_elevation</item>
         <item name="calcValueStyle">@style/CalcValueStyle</item>
         <item name="calcExpressionScrollViewStyle">@style/CalcExpressionScrollViewStyle</item>
         <item name="calcExpressionStyle">@style/CalcExpressionStyle</item>
@@ -29,7 +30,7 @@
 
     <public name="CalcHeaderStyle" type="style"/>
     <style name="CalcHeaderStyle">
-        <item name="android:background">@drawable/calc_bg_elevation</item>
+        <item name="android:background">?attr/calcHeaderElevationDrawable</item>
     </style>
 
     <public name="CalcValueStyle" type="style"/>

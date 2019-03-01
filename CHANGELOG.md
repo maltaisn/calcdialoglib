@@ -1,12 +1,13 @@
 # v2.0.0
 - Changed package name to `com.maltaisn.calcdialoglib`.
 - To change the dialog settings, `CalcDialog.getSettings()` must now be used.
+- Order of operations is now applied by default. This can be changed with `setOrderOfOperationsApplied(Boolean)`.
 - Added a setting to show the typed expression (`setExpressionShown(Boolean)`), which can also be edited (`setExpressionEditable(Boolean)`).
 - Added a setting for choosing the numpad layout: like a phone (top row 123) or a calculator (top row 789).
 - Added a min value setting separate from max value. As a consequence, `setSignCanBeChanged` setting was removed, use a minimum or maximum of 0 instead. If the minimum or the maximum is 0, special error messages like "Result must be positive" will still be shown.
 - Added `calcHeaderElevation`, `calcHeaderStyle`, `calcExpressionStyle` and `calcExpressionScrollViewStyle` style attributes.
 - Added getters to `CalcSettings` for Kotlin property syntax.
-- Order of operations is now applied by default. This can be changed with `setOrderOfOperationsApplied(Boolean)`.
+- Added a `calcHeaderElevationDrawable` attribute, needed to customize the header before API 21.
 - Changed `setValue(BigDecimal)` to `setInitialValue(BigDecimal)`.
 - Changed `setClearOnOperation(Boolean)` to `setShouldEvaluateOnOperation(Boolean)`.
 - Changed `setShowZeroWhenNoValue(Boolean)` to `setZeroShownWhenNoValue(Boolean)`.
@@ -14,9 +15,9 @@
 - Changed "Out of bounds" error behavior, now only shown when OK is pressed.
 - Changed default maximum dialog height from 400dp to 500dp.
 - Replaced all formatting settings with NumberFormat:
-    - `setMaximumIntegerDigits`: maximum integer digits than can be typed.
-    - `setMaximumFractionDigits`: maximum fraction digits than can be typed.
-    - `setDecimalFormatSymbolds`: change decimal separator, negative sign, grouping symbol, etc.
+    - `setMaximumIntegerDigits`: maximum integer digits than can be typed, but more could be displayed.
+    - `setMaximumFractionDigits`: maximum fraction digits than can be typed and displayed.
+    - `setDecimalFormatSymbols`: change decimal separator, negative sign, grouping symbol, etc.
     - `setGroupingUsed`: enable or disable grouping.
     - `setRoundingMode`: change the rounding mode, also used for division by the calculator.
     - More settings available like prefix, suffix and minimum digits.
