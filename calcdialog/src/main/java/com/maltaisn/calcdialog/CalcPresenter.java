@@ -92,9 +92,7 @@ class CalcPresenter {
 
         if (state == null) {
             reset();
-
             currentValue = settings.initialValue;
-            canEditCurrentValue = true;
 
         } else {
             readStateFromBundle(state);
@@ -228,6 +226,10 @@ class CalcPresenter {
             expression.operators.set(expression.operators.size() - 1, operator);
 
         } else {
+            if (currentValue == null) {
+                currentValue = BigDecimal.ZERO;
+            }
+            expression.numbers.add(currentValue);
             calculate();
             expression.operators.add(operator);
 
@@ -393,31 +395,31 @@ class CalcPresenter {
     }
 
     private void calculate() {
-        if (currentValue == null) {
-            currentValue = BigDecimal.ZERO;
-        }
-        expression.numbers.add(currentValue);
-
         try {
-            currentValue = expression.evaluate(settings.isOrderOfOperationsApplied,
-                    nbFormat.getMaximumFractionDigits(), nbFormat.getRoundingMode());
+            currentValue = expression.evaluate(settings.isOrderOfOperationsApplied, nbFormat.getRoundingMode());
         } catch (ArithmeticException e) {
             // Division by zero occurred.
             setError(ERROR_DIV_ZERO);
             return;
         }
 
+        currentValueScale = -1;
         currentIsAnswer = false;
         canEditCurrentValue = false;
     }
 
     private void equal() {
         if (!currentIsAnswer && !canEditCurrentValue && !expression.operators.isEmpty()) {
-            // Undo previous operation button click.
+            // Remove unused last operator
             expression.operators.remove(expression.operators.size() - 1);
         } else {
-            calculate();
+            if (currentValue == null) {
+                currentValue = BigDecimal.ZERO;
+            }
+            expression.numbers.add(currentValue);
         }
+
+        calculate();
 
         if (errorCode == ERROR_NONE) {
             resultValue = currentValue;
@@ -512,15 +514,12 @@ class CalcPresenter {
     private String getCurrentValueString() {
         if (currentValue == null) return "";
 
-        if (currentValueScale != -1) {
-            String str = currentValue.setScale(currentValueScale, RoundingMode.UNNECESSARY).toPlainString();
-            if (currentValueScale == 0) {
-                str += '.';
-            }
-            return str;
-        } else {
-            return currentValue.toPlainString();
+        String str = currentValue.setScale(Math.max(0, currentValueScale),
+                RoundingMode.UNNECESSARY).toPlainString();
+        if (currentValueScale == 0) {
+            str += '.';
         }
+        return str;
     }
 
 }
