@@ -6,7 +6,7 @@
 - Added a setting for choosing the numpad layout: like a phone (top row 123) or a calculator (top row 789).
 - Added a min value setting separate from max value. As a consequence, `setSignCanBeChanged` setting was removed, use a minimum or maximum of 0 instead. If the minimum or the maximum is 0, special error messages like "Result must be positive" will still be shown.
 - Added `calcHeaderElevation`, `calcHeaderStyle`, `calcExpressionStyle` and `calcExpressionScrollViewStyle` style attributes.
-- Added getters to `CalcSettings` for Kotlin property syntax.
+- Added getters to `CalcSettings` for better Kotlin interoperability.
 - Added a `calcHeaderElevationDrawable` attribute, needed to customize the header before API 21.
 - Changed `setValue(BigDecimal)` to `setInitialValue(BigDecimal)`.
 - Changed `setClearOnOperation(Boolean)` to `setShouldEvaluateOnOperation(Boolean)`.

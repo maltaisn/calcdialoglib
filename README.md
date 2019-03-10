@@ -6,6 +6,8 @@ A fully customizable calculator dialog for Android compatible with API 16. Can b
 
 Replace `X.Y.Z` with lastest version number: [ ![Download](https://api.bintray.com/packages/maltaisn/calc-dialog/calc-dialog/images/download.svg) ](https://bintray.com/maltaisn/calc-dialog/calc-dialog/_latestVersion)
 
+**WARNING:** version 2.0.0 introduces many breaking changes, like the changed package name. See the [changelog](/CHANGELOG.md) for the complete list of changes.
+
 If you haven't migrated to AndroidX, use version 1.3.2. Versions 1.4.0 and up use AndroidX.
 
 ## Tutorial
@@ -18,7 +20,7 @@ If you haven't migrated to AndroidX, use version 1.3.2. Versions 1.4.0 and up us
 (Screenshots date back to version 1.0.0)
 
 ## Changelog
-View [changelog](https://github.com/maltaisn/calcdialoglib/blob/master/CHANGELOG.md)
+View [changelog](/CHANGELOG.md)
 
-## Translations
-The library is available in 16 languages. If you make a translation please make a pull request. There are less than 10 strings to translate, it's an easy task! Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml`. And no need to translate the demo app.
+## Translation
+The library is available in 16 languages. If you make a translation please make a pull request. Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml` and do not translate the demo app.

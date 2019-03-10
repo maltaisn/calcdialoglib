@@ -353,20 +353,16 @@ public class CalcDialog extends AppCompatDialogFragment {
     }
 
     void setExpressionVisible(boolean visible) {
-        setViewVisible(expressionHsv, visible);
+        expressionHsv.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     void setAnswerBtnVisible(boolean visible) {
-        setViewVisible(answerBtn, visible);
-        setViewVisible(equalBtn, !visible);
+        answerBtn.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        equalBtn.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
     }
 
     void setSignBtnVisible(boolean visible) {
-        setViewVisible(signBtn, visible);
-    }
-
-    private static void setViewVisible(View view, boolean visible) {
-        view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        signBtn.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     void setDecimalSepBtnEnabled(boolean enabled) {
