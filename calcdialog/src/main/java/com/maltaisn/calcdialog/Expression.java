@@ -48,7 +48,7 @@ class Expression implements Parcelable {
      * @throws ArithmeticException if a division by zero occurred.
      */
     @NonNull
-    BigDecimal evaluate(boolean priority, RoundingMode roundingMode) {
+    BigDecimal evaluate(boolean priority, int scale, RoundingMode roundingMode) {
         if (numbers.size() != operators.size() + 1) {
             throw new IllegalStateException("Numbers and operators aren't balanced.");
         }
@@ -72,7 +72,7 @@ class Expression implements Parcelable {
                     ops.remove(i);
                     BigDecimal n1 = nbs.get(i);
                     BigDecimal n2 = nbs.remove(i + 1);
-                    nbs.set(i, n1.divide(n2, roundingMode));
+                    nbs.set(i, n1.divide(n2, scale, roundingMode));
                 } else {
                     i++;
                 }
@@ -91,11 +91,11 @@ class Expression implements Parcelable {
             } else if (op == Operator.MULTIPLY) {
                 nbs.set(0, n1.multiply(n2));
             } else {
-                nbs.set(0, n1.divide(n2, roundingMode));
+                nbs.set(0, n1.divide(n2, scale, roundingMode));
             }
         }
 
-        return nbs.remove(0);
+        return nbs.remove(0).stripTrailingZeros();
     }
 
     /**

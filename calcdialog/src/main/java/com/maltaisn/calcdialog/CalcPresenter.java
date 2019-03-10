@@ -396,7 +396,8 @@ class CalcPresenter {
 
     private void calculate() {
         try {
-            currentValue = expression.evaluate(settings.isOrderOfOperationsApplied, nbFormat.getRoundingMode());
+            currentValue = expression.evaluate(settings.isOrderOfOperationsApplied,
+                    settings.nbFormat.getMaximumFractionDigits(), nbFormat.getRoundingMode());
         } catch (ArithmeticException e) {
             // Division by zero occurred.
             setError(ERROR_DIV_ZERO);

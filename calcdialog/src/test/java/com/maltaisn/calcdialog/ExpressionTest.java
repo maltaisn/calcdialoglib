@@ -32,8 +32,8 @@ public class ExpressionTest {
         expr.operators.add(Expression.Operator.ADD);
         expr.numbers.add(new BigDecimal("-24.8"));
 
-        BigDecimal result = expr.evaluate(false, RoundingMode.HALF_UP);
-        assertEquals(0, result.compareTo(new BigDecimal("-12.7")));
+        BigDecimal result = expr.evaluate(false, 8, RoundingMode.HALF_UP);
+        assertEquals(result, new BigDecimal("-12.7"));
     }
 
     @Test
@@ -45,11 +45,11 @@ public class ExpressionTest {
         expr.operators.add(Expression.Operator.MULTIPLY);
         expr.numbers.add(new BigDecimal("5"));
 
-        BigDecimal result1 = expr.evaluate(false, RoundingMode.HALF_UP);
-        assertEquals(0, result1.compareTo(new BigDecimal("35")));
+        BigDecimal result1 = expr.evaluate(false, 8, RoundingMode.HALF_UP);
+        assertEquals(result1, new BigDecimal("35"));
 
-        BigDecimal result2 = expr.evaluate(true, RoundingMode.HALF_UP);
-        assertEquals(0, result2.compareTo(new BigDecimal("23")));
+        BigDecimal result2 = expr.evaluate(true, 8, RoundingMode.HALF_UP);
+        assertEquals(result2, new BigDecimal("23"));
     }
 
     @Test
@@ -69,11 +69,22 @@ public class ExpressionTest {
         expr.operators.add(Expression.Operator.SUBTRACT);
         expr.numbers.add(new BigDecimal("-10"));
 
-        BigDecimal result1 = expr.evaluate(false, RoundingMode.HALF_UP);
-        assertEquals(0, result1.compareTo(new BigDecimal("12.41666667")));
+        BigDecimal result1 = expr.evaluate(false, 8, RoundingMode.HALF_UP);
+        assertEquals(result1, new BigDecimal("12.41666667"));
 
-        BigDecimal result2 = expr.evaluate(true, RoundingMode.HALF_UP);
-        assertEquals(0, result2.compareTo(new BigDecimal("12.33333333")));
+        BigDecimal result2 = expr.evaluate(true, 8, RoundingMode.HALF_UP);
+        assertEquals(result2, new BigDecimal("12.33333333"));
+    }
+
+    @Test
+    public void stripTrailingZeroes() {
+        Expression expr = new Expression();
+        expr.numbers.add(new BigDecimal("1"));
+        expr.operators.add(Expression.Operator.DIVIDE);
+        expr.numbers.add(new BigDecimal("8"));
+
+        BigDecimal result = expr.evaluate(false, 8, RoundingMode.HALF_UP);
+        assertEquals(result, new BigDecimal("0.125"));
     }
 
 }
