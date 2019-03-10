@@ -16,7 +16,7 @@ If you haven't migrated to AndroidX, use version 1.3.2. Versions 1.4.0 and up us
 - Learn how to [style the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Styling-the-calculator) with the attributes
 
 ## Screenshots
-<img src="screenshots/demo.gif" alt="Demo" width="400px"/> <img src="screenshots/currency.gif" alt="Errors" width="400px"/>
+<img src="screenshots/demo2.gif" alt="Demo" width="400px"/> <img src="screenshots/currency.gif" alt="Errors" width="400px"/>
 (Screenshots date back to version 1.0.0)
 
 ## Changelog
