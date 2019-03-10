@@ -31,6 +31,7 @@ import com.maltaisn.calcdialog.CalcNumpadLayout;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
 
     @Nullable
     private BigDecimal value;
+
+    @NonNull
+    private NumberFormat nbFmt = NumberFormat.getInstance();
 
     @Override
     protected void onCreate(Bundle state) {
@@ -125,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
             @Override
             public void onClick(View v) {
                 // Set dialog settings
-                NumberFormat nbFmt;
                 if (nbFmtTypeGroup.getCheckedRadioButtonId() == R.id.radio_nbfmt_default) {
                     nbFmt = NumberFormat.getInstance();
                 } else {
@@ -133,12 +136,12 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
                 }
                 nbFmt.setMaximumIntegerDigits(maxIntChk.isChecked() ?
                         Integer.valueOf(maxIntEdt.getText().toString()) : Integer.MAX_VALUE);
-                nbFmt.setMaximumFractionDigits(maxFracChk.isChecked() ?
+                nbFmt.setMaximumFractionDigits(maxFracChk.isChecked() && minValEdt.length() > 0 ?
                         Integer.valueOf(maxFracEdt.getText().toString()) : Integer.MAX_VALUE);
 
-                BigDecimal minValue = minValChk.isChecked() ?
+                BigDecimal minValue = minValChk.isChecked() && minValEdt.length() > 0 ?
                         new BigDecimal(minValEdt.getText().toString()) : null;
-                BigDecimal maxValue = maxValChk.isChecked() ?
+                BigDecimal maxValue = maxValChk.isChecked() && maxValEdt.length() > 0 ?
                         new BigDecimal(maxValEdt.getText().toString()) : null;
                 CalcNumpadLayout numpadLayout = numpadLayoutGroup.getCheckedRadioButtonId() == R.id.radio_numpad_calc ?
                         CalcNumpadLayout.CALCULATOR : CalcNumpadLayout.PHONE;
@@ -192,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements CalcDialog.CalcDi
         if (value == null) {
             valueTxv.setText(R.string.result_value_none);
         } else {
-            valueTxv.setText(value.toPlainString());
+            valueTxv.setText(nbFmt.format(value));
         }
     }
 
