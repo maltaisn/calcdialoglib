@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.lang.UnsupportedOperationException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -330,7 +331,11 @@ public class CalcSettings implements Parcelable {
         if (maxValue != null) bundle.putSerializable("maxValue", maxValue);
         bundle.putBoolean("isOrderOfOperationsApplied", isOrderOfOperationsApplied);
 
-        out.writeBundle(bundle);
+        try{
+            out.writeBundle(bundle);
+        } catch (UnsupportedOperationException uoe){
+            // Workaround for issue https://issuetracker.google.com/issues/37043137
+        }
     }
 
     @Override
