@@ -13,8 +13,8 @@ ext {
     siteUrl = 'https://github.com/maltaisn/calcdialoglib'
     gitUrl = 'https://github.com/maltaisn/calcdialoglib.git'
 
-    libraryVersionCode = 12
-    libraryVersion = '2.0.0'
+    libraryVersionCode = 13
+    libraryVersion = '2.0.1'
 
     developerId = 'maltaisn'
 
@@ -24,10 +24,10 @@ ext {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode libraryVersionCode
         versionName libraryVersion
 
@@ -44,13 +44,13 @@ android {
         abortOnError false
     }
 
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.2'
 }
+
+tasks.withType(Javadoc).all { enabled = false }
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

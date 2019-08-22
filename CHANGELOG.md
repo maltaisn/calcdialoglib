@@ -1,3 +1,7 @@
+# v2.0.1
+- Fixed crash in writeToParcel on Android 5.0 with RTL language (#21).
+- Japenese translation improvements.
+
 # v2.0.0
 - Changed package name to `com.maltaisn.calcdialoglib`.
 - To change the dialog settings, `CalcDialog.getSettings()` must now be used.
