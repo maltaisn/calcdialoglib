@@ -78,6 +78,32 @@ public class CalcSettings implements Parcelable {
         return requestCode;
     }
 
+    /**
+     * Set the number format to use for formatting the currently displayed value and the
+     * values in the expression (if shown). This can be used to set a prefix and a suffix,
+     * changing the grouping settings, the minimum and maximum integer and fraction digits,
+     * the decimal separator, the rounding mode, and probably more.
+     * By default, the locale's default decimal format is used.
+     * @param format A number format.
+     * @return The settings
+     * @see NumberFormat
+     */
+    public CalcSettings setNumberFormat(@NonNull NumberFormat format) {
+        if (format.getRoundingMode() == RoundingMode.UNNECESSARY) {
+            throw new IllegalArgumentException("Cannot use RoundingMode.UNNECESSARY as a rounding mode.");
+        }
+
+        this.nbFormat = format;
+
+        // The max int setting on number format is used to set the maximum int digits that can be entered.
+        // However, it is possible that the user evaluates expressions resulting in bigger numbers.
+        // If not changed, this would show those values as "0,000" instead of "10,000" for example.
+        maxIntDigits = nbFormat.getMaximumIntegerDigits();
+        nbFormat.setMaximumIntegerDigits(Integer.MAX_VALUE);
+
+        return this;
+    }
+
     @NonNull
     public NumberFormat getNumberFormat() {
         return nbFormat;
@@ -268,6 +294,10 @@ public class CalcSettings implements Parcelable {
         requestCode = bundle.getInt("requestCode");
 
         //noinspection ConstantConditions
+        if (bundle.containsKey("nbFormat")){
+            nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+        }
+        //noinspection ConstantConditions
         numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
         isExpressionShown = bundle.getBoolean("isExpressionShown");
         isZeroShownWhenNoValue = bundle.getBoolean("isZeroShownWhenNoValue");
@@ -289,6 +319,9 @@ public class CalcSettings implements Parcelable {
         Bundle bundle = new Bundle();
 
         bundle.putInt("requestCode", requestCode);
+        if (nbFormat != null){
+            bundle.putSerializable("nbFormat", nbFormat);
+        }
         bundle.putSerializable("numpadLayout", numpadLayout);
         bundle.putBoolean("isExpressionShown", isExpressionShown);
         bundle.putBoolean("isZeroShownWhenNoValue", isZeroShownWhenNoValue);
