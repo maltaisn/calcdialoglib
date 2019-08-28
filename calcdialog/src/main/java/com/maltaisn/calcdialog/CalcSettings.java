@@ -21,6 +21,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.lang.UnsupportedOperationException;
+import java.lang.NullPointerException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -295,7 +296,12 @@ public class CalcSettings implements Parcelable {
 
         //noinspection ConstantConditions
         if (bundle.containsKey("nbFormat")){
+            try {
             nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+            } catch (NullPointerException npe){
+                // Catch NPE exception on some Android 9 devices
+                // see https://stackoverflow.com/q/53541154/8941877
+            }
         }
         //noinspection ConstantConditions
         numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
