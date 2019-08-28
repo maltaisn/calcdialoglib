@@ -294,7 +294,9 @@ public class CalcSettings implements Parcelable {
         requestCode = bundle.getInt("requestCode");
 
         //noinspection ConstantConditions
-        nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+        if (bundle.containsKey("nbFormat")){
+            nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+        }
         //noinspection ConstantConditions
         numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
         isExpressionShown = bundle.getBoolean("isExpressionShown");
@@ -317,9 +319,10 @@ public class CalcSettings implements Parcelable {
         Bundle bundle = new Bundle();
 
         bundle.putInt("requestCode", requestCode);
-
+        if (nbFormat != null){
+            bundle.putSerializable("nbFormat", nbFormat);
+        }
         bundle.putSerializable("numpadLayout", numpadLayout);
-        bundle.putSerializable("nbFormat", nbFormat);
         bundle.putBoolean("isExpressionShown", isExpressionShown);
         bundle.putBoolean("isZeroShownWhenNoValue", isZeroShownWhenNoValue);
         bundle.putBoolean("isAnswerBtnShown", isAnswerBtnShown);
