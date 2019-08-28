@@ -113,7 +113,9 @@ class CalcPresenter {
     }
 
     void writeStateToBundle(Bundle bundle) {
-        bundle.putParcelable("expression", expression);
+        if (expression != null) {
+            bundle.putParcelable("expression", expression);
+        }
         if (currentValue != null) {
             bundle.putSerializable("currentValue", currentValue);
         }
@@ -130,7 +132,9 @@ class CalcPresenter {
 
     private void readStateFromBundle(Bundle bundle) {
         //noinspection ConstantConditions
-        expression = bundle.getParcelable("expression");
+        if (bundle.containsKey("expression")) {
+            expression = bundle.getParcelable("expression");
+        }
         if (bundle.containsKey("currentValue")) {
             currentValue = (BigDecimal) bundle.getSerializable("currentValue");
         }
