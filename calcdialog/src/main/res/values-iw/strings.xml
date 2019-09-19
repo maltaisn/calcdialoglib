@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="calc_dialog_clear">מחק</string>
+    <string name="calc_dialog_cancel">ביטול</string>
+    <string name="calc_dialog_ok">אישור</string>
+
+    <string name="calc_answer">תשובה</string>
+
+    <string-array name="calc_dialog_errors">
+        <item>חלוקה באפס</item>
+        <item>מספר מחוץ לגבולות</item>
+        <item>תוצאה חייבת להיות חיובית</item>
+        <item>תוצאה חייבת להיות שלילית</item>
+    </string-array>
+
+</resources>
