@@ -292,7 +292,9 @@ public class CalcDialog extends AppCompatDialogFragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle state) {
         super.onSaveInstanceState(state);
-        presenter.writeStateToBundle(state);
+        if (presenter != null) {
+            presenter.writeStateToBundle(state);
+        }
         state.putParcelable("settings", settings);
     }
 
