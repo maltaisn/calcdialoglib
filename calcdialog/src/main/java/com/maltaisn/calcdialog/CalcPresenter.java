@@ -490,15 +490,15 @@ class CalcPresenter {
                 // Append the decimal separator at the end of the number.
                 DecimalFormat fmt = (DecimalFormat) nbFormat;
                 char sep = fmt.getDecimalFormatSymbols().getDecimalSeparator();
-                if (currentValue.compareTo(BigDecimal.ZERO) >= 0) {
+                if (value.compareTo(BigDecimal.ZERO) >= 0) {
                     String suffixBefore = fmt.getPositiveSuffix();
                     fmt.setPositiveSuffix(sep + suffixBefore);
-                    text = nbFormat.format(currentValue);
+                    text = nbFormat.format(value);
                     fmt.setPositiveSuffix(suffixBefore);
                 } else {
                     String suffixBefore = fmt.getNegativeSuffix();
                     fmt.setNegativeSuffix(sep + suffixBefore);
-                    text = nbFormat.format(currentValue);
+                    text = nbFormat.format(value);
                     fmt.setNegativeSuffix(suffixBefore);
                 }
             } else {
