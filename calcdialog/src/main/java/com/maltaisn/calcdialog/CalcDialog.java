@@ -21,6 +21,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -254,7 +255,7 @@ public class CalcDialog extends AppCompatDialogFragment {
                 // Get maximum dialog dimensions
                 Rect fgPadding = new Rect();
                 dialog.getWindow().getDecorView().getBackground().getPadding(fgPadding);
-                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
                 int height = metrics.heightPixels - fgPadding.top - fgPadding.bottom;
                 int width = metrics.widthPixels - fgPadding.top - fgPadding.bottom;
 
