@@ -290,34 +290,35 @@ public class CalcSettings implements Parcelable {
     ////////// PARCELABLE //////////
     private CalcSettings(Parcel in) {
         Bundle bundle = in.readBundle(getClass().getClassLoader());
-        assert bundle != null;
+        if (bundle != null) {
 
-        requestCode = bundle.getInt("requestCode");
+            requestCode = bundle.getInt("requestCode");
 
-        //noinspection ConstantConditions
-        if (bundle.containsKey("nbFormat")){
-            try {
-            nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
-            } catch (NullPointerException npe){
-                // Catch NPE exception on some Android 9 devices
-                // see https://stackoverflow.com/q/53541154/8941877
+            //noinspection ConstantConditions
+            if (bundle.containsKey("nbFormat")) {
+                try {
+                    nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+                } catch (NullPointerException npe) {
+                    // Catch NPE exception on some Android 9 devices
+                    // see https://stackoverflow.com/q/53541154/8941877
+                }
             }
-        }
-        //noinspection ConstantConditions
-        numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
-        isExpressionShown = bundle.getBoolean("isExpressionShown");
-        isZeroShownWhenNoValue = bundle.getBoolean("isZeroShownWhenNoValue");
-        isAnswerBtnShown = bundle.getBoolean("isAnswerBtnShown");
-        isSignBtnShown = bundle.getBoolean("isSignBtnShown");
-        shouldEvaluateOnOperation = bundle.getBoolean("shouldEvaluateOnOperation");
+            //noinspection ConstantConditions
+            numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
+            isExpressionShown = bundle.getBoolean("isExpressionShown");
+            isZeroShownWhenNoValue = bundle.getBoolean("isZeroShownWhenNoValue");
+            isAnswerBtnShown = bundle.getBoolean("isAnswerBtnShown");
+            isSignBtnShown = bundle.getBoolean("isSignBtnShown");
+            shouldEvaluateOnOperation = bundle.getBoolean("shouldEvaluateOnOperation");
 
-        if (bundle.containsKey("initialValue"))
-            initialValue = (BigDecimal) bundle.getSerializable("initialValue");
-        if (bundle.containsKey("minValue"))
-            minValue = (BigDecimal) bundle.getSerializable("minValue");
-        if (bundle.containsKey("maxValue"))
-            maxValue = (BigDecimal) bundle.getSerializable("maxValue");
-        isOrderOfOperationsApplied = bundle.getBoolean("isOrderOfOperationsApplied");
+            if (bundle.containsKey("initialValue"))
+                initialValue = (BigDecimal) bundle.getSerializable("initialValue");
+            if (bundle.containsKey("minValue"))
+                minValue = (BigDecimal) bundle.getSerializable("minValue");
+            if (bundle.containsKey("maxValue"))
+                maxValue = (BigDecimal) bundle.getSerializable("maxValue");
+            isOrderOfOperationsApplied = bundle.getBoolean("isOrderOfOperationsApplied");
+        }
     }
 
     @Override
