@@ -13,8 +13,8 @@ ext {
     siteUrl = 'https://github.com/maltaisn/calcdialoglib'
     gitUrl = 'https://github.com/maltaisn/calcdialoglib.git'
 
-    libraryVersionCode = 14
-    libraryVersion = '2.1.0'
+    libraryVersionCode = 15
+    libraryVersion = '2.1.1'
 
     developerId = 'maltaisn'
 

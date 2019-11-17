@@ -24,12 +24,9 @@ artifacts {
     archives sourcesJar
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
+    user = project.getProperty("bintray.user")
+    key = project.getProperty("bintray.apikey")
 
     configurations = ['archives']
     pkg {
@@ -43,10 +40,6 @@ bintray {
         publicDownloadNumbers = true
         version {
             desc = libraryDescription
-            gpg {
-                sign = true
-                passphrase = properties.getProperty("bintray.gpg.password")
-            }
         }
     }
 }

@@ -1,3 +1,6 @@
+## v2.1.1
+- Disabled RTL layout in dialog.
+
 ## v2.1.0
 - Added Hebrew translation.
 
