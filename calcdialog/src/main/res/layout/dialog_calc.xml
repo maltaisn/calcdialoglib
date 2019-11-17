@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/calcBackgroundColor"
+    android:layoutDirection="ltr"
     tools:theme="@style/CalcDialogStyle"
-    >
+    tools:ignore="UnusedAttribute">
 
     <View
         android:id="@+id/view_header_background"
