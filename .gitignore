@@ -1,21 +1,12 @@
-# files for the dex VM
-*.dex
-
-# Java class files
-*.class
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Windows thumbnail db
-Thumbs.db
-
-# OSX files
-.DS_Store
+/todo.md
 
 # Android Studio
+local.properties
 *.iml
 .idea
 .gradle
 build/
-captures/
+
+# OS files
+Thumbs.db
+.DS_Store

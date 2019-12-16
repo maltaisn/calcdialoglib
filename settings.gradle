@@ -1,1 +1,1 @@
-include ':app', ':calcdialog'
+include ":app", ":lib"

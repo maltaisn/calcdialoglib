@@ -1,3 +1,7 @@
+## v2.1.2
+- Fixed many NPE on some devices.
+- Fixed `Expression` parcel implementation.
+
 ## v2.1.1
 - Disabled RTL layout in dialog.
 
