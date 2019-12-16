@@ -17,7 +17,6 @@
 package com.maltaisn.calcdialog;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -114,9 +113,7 @@ class CalcPresenter {
     }
 
     void writeStateToBundle(Bundle bundle) {
-        if (expression != null) {
-            bundle.putParcelable("expression", expression);
-        }
+        bundle.putParcelable("expression", expression);
         if (currentValue != null) {
             bundle.putSerializable("currentValue", currentValue);
         }
@@ -132,12 +129,9 @@ class CalcPresenter {
     }
 
     private void readStateFromBundle(Bundle bundle) {
-        //noinspection ConstantConditions
-        if (bundle.containsKey("expression")) {
-            Parcelable parcelable = bundle.getParcelable("expression");
-            if (parcelable != null){
-                this.expression = (Expression) parcelable;
-            }
+        Expression expr = bundle.getParcelable("expression");
+        if (expr != null) {
+            this.expression = expr;
         }
         if (bundle.containsKey("currentValue")) {
             currentValue = (BigDecimal) bundle.getSerializable("currentValue");

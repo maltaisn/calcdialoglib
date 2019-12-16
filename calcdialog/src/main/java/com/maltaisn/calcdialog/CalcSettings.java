@@ -20,8 +20,6 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.lang.UnsupportedOperationException;
-import java.lang.NullPointerException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -291,18 +289,18 @@ public class CalcSettings implements Parcelable {
     private CalcSettings(Parcel in) {
         Bundle bundle = in.readBundle(getClass().getClassLoader());
         if (bundle != null) {
-
             requestCode = bundle.getInt("requestCode");
 
-            //noinspection ConstantConditions
             if (bundle.containsKey("nbFormat")) {
                 try {
-                    nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+                    NumberFormat fmt = (NumberFormat) bundle.getSerializable("nbFormat");
+                    if (fmt != null) nbFormat = fmt;
                 } catch (NullPointerException npe) {
                     // Catch NPE exception on some Android 9 devices
                     // see https://stackoverflow.com/q/53541154/8941877
                 }
             }
+
             //noinspection ConstantConditions
             numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
             isExpressionShown = bundle.getBoolean("isExpressionShown");
@@ -311,12 +309,15 @@ public class CalcSettings implements Parcelable {
             isSignBtnShown = bundle.getBoolean("isSignBtnShown");
             shouldEvaluateOnOperation = bundle.getBoolean("shouldEvaluateOnOperation");
 
-            if (bundle.containsKey("initialValue"))
+            if (bundle.containsKey("initialValue")) {
                 initialValue = (BigDecimal) bundle.getSerializable("initialValue");
-            if (bundle.containsKey("minValue"))
+            }
+            if (bundle.containsKey("minValue")) {
                 minValue = (BigDecimal) bundle.getSerializable("minValue");
-            if (bundle.containsKey("maxValue"))
+            }
+            if (bundle.containsKey("maxValue")) {
                 maxValue = (BigDecimal) bundle.getSerializable("maxValue");
+            }
             isOrderOfOperationsApplied = bundle.getBoolean("isOrderOfOperationsApplied");
         }
     }
@@ -326,9 +327,7 @@ public class CalcSettings implements Parcelable {
         Bundle bundle = new Bundle();
 
         bundle.putInt("requestCode", requestCode);
-        if (nbFormat != null){
-            bundle.putSerializable("nbFormat", nbFormat);
-        }
+        bundle.putSerializable("nbFormat", nbFormat);
         bundle.putSerializable("numpadLayout", numpadLayout);
         bundle.putBoolean("isExpressionShown", isExpressionShown);
         bundle.putBoolean("isZeroShownWhenNoValue", isZeroShownWhenNoValue);
@@ -341,9 +340,9 @@ public class CalcSettings implements Parcelable {
         if (maxValue != null) bundle.putSerializable("maxValue", maxValue);
         bundle.putBoolean("isOrderOfOperationsApplied", isOrderOfOperationsApplied);
 
-        try{
+        try {
             out.writeBundle(bundle);
-        } catch (UnsupportedOperationException uoe){
+        } catch (UnsupportedOperationException uoe) {
             // Workaround for issue https://issuetracker.google.com/issues/37043137
         }
     }
