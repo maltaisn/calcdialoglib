@@ -128,7 +128,7 @@ class Expression implements Parcelable {
     ////////// PARCELABLE //////////
     private Expression(Parcel in) {
         in.readList(numbers, BigDecimal.class.getClassLoader());
-        in.readList(numbers, Operator.class.getClassLoader());
+        in.readList(operators, Operator.class.getClassLoader());
     }
 
     @Override

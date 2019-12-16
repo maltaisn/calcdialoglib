@@ -21,6 +21,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.lang.UnsupportedOperationException;
+import java.lang.NullPointerException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -289,27 +290,35 @@ public class CalcSettings implements Parcelable {
     ////////// PARCELABLE //////////
     private CalcSettings(Parcel in) {
         Bundle bundle = in.readBundle(getClass().getClassLoader());
-        assert bundle != null;
+        if (bundle != null) {
 
-        requestCode = bundle.getInt("requestCode");
+            requestCode = bundle.getInt("requestCode");
 
-        //noinspection ConstantConditions
-        nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
-        //noinspection ConstantConditions
-        numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
-        isExpressionShown = bundle.getBoolean("isExpressionShown");
-        isZeroShownWhenNoValue = bundle.getBoolean("isZeroShownWhenNoValue");
-        isAnswerBtnShown = bundle.getBoolean("isAnswerBtnShown");
-        isSignBtnShown = bundle.getBoolean("isSignBtnShown");
-        shouldEvaluateOnOperation = bundle.getBoolean("shouldEvaluateOnOperation");
+            //noinspection ConstantConditions
+            if (bundle.containsKey("nbFormat")) {
+                try {
+                    nbFormat = (NumberFormat) bundle.getSerializable("nbFormat");
+                } catch (NullPointerException npe) {
+                    // Catch NPE exception on some Android 9 devices
+                    // see https://stackoverflow.com/q/53541154/8941877
+                }
+            }
+            //noinspection ConstantConditions
+            numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
+            isExpressionShown = bundle.getBoolean("isExpressionShown");
+            isZeroShownWhenNoValue = bundle.getBoolean("isZeroShownWhenNoValue");
+            isAnswerBtnShown = bundle.getBoolean("isAnswerBtnShown");
+            isSignBtnShown = bundle.getBoolean("isSignBtnShown");
+            shouldEvaluateOnOperation = bundle.getBoolean("shouldEvaluateOnOperation");
 
-        if (bundle.containsKey("initialValue"))
-            initialValue = (BigDecimal) bundle.getSerializable("initialValue");
-        if (bundle.containsKey("minValue"))
-            minValue = (BigDecimal) bundle.getSerializable("minValue");
-        if (bundle.containsKey("maxValue"))
-            maxValue = (BigDecimal) bundle.getSerializable("maxValue");
-        isOrderOfOperationsApplied = bundle.getBoolean("isOrderOfOperationsApplied");
+            if (bundle.containsKey("initialValue"))
+                initialValue = (BigDecimal) bundle.getSerializable("initialValue");
+            if (bundle.containsKey("minValue"))
+                minValue = (BigDecimal) bundle.getSerializable("minValue");
+            if (bundle.containsKey("maxValue"))
+                maxValue = (BigDecimal) bundle.getSerializable("maxValue");
+            isOrderOfOperationsApplied = bundle.getBoolean("isOrderOfOperationsApplied");
+        }
     }
 
     @Override
@@ -317,9 +326,10 @@ public class CalcSettings implements Parcelable {
         Bundle bundle = new Bundle();
 
         bundle.putInt("requestCode", requestCode);
-
+        if (nbFormat != null){
+            bundle.putSerializable("nbFormat", nbFormat);
+        }
         bundle.putSerializable("numpadLayout", numpadLayout);
-        bundle.putSerializable("nbFormat", nbFormat);
         bundle.putBoolean("isExpressionShown", isExpressionShown);
         bundle.putBoolean("isZeroShownWhenNoValue", isZeroShownWhenNoValue);
         bundle.putBoolean("isAnswerBtnShown", isAnswerBtnShown);

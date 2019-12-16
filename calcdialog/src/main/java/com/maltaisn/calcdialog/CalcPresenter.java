@@ -17,6 +17,7 @@
 package com.maltaisn.calcdialog;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -113,7 +114,9 @@ class CalcPresenter {
     }
 
     void writeStateToBundle(Bundle bundle) {
-        bundle.putParcelable("expression", expression);
+        if (expression != null) {
+            bundle.putParcelable("expression", expression);
+        }
         if (currentValue != null) {
             bundle.putSerializable("currentValue", currentValue);
         }
@@ -130,7 +133,12 @@ class CalcPresenter {
 
     private void readStateFromBundle(Bundle bundle) {
         //noinspection ConstantConditions
-        expression = bundle.getParcelable("expression");
+        if (bundle.containsKey("expression")) {
+            Parcelable parcelable = bundle.getParcelable("expression");
+            if (parcelable != null){
+                this.expression = (Expression) parcelable;
+            }
+        }
         if (bundle.containsKey("currentValue")) {
             currentValue = (BigDecimal) bundle.getSerializable("currentValue");
         }
@@ -482,15 +490,15 @@ class CalcPresenter {
                 // Append the decimal separator at the end of the number.
                 DecimalFormat fmt = (DecimalFormat) nbFormat;
                 char sep = fmt.getDecimalFormatSymbols().getDecimalSeparator();
-                if (currentValue.compareTo(BigDecimal.ZERO) >= 0) {
+                if (value.compareTo(BigDecimal.ZERO) >= 0) {
                     String suffixBefore = fmt.getPositiveSuffix();
                     fmt.setPositiveSuffix(sep + suffixBefore);
-                    text = nbFormat.format(currentValue);
+                    text = nbFormat.format(value);
                     fmt.setPositiveSuffix(suffixBefore);
                 } else {
                     String suffixBefore = fmt.getNegativeSuffix();
                     fmt.setNegativeSuffix(sep + suffixBefore);
-                    text = nbFormat.format(currentValue);
+                    text = nbFormat.format(value);
                     fmt.setNegativeSuffix(suffixBefore);
                 }
             } else {
