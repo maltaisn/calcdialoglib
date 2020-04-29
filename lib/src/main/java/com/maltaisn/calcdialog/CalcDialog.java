@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
@@ -40,6 +41,7 @@ import java.math.BigDecimal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.appcompat.content.res.AppCompatResources;
 
 
 /**
@@ -47,8 +49,6 @@ import androidx.appcompat.app.AppCompatDialogFragment;
  * All settings must be set before showing the dialog or unexpected behavior will occur.
  */
 public class CalcDialog extends AppCompatDialogFragment {
-
-    private static final String TAG = CalcDialog.class.getSimpleName();
 
     // Indexes of text elements in R.array.calc_dialog_btn_texts
     private static final int TEXT_INDEX_ADD = 10;
@@ -72,14 +72,11 @@ public class CalcDialog extends AppCompatDialogFragment {
     private TextView answerBtn;
     private TextView signBtn;
 
-    private CharSequence[] btnTexts;
     private CharSequence[] errorMessages;
-    private int[] maxDialogDimensions;
-
 
     ////////// LIFECYCLE METHODS //////////
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // Wrap calculator dialog's theme to context
@@ -89,27 +86,34 @@ public class CalcDialog extends AppCompatDialogFragment {
         this.context = new ContextThemeWrapper(context, style);
     }
 
-    @Override
-    public void onCreate(Bundle state) {
-        super.onCreate(state);
-
-        // Get strings
-        TypedArray ta = context.obtainStyledAttributes(R.styleable.CalcDialog);
-        btnTexts = ta.getTextArray(R.styleable.CalcDialog_calcButtonTexts);
-        errorMessages = ta.getTextArray(R.styleable.CalcDialog_calcErrors);
-        maxDialogDimensions = new int[]{
-                ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxWidth, -1),
-                ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxHeight, -1)
-        };
-        ta.recycle();
-    }
-
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(final Bundle state) {
         LayoutInflater inflater = LayoutInflater.from(context);
         final View view = inflater.inflate(R.layout.dialog_calc, null);
+
+        // Get attributes
+        final TypedArray ta = context.obtainStyledAttributes(R.styleable.CalcDialog);
+        final CharSequence[] btnTexts = ta.getTextArray(R.styleable.CalcDialog_calcButtonTexts);
+        errorMessages = ta.getTextArray(R.styleable.CalcDialog_calcErrors);
+        final int maxDialogWidth = ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxWidth, -1);
+        final int maxDialogHeight = ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxHeight, -1);
+        final int headerColor = getColor(ta, R.styleable.CalcDialog_calcHeaderColor);
+        final int headerElevationColor = getColor(ta, R.styleable.CalcDialog_calcHeaderElevationColor);
+        final int separatorColor = getColor(ta, R.styleable.CalcDialog_calcDialogSepColor);
+        final int numberBtnColor = getColor(ta, R.styleable.CalcDialog_calcNumberBtnColor);
+        final int operationBtnColor = getColor(ta, R.styleable.CalcDialog_calcOperationBtnColor);
+        ta.recycle();
+
+        // Header
+        final View headerBg = view.findViewById(R.id.view_header_background);
+        final View headerElevationBg = view.findViewById(R.id.view_header_elevation);
+        headerBg.setBackgroundColor(headerColor);
+        headerElevationBg.setBackgroundColor(headerElevationColor);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            headerElevationBg.setVisibility(View.GONE);
+        }
 
         // Value and expression views
         valueTxv = view.findViewById(R.id.calc_txv_value);
@@ -144,6 +148,9 @@ public class CalcDialog extends AppCompatDialogFragment {
                 }
             });
         }
+
+        final View numberBtnBg = view.findViewById(R.id.calc_view_number_bg);
+        numberBtnBg.setBackgroundColor(numberBtnColor);
 
         // Operator buttons
         final TextView addBtn = view.findViewById(R.id.calc_btn_add);
@@ -180,6 +187,9 @@ public class CalcDialog extends AppCompatDialogFragment {
                 presenter.onOperatorBtnClicked(Expression.Operator.DIVIDE);
             }
         });
+
+        final View opBtnBg = view.findViewById(R.id.calc_view_op_bg);
+        opBtnBg.setBackgroundColor(operationBtnColor);
 
         // Sign button: +/-
         signBtn = view.findViewById(R.id.calc_btn_sign);
@@ -219,6 +229,10 @@ public class CalcDialog extends AppCompatDialogFragment {
                 presenter.onAnswerBtnClicked();
             }
         });
+
+        // Divider
+        final View footerSep = view.findViewById(R.id.calc_view_sep_footer);
+        footerSep.setBackgroundColor(separatorColor);
 
         // Dialog buttons
         Button clearBtn = view.findViewById(R.id.calc_btn_clear);
@@ -260,8 +274,8 @@ public class CalcDialog extends AppCompatDialogFragment {
                 int width = metrics.widthPixels - fgPadding.top - fgPadding.bottom;
 
                 // Set dialog's dimensions
-                if (width > maxDialogDimensions[0]) width = maxDialogDimensions[0];
-                if (height > maxDialogDimensions[1]) height = maxDialogDimensions[1];
+                if (width > maxDialogWidth) width = maxDialogWidth;
+                if (height > maxDialogHeight) height = maxDialogHeight;
                 dialog.getWindow().setLayout(width, height);
 
                 // Set dialog's content
@@ -281,8 +295,19 @@ public class CalcDialog extends AppCompatDialogFragment {
         return dialog;
     }
 
+    private int getColor(TypedArray ta, int index) {
+        int resId = ta.getResourceId(index, 0);
+        if (resId == 0) {
+            // Raw color value e.g.: #FF000000
+            return ta.getColor(index, 0);
+        } else {
+            // Color reference pointing to color state list or raw color.
+            return AppCompatResources.getColorStateList(context, resId).getDefaultColor();
+        }
+    }
+
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (presenter != null) {
             // On config change, presenter is detached before this is called

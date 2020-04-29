@@ -1,26 +1,69 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="PrivateResource">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme"
-           parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <!-- To customize calculator dialog's style:
-            <item name="calcDialogStyle">@style/CustomCalcDialogStyle</item>
-        -->
+    <!-- To customize calculator dialog's style -->
+    <style name="CustomCalcDialogStyle" parent="CalcDialogStyle">
+<!--        <item name="calcNumberBtnStyle">@style/CustomNumberBtnStyle</item>-->
     </style>
 
-    <!-- To customize calculator dialog's style:
-        <style name="CustomCalcDialogStyle" parent="CalcDialogStyle">
-            <item name="calcNumberBtnStyle">@style/CustomNumberBtnStyle</item>
-        </style>
+    <style name="CustomNumberBtnStyle" parent="CalcNumberBtnStyle">
+        <item name="android:textSize">18sp</item>
+    </style>
 
-        <style name="CustomNumberBtnStyle" parent="CalcNumberBtnStyle">
-            <item name="android:textSize">18sp</item>
-        </style>
-    -->
+    <!-- DEMO APP STYLES -->
+    <style name="OptionsCardViewStyle">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="cardElevation">3dp</item>
+    </style>
+
+    <style name="SubtitleTextViewStyle">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="android:textColor">@color/material_on_surface_emphasis_medium</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="OptionsCheckboxStyle">
+        <item name="android:minHeight">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+    </style>
+
+    <style name="DropdownLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxBackgroundColor">@color/mtrl_filled_background_color</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="hintEnabled">false</item>
+    </style>
+
+    <style name="DropdownStyle">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="boxStrokeColor">@null</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:inputType">none|textNoSuggestions</item>
+        <item name="android:imeOptions">flagNoExtractUi</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:cursorVisible">false</item>
+    </style>
+
+    <style name="InputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/mtrl_filled_background_color</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="hintEnabled">false</item>
+    </style>
+
+    <style name="InputStyle">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="boxStrokeColor">@null</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:imeOptions">flagNoExtractUi|actionDone</item>
+    </style>
 
 </resources>

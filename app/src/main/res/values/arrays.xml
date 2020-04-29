@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="numpad_layout_dropdown_values">
+        <item>@string/calc_numpad_calc</item>
+        <item>@string/calc_numpad_phone</item>
+    </string-array>
+
+    <string-array name="nbfmt_dropdown_values">
+        <item>@string/nbfmt_default</item>
+        <item>@string/nbfmt_currency</item>
+    </string-array>
+
+</resources>

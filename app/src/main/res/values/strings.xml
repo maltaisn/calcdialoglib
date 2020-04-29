@@ -5,10 +5,12 @@
     <string name="app_name">Calculator Dialog</string>
 
     <string name="open_dialog">Open dialog</string>
-    <string name="result_value">Result</string>
-    <string name="result_value_none">None</string>
 
-    <string name="calc_settings">Calculator settings</string>
+    <string name="header_selection">Selected value</string>
+    <string name="selection_value_none">None</string>
+
+    <string name="header_options_calc">Calculator options</string>
+    <string name="calc_dark_theme">Dark theme</string>
     <string name="calc_show_expr">Show expression</string>
     <string name="calc_expr_editable">Expression can be edited</string>
     <string name="calc_show_sign_btn">Show sign button</string>
@@ -19,10 +21,11 @@
     <string name="calc_min_value">Minimum value:</string>
     <string name="calc_max_value">Maximum value:</string>
     <string name="calc_numpad">Numpad layout:</string>
-    <string name="calc_numpad_calc">Calculator (789 on the top row)</string>
-    <string name="calc_numpad_phone">Phone (123 on the top row)</string>
+    <string name="calc_numpad_calc">Calculator (789 on top)</string>
+    <string name="calc_numpad_phone">Phone (123 on top)</string>
 
-    <string name="nbfmt_settings">Number format settings</string>
+    <string name="header_options_nbfmt">Number format options</string>
+    <string name="nbfmt_label">Number format:</string>
     <string name="nbfmt_default">Default</string>
     <string name="nbfmt_currency">Currency</string>
     <string name="nbfmt_max_int">Maximum integer digits:</string>

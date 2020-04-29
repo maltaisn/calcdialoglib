@@ -1,6 +1,9 @@
 ## v2.2.0
 - Google's Material Components now used for UI.
--
+- Breaking changes in styling attributes:
+    - Removed `calcHeaderStyle` and `calcHeaderElevationDrawable` attributes, they were replaced
+      by `calcHeaderColor` and `calcHeaderElevationColor`. Note that the latter only applies to
+      APIs below 21, otherwise default elevation color is used.
 
 ### v2.1.2
 - Fixed many NPE on some devices.

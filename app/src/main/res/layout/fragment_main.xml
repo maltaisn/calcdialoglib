@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
+        >
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="?toolbarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:title="@string/app_name"
+            app:titleTextColor="?colorControlNormal"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            >
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/OptionsCardViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="8dp"
+                    >
+
+                    <TextView
+                        android:id="@+id/selected_value_label_txv"
+                        style="@style/SubtitleTextViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/header_selection"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginRight="24dp"
+                        app:layout_goneMarginEnd="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/selected_value_txv"
+                        android:layout_width="0dp"
+                        android:layout_height="48sp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginRight="24dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:textColor="?colorOnSurface"
+                        android:textStyle="bold"
+                        app:autoSizeMaxTextSize="24sp"
+                        app:autoSizeMinTextSize="12sp"
+                        app:autoSizeTextType="uniform"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/selected_value_label_txv"
+                        tools:text="1000.08"
+                        />
+
+                    <View
+                        android:id="@+id/selected_foreground_view"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="?selectableItemBackground"
+                        app:layout_constraintBottom_toBottomOf="@id/selected_value_txv"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/selected_value_txv"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/OptionsCardViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
+                    >
+
+                    <TextView
+                        android:id="@+id/calc_options_txv"
+                        style="@style/SubtitleTextViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/header_options_calc"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/dark_theme_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/calc_dark_theme"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/calc_options_txv"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/show_expr_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/calc_show_expr"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dark_theme_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/expr_editable_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/calc_expr_editable"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/show_expr_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/show_answer_btn_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calc_show_ans_btn"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/expr_editable_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/show_sign_btn_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/calc_show_sign_btn"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/show_answer_btn_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/order_operation_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/calc_order_operation"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/show_sign_btn_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/eval_operation_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/calc_eval_operation"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/order_operation_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/show_zero_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/calc_show_zero"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/eval_operation_chk"
+                        />
+
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/value_bounds_barrier"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:barrierDirection="end"
+                        app:constraint_referenced_ids="min_value_chk,max_value_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/min_value_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:checked="true"
+                        android:text="@string/calc_min_value"
+                        android:labelFor="@id/min_value_input"
+                        app:layout_constraintBottom_toBottomOf="@id/min_value_input_layout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/min_value_input_layout"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/min_value_input_layout"
+                        style="@style/InputLayoutStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/value_bounds_barrier"
+                        app:layout_constraintTop_toBottomOf="@id/show_zero_chk"
+                        >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/min_value_input"
+                            style="@style/InputStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberSigned|numberDecimal"
+                            tools:ignore="LabelFor"
+                            tools:text="-10000000000"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <CheckBox
+                        android:id="@+id/max_value_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:checked="true"
+                        android:text="@string/calc_max_value"
+                        android:labelFor="@id/max_value_input"
+                        app:layout_constraintBottom_toBottomOf="@id/max_value_input_layout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/max_value_input_layout"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/max_value_input_layout"
+                        style="@style/InputLayoutStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/value_bounds_barrier"
+                        app:layout_constraintTop_toBottomOf="@id/min_value_input_layout"
+                        >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/max_value_input"
+                            style="@style/InputStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberSigned|numberDecimal"
+                            tools:ignore="LabelFor"
+                            tools:text="10000000000"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/txv_numpad"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:text="@string/calc_numpad"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:labelFor="@id/numpad_layout_dropdown"
+                        app:layout_constraintBottom_toBottomOf="@id/numpad_layout_dropdown_layout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/numpad_layout_dropdown_layout"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/numpad_layout_dropdown_layout"
+                        style="@style/DropdownLayoutStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toEndOf="@id/txv_numpad"
+                        app:layout_constraintTop_toBottomOf="@id/max_value_input_layout"
+                        >
+
+                        <AutoCompleteTextView
+                            android:id="@+id/numpad_layout_dropdown"
+                            style="@style/DropdownStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:dropDownWidth="250dp"
+                            android:text="@string/calc_numpad_calc"
+                            tools:ignore="LabelFor"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/OptionsCardViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp"
+                    >
+
+                    <TextView
+                        android:id="@+id/nbfmt_options_txv"
+                        style="@style/SubtitleTextViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/header_options_nbfmt"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/nbfmt_txv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:text="@string/nbfmt_label"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        android:labelFor="@id/nbfmt_dropdown"
+                        app:layout_constraintBottom_toBottomOf="@id/nbfmt_dropdown_layout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/nbfmt_dropdown_layout"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nbfmt_dropdown_layout"
+                        style="@style/DropdownLayoutStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toEndOf="@id/nbfmt_txv"
+                        app:layout_constraintTop_toBottomOf="@id/nbfmt_options_txv"
+                        >
+
+                        <AutoCompleteTextView
+                            android:id="@+id/nbfmt_dropdown"
+                            style="@style/DropdownStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:dropDownWidth="150dp"
+                            android:text="@string/nbfmt_default"
+                            android:minWidth="150dp"
+                            tools:ignore="LabelFor"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/digit_bounds_barrier"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:barrierDirection="end"
+                        app:constraint_referenced_ids="max_int_digits_chk,max_frac_digits_chk"
+                        />
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/max_int_digits_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:checked="true"
+                        android:text="@string/nbfmt_max_int"
+                        android:labelFor="@id/min_value_input"
+                        app:layout_constraintBottom_toBottomOf="@id/max_int_digits_input_layout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/max_int_digits_input_layout"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/max_int_digits_input_layout"
+                        style="@style/InputLayoutStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/digit_bounds_barrier"
+                        app:layout_constraintTop_toBottomOf="@id/nbfmt_dropdown_layout"
+                        >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/max_int_digits_input"
+                            style="@style/InputStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberSigned|numberDecimal"
+                            tools:ignore="LabelFor"
+                            tools:text="10"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <CheckBox
+                        android:id="@+id/max_frac_digits_chk"
+                        style="@style/OptionsCheckboxStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:checked="true"
+                        android:text="@string/nbfmt_max_frac"
+                        android:labelFor="@id/max_value_input"
+                        app:layout_constraintBottom_toBottomOf="@id/max_frac_digits_input_layout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/max_frac_digits_input_layout"
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/max_frac_digits_input_layout"
+                        style="@style/InputLayoutStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/digit_bounds_barrier"
+                        app:layout_constraintTop_toBottomOf="@id/max_int_digits_input_layout"
+                        >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/max_frac_digits_input"
+                            style="@style/InputStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberSigned|numberDecimal"
+                            tools:ignore="LabelFor"
+                            tools:text="8"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+        />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

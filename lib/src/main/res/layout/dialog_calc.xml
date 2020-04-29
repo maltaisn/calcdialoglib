@@ -5,42 +5,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/calcBackgroundColor"
+    android:background="?calcBackgroundColor"
     android:layoutDirection="ltr"
+    tools:ignore="UnusedAttribute"
     tools:theme="@style/CalcDialogStyle"
-    tools:ignore="UnusedAttribute">
+    >
 
     <View
         android:id="@+id/view_header_background"
-        style="?attr/calcHeaderStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:elevation="?attr/calcHeaderElevation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="?calcHeaderElevation"
         app:layout_constraintBottom_toBottomOf="@id/calc_txv_value"
-        tools:ignore="UnusedAttribute"
-        tools:background="@drawable/calc_bg_elevation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="?calcHeaderColor"
+        />
+
+    <!-- This view is only shown on API < 21 to support header "elevation". -->
+    <View
+        android:id="@+id/view_header_elevation"
+        android:layout_width="0dp"
+        android:layout_height="?calcHeaderElevation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_header_background"
+        tools:background="?calcHeaderElevationColor"
         />
 
     <HorizontalScrollView
         android:id="@+id/calc_hsv_expression"
-        style="?attr/calcExpressionScrollViewStyle"
+        style="?calcExpressionScrollViewStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:elevation="?attr/calcHeaderElevation"
+        android:elevation="?calcHeaderElevation"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="UnusedAttribute"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"
         >
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/calc_txv_expression"
-            style="?attr/calcExpressionStyle"
+            style="?calcExpressionStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="3 × 3 + 2 ÷ 1.5 − -12.57 +"
@@ -50,54 +59,53 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/calc_txv_value"
-        style="?attr/calcValueStyle"
+        style="?calcValueStyle"
         android:layout_width="0dp"
-        android:elevation="?attr/calcHeaderElevation"
-        app:layout_constraintTop_toBottomOf="@id/calc_hsv_expression"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="?calcHeaderElevation"
         app:layout_constraintEnd_toStartOf="@id/calc_btn_erase"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calc_hsv_expression"
         tools:text="-1,211.52"
-        tools:ignore="UnusedAttribute"
         />
 
     <com.maltaisn.calcdialog.CalcEraseButton
         android:id="@+id/calc_btn_erase"
-        style="?attr/calcEraseBtnStyle"
+        style="?calcEraseBtnStyle"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:elevation="?attr/calcHeaderElevation"
-        app:layout_constraintStart_toEndOf="@id/calc_txv_value"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/calc_txv_value"
+        android:elevation="?calcHeaderElevation"
         app:layout_constraintBottom_toBottomOf="@id/calc_txv_value"
-        tools:ignore="ContentDescription,UnusedAttribute"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/calc_txv_value"
+        app:layout_constraintTop_toTopOf="@id/calc_txv_value"
         />
 
     <View
         android:id="@+id/calc_view_number_bg"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="?attr/calcNumberBtnColor"
+        android:background="?calcNumberBtnColor"
         app:layout_constraintBottom_toTopOf="@+id/calc_view_sep_footer"
         app:layout_constraintEnd_toStartOf="@+id/calc_guideline_end"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_header_background"
+        tools:background="?calcNumberBtnColor"
         />
 
     <View
         android:id="@+id/calc_view_op_bg"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="?attr/calcOperationBtnColor"
         app:layout_constraintBottom_toTopOf="@+id/calc_view_sep_footer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/calc_guideline_end"
         app:layout_constraintTop_toBottomOf="@id/view_header_background"
+        tools:background="?calcOperationBtnColor"
         />
 
     <TextView
         android:id="@+id/calc_btn_24"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/calc_btn_decimal"
@@ -110,7 +118,7 @@
 
     <TextView
         android:id="@+id/calc_btn_13"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_decimal"
@@ -123,7 +131,7 @@
 
     <TextView
         android:id="@+id/calc_btn_23"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_decimal"
@@ -136,7 +144,7 @@
 
     <TextView
         android:id="@+id/calc_btn_33"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_decimal"
@@ -149,7 +157,7 @@
 
     <TextView
         android:id="@+id/calc_btn_12"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_13"
@@ -162,7 +170,7 @@
 
     <TextView
         android:id="@+id/calc_btn_22"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/calc_btn_12"
@@ -175,7 +183,7 @@
 
     <TextView
         android:id="@+id/calc_btn_32"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/calc_btn_12"
@@ -188,7 +196,7 @@
 
     <TextView
         android:id="@+id/calc_btn_11"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_12"
@@ -202,7 +210,7 @@
 
     <TextView
         android:id="@+id/calc_btn_21"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/calc_btn_11"
@@ -214,7 +222,7 @@
 
     <TextView
         android:id="@+id/calc_btn_31"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/calc_btn_11"
@@ -227,7 +235,7 @@
 
     <TextView
         android:id="@+id/calc_btn_decimal"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_view_sep_footer"
@@ -240,7 +248,7 @@
 
     <TextView
         android:id="@+id/calc_btn_sign"
-        style="?attr/calcNumberBtnStyle"
+        style="?calcNumberBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/calc_btn_decimal"
@@ -252,7 +260,7 @@
 
     <TextView
         android:id="@+id/calc_btn_div"
-        style="?attr/calcOperationBtnStyle"
+        style="?calcOperationBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_mul"
@@ -265,7 +273,7 @@
 
     <TextView
         android:id="@+id/calc_btn_mul"
-        style="?attr/calcOperationBtnStyle"
+        style="?calcOperationBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_sub"
@@ -278,7 +286,7 @@
 
     <TextView
         android:id="@+id/calc_btn_sub"
-        style="?attr/calcOperationBtnStyle"
+        style="?calcOperationBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_add"
@@ -291,7 +299,7 @@
 
     <TextView
         android:id="@+id/calc_btn_add"
-        style="?attr/calcOperationBtnStyle"
+        style="?calcOperationBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_equal"
@@ -304,7 +312,7 @@
 
     <TextView
         android:id="@+id/calc_btn_equal"
-        style="?attr/calcOperationBtnStyle"
+        style="?calcOperationBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/calc_view_sep_footer"
@@ -317,7 +325,7 @@
 
     <TextView
         android:id="@+id/calc_btn_answer"
-        style="?attr/calcAnswerBtnStyle"
+        style="?calcAnswerBtnStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="@string/calc_answer"
@@ -332,24 +340,24 @@
         android:id="@+id/calc_view_sep_footer"
         android:layout_width="0dp"
         android:layout_height="1px"
-        android:background="?attr/calcDialogSepColor"
         app:layout_constraintBottom_toTopOf="@+id/calc_btn_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calc_btn_decimal"
+        tools:background="?calcDialogSepColor"
         />
 
     <Button
         android:id="@+id/calc_btn_clear"
-        style="?attr/calcDialogButtonStyle"
+        style="?calcDialogButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:text="?attr/calcButtonTextClear"
+        android:text="?calcButtonTextClear"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calc_view_sep_footer"
@@ -357,14 +365,14 @@
 
     <Button
         android:id="@+id/calc_btn_cancel"
-        style="?attr/calcDialogButtonStyle"
+        style="?calcDialogButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:text="?attr/calcButtonTextCancel"
+        android:text="?calcButtonTextCancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/calc_btn_ok"
         app:layout_constraintTop_toBottomOf="@+id/calc_view_sep_footer"
@@ -373,14 +381,14 @@
 
     <Button
         android:id="@+id/calc_btn_ok"
-        style="?attr/calcDialogButtonStyle"
+        style="?calcDialogButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:text="?attr/calcButtonTextOk"
+        android:text="?calcButtonTextOk"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calc_view_sep_footer"

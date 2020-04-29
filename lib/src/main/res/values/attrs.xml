@@ -12,9 +12,9 @@
         <attr name="calcButtonTextOk" format="string"/>
         <attr name="calcButtonTexts" format="reference"/>
         <attr name="calcBackgroundColor" format="color|reference"/>
-        <attr name="calcHeaderStyle" format="reference"/>
+        <attr name="calcHeaderColor" format="color|reference"/>
         <attr name="calcHeaderElevation" format="dimension|reference"/>
-        <attr name="calcHeaderElevationDrawable" format="reference"/>
+        <attr name="calcHeaderElevationColor" format="color|reference"/>
         <attr name="calcValueStyle" format="reference"/>
         <attr name="calcExpressionScrollViewStyle" format="reference"/>
         <attr name="calcExpressionStyle" format="reference"/>

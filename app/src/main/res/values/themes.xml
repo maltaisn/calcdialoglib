@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme.DayNight" parent="Base.AppTheme" />
+
+    <style name="Base.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar" tools:ignore="NewApi">
+        <item name="android:forceDarkAllowed">false</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorError">@color/colorError</item>
+
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="colorOnError">@color/colorOnError</item>
+
+        <item name="android:statusBarColor">?colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">?android:colorBackground</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarDividerColor">?colorControlHighlight</item>
+
+        <item name="colorPrimaryDark">?colorPrimaryVariant</item>
+        <item name="colorAccent">?colorSecondary</item>
+
+        <item name="calcDialogStyle">@style/CustomCalcDialogStyle</item>
+
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
+    </style>
+
+</resources>
