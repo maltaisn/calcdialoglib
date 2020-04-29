@@ -1,6 +1,6 @@
 # Calculator dialog
 
-A fully customizable calculator dialog for Android compatible with API 16.
+A fully customizable calculator dialog for Android compatible with API 14.
 Can be used to replace the numeric keyboard and useful to enter monetary amounts for example.
 
 <img src="screenshots/demo1.gif" alt="Demo 1" width="40%"/> <img src="screenshots/demo2.gif" alt="Demo 2" width="40%"/>
@@ -19,7 +19,9 @@ Can be used to replace the numeric keyboard and useful to enter monetary amounts
 - Entirely customizable using custom attributes.
 
 ### Gradle dependency
-`implementation "com.maltaisn:calcdialog:X.Y.Z"`
+```
+implementation "com.maltaisn:calcdialog:X.Y.Z"
+```
 
 Replace `X.Y.Z` with lastest version number: [![Download][download-badge]][download-link]
 

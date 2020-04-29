@@ -1,5 +1,6 @@
 ## v2.2.0
 - Google's Material Components now used for UI.
+- Lowered min SDK to 14.
 - Added content description for the erase button.
 - Initial value can now be negated. Previous behavior was to clear the value.
 - Breaking changes in styling attributes:
