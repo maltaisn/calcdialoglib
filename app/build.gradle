@@ -1,4 +1,6 @@
-apply plugin: "com.android.application"
+plugins {
+    id "com.android.application"
+}
 
 android {
     compileSdkVersion setup.compileSdk
@@ -17,6 +19,7 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "com.google.android.material:material:$materialVersion"
 
     testImplementation "junit:junit:$junitVersion"
 }

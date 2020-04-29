@@ -1,8 +1,12 @@
-## v2.1.2
+## v2.2.0
+- Google's Material Components now used for UI.
+-
+
+### v2.1.2
 - Fixed many NPE on some devices.
 - Fixed `Expression` parcel implementation.
 
-## v2.1.1
+### v2.1.1
 - Disabled RTL layout in dialog.
 
 ## v2.1.0
