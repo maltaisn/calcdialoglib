@@ -1,12 +1,13 @@
 ## v2.2.0
 - Google's Material Components now used for UI.
+- Added content description for the erase button.
+- Initial value can now be negated. Previous behavior was to clear the value.
 - Breaking changes in styling attributes:
     - Removed `calcHeaderStyle` and `calcHeaderElevationDrawable` attributes, they were replaced
         by `calcHeaderColor` and `calcHeaderElevationColor`. Note that the latter only applies to
         APIs below 21, otherwise default elevation color is used.
     - Renamed `calcNumberBtnStyle` to `calcDigitBtnStyle`, `calcNumberBtnColor` to `calcDigitBtnColor`,
       and `calcDialogSepColor` to `calcDividerColor`.
-- Added content description for the erase button.
 
 ### v2.1.2
 - Fixed many NPE on some devices.

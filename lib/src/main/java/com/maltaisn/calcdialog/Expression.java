@@ -39,6 +39,10 @@ class Expression implements Parcelable {
         operators.clear();
     }
 
+    boolean isEmpty() {
+        return numbers.size() == 0;
+    }
+
     /**
      * Evaluate the expression and return the result.
      * @param priority     Whether to apply operation priority or not.

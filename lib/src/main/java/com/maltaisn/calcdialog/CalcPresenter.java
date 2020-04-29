@@ -71,7 +71,8 @@ class CalcPresenter {
 
     /**
      * Whether user can edit {@link #currentValue} or not.
-     * If not editable, a button press clears the current value.
+     * If not editable, a button press clears the current value,
+     * with the exception of the sign button which will still negate the value.
      */
     private boolean canEditCurrentValue;
 
@@ -173,7 +174,7 @@ class CalcPresenter {
                 currentValueScale = -1;
             }
 
-        } else if (settings.isExpressionEditable && expression.numbers.size() > 0) {
+        } else if (settings.isExpressionEditable && !expression.isEmpty()) {
             // No more digits to erase: pop last expression number and operator and make it current value
             currentValue = expression.numbers.remove(expression.numbers.size() - 1);
             expression.operators.remove(expression.operators.size() - 1);
@@ -265,8 +266,11 @@ class CalcPresenter {
         currentIsAnswer = false;
         view.setAnswerBtnVisible(false);
 
-        if (!canEditCurrentValue && !currentIsResult) {
+        if (!canEditCurrentValue && !currentIsResult && !expression.isEmpty()) {
             // If current value is result, it's not editable but still allow negation.
+            // If current value is result and isn't editable, but expression is empty,
+            // that means current value is initial value, so allow negation too.
+            // Otherwise, clear value.
             currentValue = null;
             canEditCurrentValue = true;
             currentValueScale = -1;
