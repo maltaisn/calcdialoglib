@@ -17,13 +17,13 @@
         <item name="calcValueStyle">@style/CalcValueStyle</item>
         <item name="calcExpressionScrollViewStyle">@style/CalcExpressionScrollViewStyle</item>
         <item name="calcExpressionStyle">@style/CalcExpressionStyle</item>
-        <item name="calcNumberBtnStyle">@style/CalcNumberBtnStyle</item>
-        <item name="calcNumberBtnColor">@android:color/transparent</item>
+        <item name="calcDigitBtnStyle">@style/CalcNumberBtnStyle</item>
+        <item name="calcDigitBtnColor">@android:color/transparent</item>
         <item name="calcOperationBtnStyle">@style/CalcOperationBtnStyle</item>
         <item name="calcOperationBtnColor">@color/calc_operation_btn_color</item>
         <item name="calcAnswerBtnStyle">@style/CalcAnswerBtnStyle</item>
         <item name="calcEraseBtnStyle">@style/CalcEraseBtnStyle</item>
-        <item name="calcDialogSepColor">@color/calc_divider_color</item>
+        <item name="calcDividerColor">@color/calc_divider_color</item>
         <item name="calcDialogButtonStyle">@style/CalcDialogButtonStyle</item>
         <item name="calcErrors">@array/calc_dialog_errors</item>
     </style>

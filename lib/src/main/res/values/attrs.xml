@@ -1,38 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--@formatter:off-->
+<?xml version="1.0" encoding="utf-8"?><!--@formatter:off-->
 <resources>
 
     <attr name="calcDialogStyle" format="reference"/>
 
     <declare-styleable name="CalcDialog">
+
+        <!-- Maximum width for the calculator dialog. The dialog will expand to that width. -->
         <attr name="calcDialogMaxWidth" format="dimension"/>
+
+        <!-- Maximum height for the calculator dialog. The dialog will expand to that height. -->
         <attr name="calcDialogMaxHeight" format="dimension"/>
+
+        <!-- Text for the clear button. -->
         <attr name="calcButtonTextClear" format="string"/>
+
+        <!-- Text for the cancel button. -->
         <attr name="calcButtonTextCancel" format="string"/>
+
+        <!-- Text for the OK/confirm button. -->
         <attr name="calcButtonTextOk" format="string"/>
+
+        <!-- String array used to set texts on digit and operator buttons.
+             To see the order used, see the default value at {@link R.array.calc_dialog_btn_texts}. -->
         <attr name="calcButtonTexts" format="reference"/>
+
+        <!-- Background color for the dialog. -->
         <attr name="calcBackgroundColor" format="color|reference"/>
+
+        <!-- Background color for the dialog header. -->
         <attr name="calcHeaderColor" format="color|reference"/>
+
+        <!-- Header elevation size. -->
         <attr name="calcHeaderElevation" format="dimension|reference"/>
+
+        <!-- Header elevation color used for API < 21. -->
         <attr name="calcHeaderElevationColor" format="color|reference"/>
+
+        <!-- Style for the value TextView. -->
         <attr name="calcValueStyle" format="reference"/>
+
+        <!-- Style for the HorizontalScrollView containing the expression TextView. -->
         <attr name="calcExpressionScrollViewStyle" format="reference"/>
+
+        <!-- Style for the expression TextView. -->
         <attr name="calcExpressionStyle" format="reference"/>
-        <attr name="calcNumberBtnStyle" format="reference"/>
-        <attr name="calcNumberBtnColor" format="color|reference"/>
+
+        <!-- Style for digit buttons. -->
+        <attr name="calcDigitBtnStyle" format="reference"/>
+
+        <!-- Background color for digit buttons. -->
+        <attr name="calcDigitBtnColor" format="color|reference"/>
+
+        <!-- Style for operation buttons. -->
         <attr name="calcOperationBtnStyle" format="reference"/>
+
+        <!-- Background color for operation buttons and answer button -->
         <attr name="calcOperationBtnColor" format="color|reference"/>
+
+        <!-- Style for the answer button. -->
         <attr name="calcAnswerBtnStyle" format="reference"/>
+
+        <!-- Style for the erase button. -->
         <attr name="calcEraseBtnStyle" format="reference"/>
-        <attr name="calcDialogSepColor" format="color|reference"/>
+
+        <!-- Color for the divider used to separate the dialog footer. -->
+        <attr name="calcDividerColor" format="color|reference"/>
+
+        <!-- Style used for dialog buttons. -->
         <attr name="calcDialogButtonStyle" format="reference"/>
+
+        <!-- String array used to display errors.
+             To see the order used, see the default value at {@link R.array.calc_dialog_errors}. -->
         <attr name="calcErrors" format="reference"/>
+
     </declare-styleable>
 
     <declare-styleable name="CalcEraseButton">
+
+        <!-- Delay required after touch to trigger fast erase mode. -->
         <attr name="calcEraseBtnHoldDelay" format="integer"/>
+
+        <!-- Interval in milliseconds between each erase event sent in fast erase mode. -->
         <attr name="calcEraseBtnHoldSpeed" format="integer"/>
+
+        <!-- Whether to trigger an erase all event when button is long clicked. -->
         <attr name="calcEraseAllOnHold" format="boolean"/>
+
     </declare-styleable>
 
 </resources>

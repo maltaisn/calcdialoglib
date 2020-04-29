@@ -101,18 +101,18 @@ public class CalcDialog extends AppCompatDialogFragment {
         final int maxDialogHeight = ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxHeight, -1);
         final int headerColor = getColor(ta, R.styleable.CalcDialog_calcHeaderColor);
         final int headerElevationColor = getColor(ta, R.styleable.CalcDialog_calcHeaderElevationColor);
-        final int separatorColor = getColor(ta, R.styleable.CalcDialog_calcDialogSepColor);
-        final int numberBtnColor = getColor(ta, R.styleable.CalcDialog_calcNumberBtnColor);
+        final int separatorColor = getColor(ta, R.styleable.CalcDialog_calcDividerColor);
+        final int numberBtnColor = getColor(ta, R.styleable.CalcDialog_calcDigitBtnColor);
         final int operationBtnColor = getColor(ta, R.styleable.CalcDialog_calcOperationBtnColor);
         ta.recycle();
 
         // Header
-        final View headerBg = view.findViewById(R.id.view_header_background);
-        final View headerElevationBg = view.findViewById(R.id.view_header_elevation);
-        headerBg.setBackgroundColor(headerColor);
-        headerElevationBg.setBackgroundColor(headerElevationColor);
+        final View headerBgView = view.findViewById(R.id.calc_view_header_background);
+        final View headerElevationBgView = view.findViewById(R.id.calc_view_header_elevation);
+        headerBgView.setBackgroundColor(headerColor);
+        headerElevationBgView.setBackgroundColor(headerElevationColor);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            headerElevationBg.setVisibility(View.GONE);
+            headerElevationBgView.setVisibility(View.GONE);
         }
 
         // Value and expression views
@@ -149,8 +149,8 @@ public class CalcDialog extends AppCompatDialogFragment {
             });
         }
 
-        final View numberBtnBg = view.findViewById(R.id.calc_view_number_bg);
-        numberBtnBg.setBackgroundColor(numberBtnColor);
+        final View numberBtnBgView = view.findViewById(R.id.calc_view_number_bg);
+        numberBtnBgView.setBackgroundColor(numberBtnColor);
 
         // Operator buttons
         final TextView addBtn = view.findViewById(R.id.calc_btn_add);
@@ -188,8 +188,8 @@ public class CalcDialog extends AppCompatDialogFragment {
             }
         });
 
-        final View opBtnBg = view.findViewById(R.id.calc_view_op_bg);
-        opBtnBg.setBackgroundColor(operationBtnColor);
+        final View opBtnBgView = view.findViewById(R.id.calc_view_op_bg);
+        opBtnBgView.setBackgroundColor(operationBtnColor);
 
         // Sign button: +/-
         signBtn = view.findViewById(R.id.calc_btn_sign);
@@ -231,8 +231,8 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         // Divider
-        final View footerSep = view.findViewById(R.id.calc_view_sep_footer);
-        footerSep.setBackgroundColor(separatorColor);
+        final View footerDividerView = view.findViewById(R.id.calc_view_footer_divider);
+        footerDividerView.setBackgroundColor(separatorColor);
 
         // Dialog buttons
         Button clearBtn = view.findViewById(R.id.calc_btn_clear);
