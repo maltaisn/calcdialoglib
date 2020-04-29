@@ -19,9 +19,12 @@ package com.maltaisn.calcdialog;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
 import androidx.annotation.NonNull;
@@ -30,7 +33,11 @@ import androidx.annotation.Nullable;
 /**
  * Settings for the calculator dialog.
  */
+@SuppressWarnings("unused")
 public class CalcSettings implements Parcelable {
+
+    private static final String TAG = CalcSettings.class.getSimpleName();
+
 
     int requestCode = 0;
 
@@ -289,18 +296,8 @@ public class CalcSettings implements Parcelable {
     private CalcSettings(Parcel in) {
         Bundle bundle = in.readBundle(getClass().getClassLoader());
         if (bundle != null) {
+            nbFormat = getNumberFormatFromBundle(bundle);
             requestCode = bundle.getInt("requestCode");
-
-            if (bundle.containsKey("nbFormat")) {
-                try {
-                    NumberFormat fmt = (NumberFormat) bundle.getSerializable("nbFormat");
-                    if (fmt != null) nbFormat = fmt;
-                } catch (NullPointerException npe) {
-                    // Catch NPE exception on some Android 9 devices
-                    // see https://stackoverflow.com/q/53541154/8941877
-                }
-            }
-
             //noinspection ConstantConditions
             numpadLayout = (CalcNumpadLayout) bundle.getSerializable("numpadLayout");
             isExpressionShown = bundle.getBoolean("isExpressionShown");
@@ -327,24 +324,70 @@ public class CalcSettings implements Parcelable {
         Bundle bundle = new Bundle();
 
         bundle.putInt("requestCode", requestCode);
-        bundle.putSerializable("nbFormat", nbFormat);
         bundle.putSerializable("numpadLayout", numpadLayout);
         bundle.putBoolean("isExpressionShown", isExpressionShown);
         bundle.putBoolean("isZeroShownWhenNoValue", isZeroShownWhenNoValue);
         bundle.putBoolean("isAnswerBtnShown", isAnswerBtnShown);
         bundle.putBoolean("isSignBtnShown", isSignBtnShown);
         bundle.putBoolean("shouldEvaluateOnOperation", shouldEvaluateOnOperation);
+        bundle.putBoolean("isOrderOfOperationsApplied", isOrderOfOperationsApplied);
+
+        putNumberFormatInBundle(bundle);
 
         if (initialValue != null) bundle.putSerializable("initialValue", initialValue);
         if (minValue != null) bundle.putSerializable("minValue", minValue);
         if (maxValue != null) bundle.putSerializable("maxValue", maxValue);
-        bundle.putBoolean("isOrderOfOperationsApplied", isOrderOfOperationsApplied);
 
         try {
             out.writeBundle(bundle);
         } catch (UnsupportedOperationException uoe) {
             // Workaround for issue https://issuetracker.google.com/issues/37043137
+            Log.e(TAG, "Failed to parcel Bundle.");
         }
+    }
+
+    private void putNumberFormatInBundle(Bundle bundle) {
+        bundle.putSerializable("nbFormat", nbFormat);
+        if (nbFormat instanceof DecimalFormat) {
+            bundle.putSerializable("nbfmtPattern", ((DecimalFormat) nbFormat).toPattern());
+        }
+    }
+
+    private NumberFormat getNumberFormatFromBundle(Bundle bundle) {
+        NumberFormat nbFmt = null;
+        try {
+            nbFmt = (NumberFormat) bundle.getSerializable("nbFormat");
+            if (nbFmt != null) {
+                try {
+                    //noinspection ConstantConditions
+                    if (nbFmt.getRoundingMode() == null) {
+                        // Often, NumberFormat deserialization succeeds but its rounding mode
+                        // is still `null`, which will make some operations like division fail.
+                        // So set a default one.
+                        nbFmt.setRoundingMode(RoundingMode.HALF_EVEN);
+                        Log.e(TAG, "Failed to deserialize DecimalFormat rounding mode, reset to HALF_EVEN.");
+                    }
+                } catch (UnsupportedOperationException uoe) {
+                    // Number format doesn't have a rounding mode.
+                }
+            }
+        } catch (NullPointerException npe) {
+            // Very rarely and on API >= 28, Bundle will fail to get serialized NumberFormat.
+            // This issue is related to: https://stackoverflow.com/a/54155356/5288316.
+            // Luckily, NumberFormat is most often a DecimalFormat, which can be saved
+            // using a pattern. Note that the naming of the key is important here, it must
+            // not start with "nbFormat" for some reason!
+            if (bundle.containsKey("nbfmtPattern")) {
+                nbFmt = new DecimalFormat(bundle.getString("nbfmtPattern", ""));
+            } else {
+                Log.e(TAG, "Failed to deserialize NumberFormat.");
+            }
+            // Otherwise number format is lost for good, keep default.
+        }
+        if (nbFmt == null) {
+            nbFmt = NumberFormat.getInstance();
+        }
+        return nbFmt;
     }
 
     @Override

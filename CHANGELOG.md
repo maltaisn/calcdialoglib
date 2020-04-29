@@ -9,6 +9,7 @@
         APIs below 21, otherwise default elevation color is used.
     - Renamed `calcNumberBtnStyle` to `calcDigitBtnStyle`, `calcNumberBtnColor` to `calcDigitBtnColor`,
       and `calcDialogSepColor` to `calcDividerColor`.
+- Fixed crashes due to NumberFormat deserialization bug during unparcelization.
 
 ### v2.1.2
 - Fixed many NPE on some devices.
