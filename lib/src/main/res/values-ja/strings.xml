@@ -13,4 +13,6 @@
         <item>答えは負の数でなければなりません</item>
     </string-array>
 
+    <string name="calc_dialog_erase">消去する</string>
+
 </resources>

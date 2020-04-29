@@ -13,4 +13,6 @@
         <item>El resultado debe ser negativo</item>
     </string-array>
 
+    <string name="calc_dialog_erase">Borrar</string>
+
 </resources>

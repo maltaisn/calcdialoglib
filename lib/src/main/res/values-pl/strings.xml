@@ -13,4 +13,6 @@
         <item>Wynik musi być ujemny</item>
     </string-array>
 
+    <string name="calc_dialog_erase">Wymazać</string>
+
 </resources>

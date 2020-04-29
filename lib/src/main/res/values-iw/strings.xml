@@ -14,4 +14,6 @@
         <item>תוצאה חייבת להיות שלילית</item>
     </string-array>
 
+    <string name="calc_dialog_erase">לִמְחוֹק</string>
+
 </resources>

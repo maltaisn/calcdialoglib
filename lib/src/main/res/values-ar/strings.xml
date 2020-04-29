@@ -13,4 +13,6 @@
         <item>يجب أن تكون النتيجة سلبية</item>
     </string-array>
 
+    <string name="calc_dialog_erase">محو</string>
+
 </resources>

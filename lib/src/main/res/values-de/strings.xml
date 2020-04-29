@@ -13,4 +13,6 @@
         <item>Ergebnis muss negativ sein</item>
     </string-array>
 
+    <string name="calc_dialog_erase">Löschen</string>
+
 </resources>

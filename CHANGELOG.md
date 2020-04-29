@@ -6,6 +6,7 @@
         APIs below 21, otherwise default elevation color is used.
     - Renamed `calcNumberBtnStyle` to `calcDigitBtnStyle`, `calcNumberBtnColor` to `calcDigitBtnColor`,
       and `calcDialogSepColor` to `calcDividerColor`.
+- Added content description for the erase button.
 
 ### v2.1.2
 - Fixed many NPE on some devices.

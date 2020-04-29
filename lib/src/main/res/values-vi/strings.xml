@@ -13,4 +13,6 @@
         <item>Kết quả phải là số âm</item>
     </string-array>
 
+    <string name="calc_dialog_erase">Xoá</string>
+
 </resources>

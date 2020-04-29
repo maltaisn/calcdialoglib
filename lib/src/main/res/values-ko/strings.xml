@@ -13,4 +13,6 @@
         <item>결과는 음수 여야합니다</item>
     </string-array>
 
+    <string name="calc_dialog_erase">삭제</string>
+
 </resources>

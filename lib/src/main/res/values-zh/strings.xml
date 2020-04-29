@@ -13,4 +13,6 @@
         <item>结果必须为负数</item>
     </string-array>
 
+    <string name="calc_dialog_erase">抹去</string>
+
 </resources>

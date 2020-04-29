@@ -94,6 +94,7 @@
         <item name="tint">@color/material_on_background_emphasis_medium</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
+        <item name="android:contentDescription">@string/calc_dialog_erase</item>
     </style>
 
     <public name="CalcDialogButtonStyle" type="style"/>

@@ -13,4 +13,6 @@
         <item>Sonuç negatif olmalı</item>
     </string-array>
 
+    <string name="calc_dialog_erase">Silmek</string>
+
 </resources>

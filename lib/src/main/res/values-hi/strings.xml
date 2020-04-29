@@ -13,4 +13,6 @@
         <item>परिणाम नकारात्मक होना चाहिए</item>
     </string-array>
 
+    <string name="calc_dialog_erase">मिटाना</string>
+
 </resources>
