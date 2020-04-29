@@ -1,26 +1,55 @@
 # Calculator dialog
-A fully customizable calculator dialog for Android compatible with API 16. Can be used to replace the numeric keyboard and useful to enter monetary amounts.
+
+A fully customizable calculator dialog for Android compatible with API 16.
+Can be used to replace the numeric keyboard and useful to enter monetary amounts for example.
+
+<img src="screenshots/demo1.gif" alt="Demo 1" width="40%"/> <img src="screenshots/demo2.gif" alt="Demo 2" width="40%"/>
+
+#### Features
+- Material design with Google Material Components.
+- Built-in light and dark theme support.
+- Customizable number format.
+- Calculator or phone numpad layout styles.
+- Optional min and max values showing out of bounds messages.
+- Entered expression can be shown and edited.
+- Optional answer button to reuse previous result.
+- Order of operations can be applied or not.
+- Expression can be evaluated on new operator or not.
+- Optional clear button.
+- Entirely customizable using custom attributes.
 
 ### Gradle dependency
-`compile 'com.maltaisn:calcdialog:X.Y.Z'`
+`implementation "com.maltaisn:calcdialog:X.Y.Z"`
 
-Replace `X.Y.Z` with lastest version number: [ ![Download](https://api.bintray.com/packages/maltaisn/calc-dialog/calc-dialog/images/download.svg) ](https://bintray.com/maltaisn/calc-dialog/calc-dialog/_latestVersion)
+Replace `X.Y.Z` with lastest version number: [![Download][download-badge]][download-link]
 
-**WARNING:** version 2.0.0 introduces many breaking changes, like the changed package name. See the [changelog](/CHANGELOG.md) for the complete list of changes.
-
-If you haven't migrated to AndroidX, use version 1.3.2. Versions 1.4.0 and up use AndroidX.
+- Google Material Components are used since version 2.2.0
+- Version 2.0.0 introduces many breaking changes, like the changed package name.
+    See the [changelog](/CHANGELOG.md) for the complete list of changes.
+- If you haven't migrated to AndroidX, use version 1.3.2. Versions 1.4.0 and up use AndroidX.
 
 ## Tutorial
-- **Get started on the wiki page [Using the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Using-the-dialog).**
-- Customize the dialog's behavior by [changing its settings](https://github.com/maltaisn/calcdialoglib/wiki/Calculator-settings).
-- Learn how to [style the dialog](https://github.com/maltaisn/calcdialoglib/wiki/Styling-the-calculator) with the attributes
+- **Get started on the wiki page [Using the dialog][wiki-start].**
+- Customize the dialog's behavior by [changing its settings][wiki-settings].
+- Learn how to [style the dialog][wiki-styling] with the attributes
 
-## Screenshots
-<img src="screenshots/demo2.gif" alt="Demo" width="400px"/> <img src="screenshots/currency.gif" alt="Errors" width="400px"/>
-(Screenshots date back to version 2.0.0)
+### Changelog
+View [changelog here][changelog] for release notes.
 
-## Changelog
-View [changelog](/CHANGELOG.md)
+### License
+The library is licensed under Apache 2.0.
 
-## Translation
-The library is available in 16 languages. If you make a translation please make a pull request. Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml` and do not translate the demo app.
+### Translation
+The library is available in 16 languages. If you make a translation please make a pull request.
+Strings to translate are in `strings.xml`, do not translate those in `donottranslate.xml` and
+do not translate the demo app.
+
+
+[download-badge]: https://api.bintray.com/packages/maltaisn/calc-dialog/calc-dialog/images/download.svg
+[download-link]: https://bintray.com/maltaisn/calc-dialog/calc-dialog/_latestVersion
+
+[wiki-start]: https://github.com/maltaisn/calcdialoglib/wiki/Using-the-dialog
+[wiki-settings]: https://github.com/maltaisn/calcdialoglib/wiki/Calculator-settings
+[wiki-styling]: https://github.com/maltaisn/calcdialoglib/wiki/Styling-the-calculator
+
+[changelog]: CHANGELOG.md
