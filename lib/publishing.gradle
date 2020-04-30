@@ -1,0 +1,102 @@
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set("sources")
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+// Bintray plugin
+bintray {
+    user = project.property("bintray.user")
+    key = project.property("bintray.apikey")
+
+    configurations = ["archives"]
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+        }
+    }
+}
+
+// Maven plugin
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                groupId publishedGroupId
+                artifactId artifact
+
+                name libraryName
+                description libraryDescription
+                url siteUrl
+
+                licenses {
+                    license {
+                        name licenseName
+                        url licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id developerId
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+// Publish a new release to Github, using the lastest defined libVersion property,
+// a git tag, and the release notes in CHANGELOG.md.
+githubRelease {
+    if (project.hasProperty("githubReleasePluginToken")) {
+        token githubReleasePluginToken
+    }
+    owner "maltaisn"
+    repo "calcdialoglib"
+
+    tagName "v$libVersion"
+    targetCommitish "master"
+    releaseName "v$libVersion"
+
+    body {
+        // Get release notes for version from changelog file.
+        def changelog = file("../CHANGELOG.md")
+        def lines = changelog.readLines()
+        def versionChanges = new StringBuilder()
+        def foundVersion = false
+        for (line in lines) {
+            if (foundVersion && line ==~ /^#+\s*v.+$/) {
+                break
+            } else if (line ==~ /^#+\s*v$libVersion$/) {
+                foundVersion = true
+            } else if (foundVersion) {
+                versionChanges.append(line)
+                versionChanges.append('\n')
+            }
+        }
+        if (!foundVersion) {
+            throw new GradleException("No release notes for version $libVersion")
+        }
+        return versionChanges.toString().trim()
+    }
+
+    overwrite true
+}

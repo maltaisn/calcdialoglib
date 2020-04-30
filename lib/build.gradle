@@ -1,5 +1,8 @@
 plugins {
     id "com.android.library"
+    id "com.github.dcendents.android-maven"
+    id "com.jfrog.bintray"
+    id "com.github.breadmoirai.github-release"
 }
 
 ext {
@@ -29,5 +32,4 @@ dependencies {
 
 tasks.withType(Javadoc).all { enabled = false }
 
-apply from: "maven-install.gradle"
-apply from: "bintray.gradle"
+apply from: "publishing.gradle"
