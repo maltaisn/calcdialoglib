@@ -9,6 +9,7 @@ artifacts {
 }
 
 // Bintray plugin
+version = libVersion
 bintray {
     user = project.property("bintray.user")
     key = project.property("bintray.apikey")
@@ -30,6 +31,7 @@ bintray {
 }
 
 // Maven plugin
+group = publishedGroupId
 install {
     repositories.mavenInstaller {
         pom {
