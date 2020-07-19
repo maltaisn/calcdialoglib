@@ -126,7 +126,9 @@ public class CalcDialog extends AppCompatDialogFragment {
         eraseBtn.setOnEraseListener(new CalcEraseButton.EraseListener() {
             @Override
             public void onErase() {
-                presenter.onErasedOnce();
+                if (presenter != null) {
+                    presenter.onErasedOnce();
+                }
             }
 
             @Override
