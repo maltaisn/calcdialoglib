@@ -1,3 +1,6 @@
+### v2.2.1
+- Fixed NPE when erasing after presenter is detached. (#28)
+
 ## v2.2.0
 - Google's Material Components now used for UI.
 - Lowered min SDK to 14.
