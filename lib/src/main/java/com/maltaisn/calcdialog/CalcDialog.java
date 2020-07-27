@@ -59,6 +59,8 @@ public class CalcDialog extends AppCompatDialogFragment {
     private static final int TEXT_INDEX_DEC_SEP = 15;
     private static final int TEXT_INDEX_EQUAL = 16;
 
+    private static final String KEY_SETTINGS = "settings";
+
     private Context context;
     private CalcPresenter presenter;
 
@@ -291,7 +293,13 @@ public class CalcDialog extends AppCompatDialogFragment {
         });
 
         if (state != null) {
-            settings = state.getParcelable("settings");
+            settings = state.getParcelable(KEY_SETTINGS);
+        } else {
+            // Try reading settings from arguments in case user is using Navigation Component.
+            Bundle args = getArguments();
+            if (args != null && args.containsKey(KEY_SETTINGS)) {
+                settings = args.getParcelable(KEY_SETTINGS);
+            }
         }
 
         return dialog;
