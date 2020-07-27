@@ -13,8 +13,8 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildFeatures {
-        viewBinding = true
+    viewBinding {
+        enabled = true
     }
     sourceSets {
         main.java.srcDirs += "src/main/kotlin"

@@ -1,6 +1,3 @@
-### v2.2.2
-- Added bundle args to the dialog to allow integration with the Navigation Component.
-
 ### v2.2.1
 - Fixed NPE when erasing after presenter is detached. (#28)
 

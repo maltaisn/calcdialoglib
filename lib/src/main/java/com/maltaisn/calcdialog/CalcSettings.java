@@ -59,7 +59,7 @@ public class CalcSettings implements Parcelable {
     @Nullable BigDecimal maxValue = new BigDecimal("1E10");
     boolean isOrderOfOperationsApplied = true;
 
-    public CalcSettings() {
+    CalcSettings() {
         nbFormat.setMaximumIntegerDigits(Integer.MAX_VALUE);
         nbFormat.setMaximumFractionDigits(8);
     }
