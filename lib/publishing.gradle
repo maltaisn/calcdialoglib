@@ -25,7 +25,19 @@ bintray {
         publish = true
         publicDownloadNumbers = true
         version {
+            name = libVersion
+            vcsTag = libVersion
+            released = new Date()
             desc = libraryDescription
+            gpg {
+                sign = true
+            }
+            mavenCentralSync {
+                sync = true
+                user = project.property("ossrhUsername")
+                password = project.property("ossrhPassword")
+                close = "1"
+            }
         }
     }
 }

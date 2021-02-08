@@ -1,3 +1,9 @@
+### v2.2.3
+-
+
+#### v2.2.2
+(skipped, accidentally uploaded a version identical as 2.2.1 to Maven Central, can't be removed)
+
 ### v2.2.1
 - Fixed NPE when erasing after presenter is detached. (#28)
 
