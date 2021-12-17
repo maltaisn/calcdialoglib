@@ -19,11 +19,13 @@ Can be used to replace the numeric keyboard and useful to enter monetary amounts
 - Entirely customizable using custom attributes.
 
 ### Gradle dependency
-```
+```text
 implementation "com.maltaisn:calcdialog:X.Y.Z"
 ```
 
 Replace `X.Y.Z` with lastest version number: [![Download][download-badge]][download-link]
+
+The `mavenCentral()` repository is required.
 
 - Google Material Components are used since version 2.2.0
 - Version 2.0.0 introduces many breaking changes, like the changed package name.
@@ -47,8 +49,8 @@ Strings to translate are in `strings.xml`, do not translate those in `donottrans
 do not translate the demo app.
 
 
-[download-badge]: https://api.bintray.com/packages/maltaisn/calc-dialog/calc-dialog/images/download.svg
-[download-link]: https://bintray.com/maltaisn/calc-dialog/calc-dialog/_latestVersion
+[download-badge]: https://img.shields.io/maven-central/v/com.maltaisn/calcdialog
+[download-link]: https://search.maven.org/artifact/com.maltaisn/calcdialog
 
 [wiki-start]: https://github.com/maltaisn/calcdialoglib/wiki/Using-the-dialog
 [wiki-settings]: https://github.com/maltaisn/calcdialoglib/wiki/Calculator-settings
