@@ -1,6 +1,7 @@
 public class Teacher{
 	public String name;
 	public int id;
+	public float salary:
 
 	public Teacher (String str, int i){
 		name=str;
