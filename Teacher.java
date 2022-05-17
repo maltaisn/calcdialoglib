@@ -1,7 +1,7 @@
 public class Teacher{
 	public String name;
 	public int id;
-
+        public int age;
 	public Teacher (String str, int i){
 		name=str;
 		id=i;
