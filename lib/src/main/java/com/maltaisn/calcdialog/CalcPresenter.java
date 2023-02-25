@@ -201,7 +201,8 @@ class CalcPresenter {
 
         // Check if max digits has been exceeded
         int pointPos = valueStr.indexOf('.');
-        boolean maxIntReached = (pointPos == -1 && valueStr.length() >= settings.maxIntDigits);
+        int intDigits = (pointPos == -1 ? valueStr.length() : pointPos) - (!valueStr.isEmpty() && valueStr.charAt(0) == '-' ? 1 : 0);
+        boolean maxIntReached = (intDigits >= settings.maxIntDigits);
         boolean maxFracReached = (pointPos != -1 && valueStr.length() - pointPos - 1 >= nbFormat.getMaximumFractionDigits());
         if (maxIntReached || maxFracReached) {
             // Can't add a new digit, it's already at the maximum.
