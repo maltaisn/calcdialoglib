@@ -1,9 +1,8 @@
 plugins {
     id "com.android.library"
     id "com.github.breadmoirai.github-release"
+    id "com.vanniktech.maven.publish"
 }
-
-apply plugin: "com.vanniktech.maven.publish"
 
 ext {
     // Auto generate version code based on version name
@@ -42,3 +41,5 @@ dependencies {
 }
 
 tasks.withType(Javadoc).all { enabled = false }
+
+apply from: "publishing.gradle"

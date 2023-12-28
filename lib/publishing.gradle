@@ -1,6 +1,6 @@
 // from https://vanniktech.github.io/gradle-maven-publish-plugin/central/#configuring-maven-central
 mavenPublishing {
-    coordinates(ext.GROUP, ext.POM_ARTIFACT_ID, ext.libVersion)
+    coordinates(GROUP, POM_ARTIFACT_ID, libVersion)
 
     publishToMavenCentral("DEFAULT")
 
@@ -9,24 +9,61 @@ mavenPublishing {
     signAllPublications()
 
     pom {
-        name = mavenName
-        description = libraryDescription
-        url = siteUrl
+        name = POM_NAME
+        description = POM_DESCRIPTION
+        url = POM_URL
         licenses {
             license {
-                name = license
-                url = licenseUrl
-                distribution = licenseUrl
+                name = POM_LICENSE_NAME
+                url = POM_LICENSE_URL
+                distribution = POM_LICENSE_DIST
             }
         }
         developers {
             developer {
-                id = developerId
+                id = POM_DEVELOPER_ID
             }
         }
         scm {
-            url = siteUrl
-            connection = gitUrl
+            url = POM_SCM_URL
+            connection = POM_SCM_CONNECTION
         }
     }
 }
+
+// Publish a new release to Github, using the lastest defined version property,
+// a git tag, and the release notes in CHANGELOG.md.
+githubRelease {
+    token githubReleasePluginToken
+    owner "maltaisn"
+    repo "calcdialoglib"
+
+    tagName "v$libVersion"
+    targetCommitish "master"
+    releaseName "v$libVersion"
+
+    body {
+        // Get release notes for version from changelog file.
+        def changelog = file("../CHANGELOG.md")
+        def lines = changelog.readLines()
+        def versionChanges = new StringBuilder()
+        def foundVersion = false
+        for (line in lines) {
+            if (foundVersion && line ==~ /^#+\s*v[\d.]+\s*$/) {
+                break
+            } else if (line ==~ /^#+\s*v${libVersion.replace(".", "\\.")}\s*$/) {
+                foundVersion = true
+            } else if (foundVersion) {
+                versionChanges.append(line)
+                versionChanges.append('\n')
+            }
+        }
+        if (!foundVersion) {
+            throw new GradleException("No release notes for version $libVersion")
+        }
+        return versionChanges.toString().trim()
+    }
+
+    overwrite true
+}
+tasks.named("githubRelease").get().dependsOn "assemble"
