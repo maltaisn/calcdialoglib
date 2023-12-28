@@ -1,5 +1,6 @@
 ### v2.2.3
--
+- Update dependencies to latest versions.
+- Fix maximum integer digits not accounting for minus (#41).
 
 #### v2.2.2
 (skipped, accidentally uploaded a version identical as 2.2.1 to Maven Central, can't be removed)
