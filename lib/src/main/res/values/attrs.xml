@@ -11,6 +11,9 @@
         <!-- Maximum height for the calculator dialog. The dialog will expand to that height. -->
         <attr name="calcDialogMaxHeight" format="dimension"/>
 
+        <!-- For customizing enter and exit animations. -->
+        <attr name="calcDialogWindowAnimimation" format="reference"/>
+
         <!-- Text for the clear button. -->
         <attr name="calcButtonTextClear" format="string"/>
 

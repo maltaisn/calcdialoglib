@@ -6,6 +6,7 @@
     <style name="CalcDialogStyle">
         <item name="calcDialogMaxWidth">400dp</item>
         <item name="calcDialogMaxHeight">500dp</item>
+        <item name="calcDialogWindowAnimimation">@android:style/Animation.Dialog</item>
         <item name="calcButtonTextClear">@string/calc_dialog_clear</item>
         <item name="calcButtonTextCancel">@string/calc_dialog_cancel</item>
         <item name="calcButtonTextOk">@string/calc_dialog_ok</item>

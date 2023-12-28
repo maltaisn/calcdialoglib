@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+    namespace "com.maltaisn.calcdialoglib.demo"
+
     compileSdkVersion setup.compileSdk
     buildToolsVersion setup.buildTools
     defaultConfig {

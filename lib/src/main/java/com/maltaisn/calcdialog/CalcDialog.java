@@ -72,6 +72,7 @@ public class CalcDialog extends AppCompatDialogFragment {
     private TextView answerBtn;
     private TextView signBtn;
 
+    private int windowAnimations;
     private CharSequence[] errorMessages;
 
     ////////// LIFECYCLE METHODS //////////
@@ -97,6 +98,7 @@ public class CalcDialog extends AppCompatDialogFragment {
         final TypedArray ta = context.obtainStyledAttributes(R.styleable.CalcDialog);
         final CharSequence[] btnTexts = ta.getTextArray(R.styleable.CalcDialog_calcButtonTexts);
         errorMessages = ta.getTextArray(R.styleable.CalcDialog_calcErrors);
+        windowAnimations = ta.getResourceId(R.styleable.CalcDialog_calcDialogWindowAnimimation, 0);
         final int maxDialogWidth = ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxWidth, -1);
         final int maxDialogHeight = ta.getDimensionPixelSize(R.styleable.CalcDialog_calcDialogMaxHeight, -1);
         final int headerColor = getColor(ta, R.styleable.CalcDialog_calcHeaderColor);
@@ -305,6 +307,15 @@ public class CalcDialog extends AppCompatDialogFragment {
         } else {
             // Color reference pointing to color state list or raw color.
             return AppCompatResources.getColorStateList(context, resId).getDefaultColor();
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle state) {
+        super.onActivityCreated(state);
+        Window window = requireDialog().getWindow();
+        if (window != null) {
+            window.getAttributes().windowAnimations = windowAnimations;
         }
     }
 

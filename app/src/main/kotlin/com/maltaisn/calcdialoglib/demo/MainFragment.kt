@@ -1,6 +1,7 @@
 package com.maltaisn.calcdialoglib.demo
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,7 @@ class MainFragment : Fragment(), CalcDialogCallback {
 
 
     override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?, savedInstanceState: Bundle?): View? {
+                              container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -161,7 +162,11 @@ class MainFragment : Fragment(), CalcDialogCallback {
 
         } else {
             // Restore state
-            value = state.getSerializable("value") as BigDecimal?
+            value = if (Build.VERSION.SDK_INT >= 33) {
+                state.getSerializable("value", BigDecimal::class.java)
+            } else {
+                state.getSerializable("value") as BigDecimal?
+            }
         }
     }
 

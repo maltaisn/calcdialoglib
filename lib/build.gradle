@@ -1,17 +1,18 @@
 plugins {
     id "com.android.library"
-    id "com.github.dcendents.android-maven"
-    id "com.jfrog.bintray"
     id "com.github.breadmoirai.github-release"
 }
+
+apply plugin: "com.vanniktech.maven.publish"
 
 ext {
     // Auto generate version code based on version name
     libVersionCode = libVersion.split(/\./).collect { it.padLeft(2, "0") }.sum().toInteger()
-    allLicenses = [license]
 }
 
 android {
+    namespace "com.maltaisn.calcdialog"
+
     compileSdkVersion setup.compileSdk
     buildToolsVersion setup.buildTools
     defaultConfig {
@@ -19,6 +20,16 @@ android {
         targetSdkVersion setup.targetSdk
         versionCode libVersionCode
         versionName libVersion
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
@@ -31,5 +42,3 @@ dependencies {
 }
 
 tasks.withType(Javadoc).all { enabled = false }
-
-apply from: "publishing.gradle"

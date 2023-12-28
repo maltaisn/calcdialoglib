@@ -1,116 +1,32 @@
+// from https://vanniktech.github.io/gradle-maven-publish-plugin/central/#configuring-maven-central
+mavenPublishing {
+    coordinates(ext.GROUP, ext.POM_ARTIFACT_ID, ext.libVersion)
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set("sources")
-}
+    publishToMavenCentral("DEFAULT")
 
-artifacts {
-    archives sourcesJar
-}
+    // Will only apply to non snapshot builds.
+    // Uses credentials as described above, supports both regular and in memory signing.
+    signAllPublications()
 
-// Bintray plugin
-version = libVersion
-bintray {
-    user = project.property("bintray.user")
-    key = project.property("bintray.apikey")
-
-    configurations = ["archives"]
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        publish = true
-        publicDownloadNumbers = true
-        version {
-            name = libVersion
-            vcsTag = libVersion
-            released = new Date()
-            desc = libraryDescription
-            gpg {
-                sign = true
-            }
-            mavenCentralSync {
-                sync = true
-                user = project.property("ossrhUsername")
-                password = project.property("ossrhPassword")
-                close = "1"
+    pom {
+        name = mavenName
+        description = libraryDescription
+        url = siteUrl
+        licenses {
+            license {
+                name = license
+                url = licenseUrl
+                distribution = licenseUrl
             }
         }
-    }
-}
-
-// Maven plugin
-group = publishedGroupId
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                groupId publishedGroupId
-                artifactId artifact
-
-                name libraryName
-                description libraryDescription
-                url siteUrl
-
-                licenses {
-                    license {
-                        name licenseName
-                        url licenseUrl
-                    }
-                }
-                developers {
-                    developer {
-                        id developerId
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
+        developers {
+            developer {
+                id = developerId
             }
         }
-    }
-}
-
-// Publish a new release to Github, using the lastest defined libVersion property,
-// a git tag, and the release notes in CHANGELOG.md.
-githubRelease {
-    if (project.hasProperty("githubReleasePluginToken")) {
-        token githubReleasePluginToken
-    }
-    owner "maltaisn"
-    repo "calcdialoglib"
-
-    tagName "v$libVersion"
-    targetCommitish "master"
-    releaseName "v$libVersion"
-
-    body {
-        // Get release notes for version from changelog file.
-        def changelog = file("../CHANGELOG.md")
-        def lines = changelog.readLines()
-        def versionChanges = new StringBuilder()
-        def foundVersion = false
-        for (line in lines) {
-            if (foundVersion && line ==~ /^#+\s*v.+$/) {
-                break
-            } else if (line ==~ /^#+\s*v$libVersion$/) {
-                foundVersion = true
-            } else if (foundVersion) {
-                versionChanges.append(line)
-                versionChanges.append('\n')
-            }
+        scm {
+            url = siteUrl
+            connection = gitUrl
         }
-        if (!foundVersion) {
-            throw new GradleException("No release notes for version $libVersion")
-        }
-        return versionChanges.toString().trim()
     }
-
-    overwrite true
 }
